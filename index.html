@@ -154,6 +154,7 @@
   .stat-icon { font-size: 18px; margin-bottom: 4px; }
   .stat-val { font-size: 18px; font-weight: 700; }
   .stat-lbl { font-size: 9px; color: var(--textMuted); letter-spacing: 1px; margin-top: 3px; text-transform: uppercase; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; align-items: start; }
 
   /* ── DIFF BAR ── */
   .diff-box { background: var(--bgCard); border: 1px solid var(--border); padding: 18px; margin-bottom: 14px; }
@@ -456,11 +457,56 @@
   .tips-cat-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    border-left: 2px solid rgba(224,160,32,0.4);
-    padding: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.15s;
   }
-  .tips-cat-title { font-size: 11px; color: var(--amberLt); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .tips-cat-icon { font-size: 16px; }
+  .tips-cat-card:hover { transform: translateY(-2px); }
+  .tips-cat-imgbox {
+    position: relative;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(224,160,32,0.18), rgba(224,160,32,0.04));
+  }
+  .tips-cat-emoji { font-size: 42px; }
+  .tips-cat-imgtitle {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    margin: 0;
+    padding: 22px 14px 10px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--amberLt);
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  }
+  .tips-cat-toggle {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bgCard);
+    border: none;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--textDim);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: inherit;
+  }
+  .tips-cat-toggle:hover { background: rgba(224,160,32,0.05); }
+  .tc-icon { font-size: 14px; color: var(--amber); flex-shrink: 0; }
+  .tips-cat-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 14px;
+  }
+  .tips-cat-panel.ativo { padding: 12px 14px 14px; border-top: 1px solid var(--border); }
   .tip-item { font-size: 11px; color: var(--textDim); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.6; display: flex; gap: 6px; }
   .tip-item:last-child { border-bottom: none; }
   .tip-bullet { color: var(--amber); flex-shrink: 0; }
@@ -2584,10 +2630,38 @@ tipsCats.forEach(cat => {
     `<div class="tip-item"><span class="tip-bullet">▸</span> ${tip}</div>`
   ).join('');
   card.innerHTML = `
-    <div class="tips-cat-title"><span class="tips-cat-icon">${cat.icon}</span> ${cat.title}</div>
-    ${tipsHtml}
+    <div class="tips-cat-imgbox">
+      <span class="tips-cat-emoji">${cat.icon}</span>
+      <h3 class="tips-cat-imgtitle">${cat.title}</h3>
+    </div>
+    <button class="tips-cat-toggle">
+      ${cat.tips.length} DICAS <span class="tc-icon">+</span>
+    </button>
+    <div class="tips-cat-panel">
+      ${tipsHtml}
+    </div>
   `;
   tipsGrid.appendChild(card);
+});
+
+// Delegação de evento: cada card abre/fecha de forma independente
+tipsGrid.addEventListener('click', function(e) {
+  const btn = e.target.closest('.tips-cat-toggle');
+  if (!btn) return;
+
+  const painel = btn.nextElementSibling;
+  const icone  = btn.querySelector('.tc-icon');
+  const isOpen = painel.classList.contains('ativo');
+
+  if (isOpen) {
+    painel.classList.remove('ativo');
+    painel.style.maxHeight = '0px';
+    icone.textContent = '+';
+  } else {
+    painel.classList.add('ativo');
+    painel.style.maxHeight = painel.scrollHeight + 'px';
+    icone.textContent = '−';
+  }
 });
 
 const tipsSourcesContainer = document.getElementById('tips-sources-container');
