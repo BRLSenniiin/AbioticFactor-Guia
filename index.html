@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Abiotic Factor — Guia de Platina PT-BR</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -26,6 +27,12 @@
     --cyanDim:   #063028;
     --purple:    #a060e0;
     --steel:     #60a080;
+    --platinum:  #9b72cf;
+    --platinumLt:#c4a0f0;
+    --bronze:    #806040;
+    --bronzeLt:  #c0a060;
+    --silverLt:  #90c0a0;
+    --redLt:     #f08080;
     --text:      #b0e0b0;
     --textDim:   #7fbf95;
     --textMuted: #7fbf95;
@@ -49,7 +56,7 @@
   pointer-events: none;
   background:
     linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url("Images/Wallpaper/wallpaper.webp") center / cover no-repeat;
+    url("Images/wallpaper.webp") center / cover no-repeat;
 }
 
   /* Terminal scanlines */
@@ -86,16 +93,13 @@
   /* ── HEADER ── */
   .hdr-sys { font-size: 10px; color: var(--textDim); letter-spacing: 4px; margin-bottom: 6px; }
   .hdr-boot { font-size: 10px; color: var(--textMuted); margin-bottom: 16px; }
-  .hdr-title {
-    text-align: center;
-    width: 100%;
-    font-size: clamp(26px, 5.5vw, 48px);
-    color: var(--greenLt);
-    text-shadow: 0 0 20px rgba(0,224,96,0.53);
-    letter-spacing: 3px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
+  .hdr-logo {
+  display: block;
+  max-width: 320px;
+  width: 60%;
+  margin: 0 auto 4px;
+  filter: drop-shadow(0 0 20px rgba(0,224,96,0.53));
+}
   .hdr-sub { font-size: 12px; color: var(--steel); letter-spacing: 4px; margin-bottom: 14px; }
   .hdr-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; }
   .hdr-badge { font-size: 10px; letter-spacing: 2px; padding: 2px 10px; border: 1px solid; }
@@ -156,8 +160,64 @@
   .stat-lbl { font-size: 9px; color: var(--textMuted); letter-spacing: 1px; margin-top: 3px; text-transform: uppercase; }
   .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; align-items: start; }
 
+  /* ── ITEM CARD (efeito pop-out no hover) ── */
+  .itm-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 34px 12px;
+  }
+  .itm-card {
+    position: relative;
+    flex: 1 1 110px;
+    max-width: 160px;
+    background: var(--bgCard);
+    border: 1px solid var(--borderGn);
+    border-radius: 6px;
+    padding: 34px 8px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .itm-card:hover { border-color: var(--green); box-shadow: 0 6px 18px rgba(0,224,96,0.25); }
+  .itm-imgbox { position: absolute; top: -22px; width: 48px; height: 48px; z-index: 2; }
+  .itm-imgbox img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.6));
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+  }
+  .itm-card:hover .itm-imgbox img { transform: translateY(-10px) scale(1.2); filter: drop-shadow(0 8px 8px rgba(0,224,96,0.4)); }
+  .itm-name {
+    font-size: 10px;
+    color: var(--text);
+    line-height: 1.4;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease;
+  }
+  .itm-card:hover .itm-name { transform: translateY(-3px); color: var(--greenLt); }
+  .itm-desc { font-size: 10px; color: var(--textDim); line-height: 1.5; margin-top: 3px; padding-left: 2px; }
+  .itm-desc-block { color: var(--textDim); font-size: 11px; line-height: 1.7; border-left: 2px solid var(--green); padding-left: 14px; margin-top: 14px; }
+  .itm-desc-block strong { color: var(--green); }
+
   /* ── DIFF BAR ── */
   .diff-box { background: var(--bgCard); border: 1px solid var(--border); padding: 18px; margin-bottom: 14px; }
+  .ficha-row {
+    font-size: 11px;
+    color: var(--textDim);
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+  }
+  .ficha-row:last-child { border-bottom: none; }
+  .ficha-label {
+    color: var(--green);
+    min-width: 80px;
+    flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace;
+  }
   .section-title { font-size: 10px; color: var(--green); letter-spacing: 3px; margin-bottom: 10px; }
   .diff-segs { display: flex; gap: 4px; margin-bottom: 6px; }
   .diff-seg { flex: 1; height: 8px; }
@@ -453,6 +513,7 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 10px;
     margin-bottom: 20px;
+    align-items: start;
   }
   .tips-cat-card {
     background: var(--bgCard);
@@ -586,7 +647,7 @@
     border-left: 2px solid rgba(224,48,32,0.4);
     padding: 11px 13px;
   }
-  .heal-item-name { font-size: 11px; color: #f08080; margin-bottom: 3px; }
+  .heal-item-name { font-size: 11px; color: var(--redLt); margin-bottom: 3px; }
   .heal-item-desc { font-size: 11px; color: var(--textDim); line-height: 1.5; }
 
   /* ── ARMOR TIER (inside tips) ── */
@@ -656,7 +717,7 @@
 
   <!-- HEADER -->
   <div>
-    <h1 class="hdr-title">ABIOTIC FACTOR</h1>
+    <img src ="Images/Logo.webp" alt="Abiotic Factor Logo" class="hdr-logo">
     <div class="hdr-badges" id="hdr-badges"></div>
   </div>
 
@@ -688,22 +749,22 @@
     <div class="diff-box" style="margin-bottom:14px">
       <div class="section-title">// FICHA TÉCNICA DO JOGO</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;margin-top:6px">
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">DEV</span>Deep Field Games (Nova Zelândia)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">PUBLISHER</span>Playstack</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">ENGINE</span>Unreal Engine</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">LANÇAMENTO</span>22 Jul 2025 (1.0) · 2 Mai 2024 (EA)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">PLATAFORMAS</span>PC · PS5 · Xbox Series X/S</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">MODOS</span>Solo / Co-op até 6 jogadores online</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">GÊNERO</span>Survival Crafting · First-Person</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">AMBIENTAÇÃO</span>1993 · Outback Australiano (underground)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">DIRETOR</span>Geoff "Zag" Keene</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">NARRATIVA</span>Henry Feltham</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">ARTE</span>Connor "MadDok" Moran</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">EQUIPE</span>~10 desenvolvedores (trabalho remoto)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">GAMEPASS/PS+</span>Disponível desde o dia do lançamento 1.0</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">VENDAS</span>1,5 milhão de cópias (Agosto 2025)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">TEMPO MÉDIO</span>50–60h (história completa)</div>
-        <div style="font-size:11px;color:var(--textDim);padding:6px 4px;display:flex;gap:8px"><span style="color:var(--green);min-width:80px;flex-shrink:0;font-family: 'IBM Plex Mono', monospace;">INSPIRAÇÕES</span>Half-Life · Valheim · Sea of Thieves · Project Zomboid</div>
+        <div class="ficha-row"><span class="ficha-label">DEV</span>Deep Field Games (Nova Zelândia)</div>
+        <div class="ficha-row"><span class="ficha-label">PUBLISHER</span>Playstack</div>
+        <div class="ficha-row"><span class="ficha-label">ENGINE</span>Unreal Engine</div>
+        <div class="ficha-row"><span class="ficha-label">LANÇAMENTO</span>22 Jul 2025 (1.0) · 2 Mai 2024 (EA)</div>
+        <div class="ficha-row"><span class="ficha-label">PLATAFORMAS</span>PC · PS5 · Xbox Series X/S</div>
+        <div class="ficha-row"><span class="ficha-label">MODOS</span>Solo / Co-op até 6 jogadores online</div>
+        <div class="ficha-row"><span class="ficha-label">GÊNERO</span>Survival Crafting · First-Person</div>
+        <div class="ficha-row"><span class="ficha-label">AMBIENTAÇÃO</span>1993 · Outback Australiano (underground)</div>
+        <div class="ficha-row"><span class="ficha-label">DIRETOR</span>Geoff "Zag" Keene</div>
+        <div class="ficha-row"><span class="ficha-label">NARRATIVA</span>Henry Feltham</div>
+        <div class="ficha-row"><span class="ficha-label">ARTE</span>Connor "MadDok" Moran</div>
+        <div class="ficha-row"><span class="ficha-label">EQUIPE</span>~10 desenvolvedores (trabalho remoto)</div>
+        <div class="ficha-row"><span class="ficha-label">GAMEPASS/PS+</span>Disponível desde o dia do lançamento 1.0</div>
+        <div class="ficha-row"><span class="ficha-label">VENDAS</span>1,5 milhão de cópias (Agosto 2025)</div>
+        <div class="ficha-row"><span class="ficha-label">TEMPO MÉDIO</span>50–60h (história completa)</div>
+        <div class="ficha-row"><span class="ficha-label">INSPIRAÇÕES</span>Half-Life · Valheim · Sea of Thieves · Project Zomboid</div>
       </div>
     </div>
 
@@ -1095,13 +1156,6 @@
         Combinando estratégias de sobrevivência, crafting e otimização para uma jogatina de platina eficiente.
       </div>
     </div>
-<div class="tips-cat-card">
-  </div>
-
-  <div class="card-content" id="content-card-1">
-    <p style="font-size:11px;color:var(--textDim);line-height:1.7">Texto que fica escondido até clicar.</p>
-  </div>
-</div>
     <!-- SKILLS -->
     <div class="skills-section">
       <div class="skills-title">// COMO EVOLUIR HABILIDADES RAPIDAMENTE</div>
@@ -1329,15 +1383,18 @@ const C = {
   red:"#e03020", redDim:"#401008",
   cyan:"#20d0c0", cyanDim:"#063028",
   purple:"#a060e0", steel:"#60a080",
+  platinum:"#9b72cf", platinumLt:"#c4a0f0",
+  bronze:"#806040", bronzeLt:"#c0a060",
+  silverLt:"#90c0a0", redLt:"#f08080",
   text:"#b0e0b0", textDim:"#407050", textMuted:"#183028",
   bgCard:"#040c08", border:"#0a1e10", borderGn:"#143020",
 };
 
 const typeS = {
-  platinum:{ bg:"#9b72cf33", border:"#9b72cf", label:"PLATINA", text:"#c4a0f0" },
-  gold:    { bg:"#e0a02033", border:"#e0a020", label:"OURO",   text:"#f8d060" },
-  silver:  { bg:"#60a08033", border:"#60a080", label:"PRATA",  text:"#90c0a0" },
-  bronze:  { bg:"#60402033", border:"#806040", label:"BRONZE", text:"#c0a060" },
+  platinum:{ bg:C.platinum+"33", border:C.platinum, label:"PLATINA", text:C.platinumLt },
+  gold:    { bg:C.amber+"33",    border:C.amber,    label:"OURO",   text:C.amberLt },
+  silver:  { bg:C.steel+"33",    border:C.steel,    label:"PRATA",  text:C.silverLt },
+  bronze:  { bg:C.bronze+"33",   border:C.bronze,   label:"BRONZE", text:C.bronzeLt },
 };
 
 const sectors = [
@@ -1345,7 +1402,12 @@ const sectors = [
     id:"tutorial", name:"TUTORIAL — Chegada na Facility", nameEN:"Down Under", color:C.green, icon:"🔬",
     ordem:"ETAPA 1", subtitulo:"Aprenda os controles. Mecânicas básicas. Impossível falhar.",
     objetivos:["Crafteie sua primeira ferramenta no inventário (sem Bench).","Monte sua primeira Crafting Bench com madeira + scrap.","Mate sua primeira praga."],
-    itens:["Crowbar (loot ou craft)","Scrap Metal","Wood Planks","Plastic Scrap"],
+    itens:[
+      { nome:"Crowbar (loot ou craft)", img:"img/itens/crowbar.png", desc:"<strong>Crowbar</strong> — ferramenta versátil usada pra forçar portas e caixotes trancados. Exemplo de texto: substitua por uma descrição real quando revisar." },
+      { nome:"Scrap Metal", img:"img/itens/scrap-metal.png", desc:"<strong>Scrap Metal</strong> — material básico de crafting, usado em receitas de melhorias e reparos. Exemplo de texto: substitua por uma descrição real quando revisar." },
+      { nome:"Wood Planks", img:"img/itens/wood-planks.png", desc:"<strong>Wood Planks</strong> — recurso estrutural comum, aparece em receitas de construção. Exemplo de texto: substitua por uma descrição real quando revisar." },
+      { nome:"Plastic Scrap", img:"img/itens/plastic-scrap.png", desc:"<strong>Plastic Scrap</strong> — material leve usado em itens utilitários. Exemplo de texto: substitua por uma descrição real quando revisar." },
+    ],
     npcs:[], portais:[],
     alertas:[],
     antes:"Saia do tutorial com uma Crafting Bench montada e materiais básicos no inventário.",
@@ -1643,7 +1705,7 @@ const sectors = [
       { id:"endofearth", name:"Fim da Terra",           eng:"End of the Earth",          type:"silver",   icon:"🌍", tag:"✦ AUTOMÁTICO", tagColor:C.green,   how:"Complete o Setor Residencial. Automático.", note:null },
       { id:"coffee",     name:"Café no Buraco do Café", eng:"Coffee in the Coffee Hole", type:"bronze",   icon:"☕", tag:"⚠️ CRÍTICO",   tagColor:C.red,     how:"Dê uma Mug of Coffee ao Coworker quando encontrá-lo. Aparece sem aviso.", note:"SEMPRE café no inventário desde o Manufacturing." },
       { id:"friendlyp",  name:"Presença Amigável",      eng:"Friendly Presence",         type:"bronze",   icon:"👁️", tag:"◆ ATENÇÃO",    tagColor:C.amber,   how:"Interaja com a Containment Unit: 91 para conter o Leyak.", note:"Explore cada quarto do Residencial." },
-      { id:"puresci",    name:"PLATINA — Ciência Pura", eng:"Apocalypse Now",            type:"platinum", icon:"🏆", tag:"✦ AUTOMÁTICO", tagColor:"#c4a0f0", how:"Complete a história principal. Automático ao finalizar.", note:null },
+      { id:"puresci",    name:"PLATINA — Ciência Pura", eng:"Apocalypse Now",            type:"platinum", icon:"🏆", tag:"✦ AUTOMÁTICO", tagColor:C.platinumLt, how:"Complete a história principal. Automático ao finalizar.", note:null },
     ]
   },
 ];
@@ -2069,6 +2131,15 @@ let openMiss = null;
 let openTrophy = null;
 let sectorFilter = "all";
 let checklistDone = {};
+const itemDescLookup = {}; // preenchido durante o render de itensHtml: chave "secId::idx" -> texto
+
+function obShowItemDesc(secId, idx) {
+  const desc = itemDescLookup[`${secId}::${idx}`];
+  const el = document.getElementById(`itm-desc-${secId}`);
+  if (!el || !desc) return;
+  el.innerHTML = desc;
+  el.style.display = 'block';
+}
 
 // ── BUILD HEADER BADGES ──
 const badgesData = [
@@ -2093,7 +2164,7 @@ badgesData.forEach(b => {
 // ── STAT GRID ──
 const statsData = [
   { l:"Total Troféus", v:"54", icon:"🏅", c:C.green },
-  { l:"Platina",       v:"1 ✓", icon:"🏆", c:"#c4a0f0" },
+  { l:"Platina",       v:"1 ✓", icon:"🏆", c:C.platinumLt },
   { l:"Ouro",          v:"0",  icon:"🥇", c:C.amber },
   { l:"Prata",         v:"12", icon:"🥈", c:C.steel },
   { l:"Bronze",        v:"41", icon:"🥉", c:C.textDim },
@@ -2201,12 +2272,35 @@ sectors.forEach((sec, si) => {
     : '';
 
   // Itens chave
+  // Cada item pode ser: objeto { nome, img, desc? } (card com imagem pop-out,
+  // clicável se tiver desc — mostra o texto no bloco abaixo da fila),
+  // string "Nome — explicação" (chip + bloco de texto explicativo abaixo),
+  // ou string simples sem traço (chip antigo, sem explicação).
+  const itensTemImg = sec.itens && sec.itens.some(it => typeof it === 'object' && it.img);
   const itensHtml = sec.itens && sec.itens.length
     ? `<div style="margin-bottom:10px">
-        <div style="font-size:9px;color:${C.amber};letter-spacing:2px;margin-bottom:6px">// ITENS IMPORTANTES NESTE SETOR</div>
-        <div style="display:flex;flex-wrap:wrap;gap:5px">
-          ${sec.itens.map(it => `<span style="font-size:10px;padding:2px 8px;border:1px solid ${C.amber}33;background:${C.amber}0d;color:${C.amber}">${it}</span>`).join('')}
+        <div style="font-size:9px;color:${C.amber};letter-spacing:2px;margin-bottom:6px">// ITENS IMPORTANTES NESTE SETOR${itensTemImg ? ' <span style=\"color:var(--textDim);letter-spacing:0;text-transform:none\">(clique num item)</span>' : ''}</div>
+        <div class="itm-grid" style="${itensTemImg ? '' : 'flex-direction:column;gap:10px'}">
+          ${sec.itens.map((it, idx) => {
+            const temImg = typeof it === 'object' && it.img;
+            if (temImg) {
+              if (it.desc) itemDescLookup[`${sec.id}::${idx}`] = it.desc;
+              return `<div class="itm-card" ${it.desc ? `onclick="obShowItemDesc('${sec.id}', ${idx})" style="cursor:pointer"` : ''}>
+                <div class="itm-imgbox"><img src="${it.img}" alt="${it.nome}" onerror="this.parentElement.style.display='none'"></div>
+                <div class="itm-name">${it.nome}</div>
+              </div>`;
+            }
+            const texto = typeof it === 'object' ? it.nome : it;
+            const partes = texto.split(' — ');
+            const nome = partes[0];
+            const desc = partes.length > 1 ? partes.slice(1).join(' — ') : null;
+            return `<div>
+              <span style="font-size:10px;padding:2px 8px;border:1px solid ${C.amber}33;background:${C.amber}0d;color:${C.amber}">${nome}</span>
+              ${desc ? `<div class="itm-desc">${desc}</div>` : ''}
+            </div>`;
+          }).join('')}
         </div>
+        ${itensTemImg ? `<div class="itm-desc-block" id="itm-desc-${sec.id}" style="display:none"></div>` : (sec.itensDesc ? `<div class="itm-desc-block">${sec.itensDesc}</div>` : '')}
       </div>`
     : '';
 
@@ -2315,8 +2409,6 @@ sectors.forEach((sec, si) => {
   routeContainer.appendChild(item);
 });
 
-// Abre o primeiro setor por padrão
-toggleSector(0);
 
 
 
@@ -2644,25 +2736,33 @@ tipsCats.forEach(cat => {
   tipsGrid.appendChild(card);
 });
 
-// Delegação de evento: cada card abre/fecha de forma independente
-tipsGrid.addEventListener('click', function(e) {
-  const btn = e.target.closest('.tips-cat-toggle');
-  if (!btn) return;
+// Delegação de evento: cada card abre/fecha de forma independente.
+// Função única, reaproveitada por qualquer container que tenha cards
+// no formato .tips-cat-card (tipsGrid, skillsGrid, e futuros) — evita
+// repetir esse bloco de código toda vez que um novo container precisar
+// do mesmo comportamento de abrir/fechar.
+function initTipsCardToggle(container) {
+  container.addEventListener('click', function(e) {
+    const btn = e.target.closest('.tips-cat-toggle');
+    if (!btn) return;
 
-  const painel = btn.nextElementSibling;
-  const icone  = btn.querySelector('.tc-icon');
-  const isOpen = painel.classList.contains('ativo');
+    const painel = btn.nextElementSibling;
+    const icone  = btn.querySelector('.tc-icon');
+    const isOpen = painel.classList.contains('ativo');
 
-  if (isOpen) {
-    painel.classList.remove('ativo');
-    painel.style.maxHeight = '0px';
-    icone.textContent = '+';
-  } else {
-    painel.classList.add('ativo');
-    painel.style.maxHeight = painel.scrollHeight + 'px';
-    icone.textContent = '−';
-  }
-});
+    if (isOpen) {
+      painel.classList.remove('ativo');
+      painel.style.maxHeight = '0px';
+      icone.textContent = '+';
+    } else {
+      painel.classList.add('ativo');
+      painel.style.maxHeight = painel.scrollHeight + 'px';
+      icone.textContent = '−';
+    }
+  });
+}
+
+initTipsCardToggle(tipsGrid);
 
 const tipsSourcesContainer = document.getElementById('tips-sources-container');
 tipsSources.forEach(src => {
@@ -2919,15 +3019,36 @@ function togglePortal(i) {
 // ── RENDER SKILLS ──
 const skillsGrid = document.getElementById('skills-grid');
 skillsData.forEach(s => {
+  const [emoji, ...resto] = s.name.split(' ');
+  const titulo = resto.join(' ');
+
+  const skillTips = [s.method];
+  if (s.bonus) skillTips.push(s.bonus);
+  const skillTipsHtml = skillTips.map(t =>
+    `<div class="tip-item"><span class="tip-bullet">▸</span> ${t}</div>`
+  ).join('');
+
   const card = document.createElement('div');
-  card.className = 'skill-card';
+  card.className = 'tips-cat-card';
   card.innerHTML = `
-    <div class="skill-name">${s.name}</div>
-    <div class="skill-method">${s.method}</div>
-    ${s.bonus ? `<div class="skill-bonus">⚡ ${s.bonus}</div>` : ''}
+    <div class="tips-cat-imgbox">
+      <span class="tips-cat-emoji">${emoji}</span>
+      <h3 class="tips-cat-imgtitle">${titulo}</h3>
+    </div>
+    <button class="tips-cat-toggle">
+      ${skillTips.length} DICAS <span class="tc-icon">+</span>
+    </button>
+    <div class="tips-cat-panel">
+      ${skillTipsHtml}
+    </div>
   `;
+
   skillsGrid.appendChild(card);
 });
+
+// Delegação de evento pro toggle dos cards — reaproveita a
+// mesma função já usada em tipsGrid, em vez de repetir o código.
+initTipsCardToggle(skillsGrid);
 
 // ── RENDER HEAL ──
 const healGrid = document.getElementById('heal-grid');
@@ -3062,9 +3183,9 @@ if (countersEl) {
     { label:`🔴 CRÍTICO (${criticos})`,  bg:'rgba(224,48,32,0.12)', border:'rgba(224,48,32,0.4)',  color:'#e03020' },
     { label:`🟡 ATENÇÃO (${atencao})`,   bg:'rgba(224,160,32,0.12)',border:'rgba(224,160,32,0.4)', color:'#e0a020' },
     { label:`🟢 NORMAL (${normal})`,     bg:'rgba(0,224,96,0.10)',  border:'rgba(0,224,96,0.35)',  color:'#00e060' },
-    { label:`🏆 PLATINA (${platina})`,   bg:'rgba(155,114,207,0.15)',border:'rgba(155,114,207,0.5)',color:'#c4a0f0' },
-    { label:`🥈 PRATA (${pratas})`,      bg:'rgba(96,160,128,0.12)',border:'rgba(96,160,128,0.4)', color:'#90c0a0' },
-    { label:`🥉 BRONZE (${bronzes})`,    bg:'rgba(128,96,64,0.15)', border:'rgba(128,96,64,0.4)',  color:'#c0a060' },
+    { label:`🏆 PLATINA (${platina})`,   bg:'rgba(155,114,207,0.15)',border:'rgba(155,114,207,0.5)',color:C.platinumLt },
+    { label:`🥈 PRATA (${pratas})`,      bg:'rgba(96,160,128,0.12)',border:'rgba(96,160,128,0.4)', color:C.silverLt },
+    { label:`🥉 BRONZE (${bronzes})`,    bg:'rgba(128,96,64,0.15)', border:'rgba(128,96,64,0.4)',  color:C.bronzeLt },
     { label:`TOTAL ${trophyMaster.length}`, bg:'rgba(0,224,96,0.06)', border:'rgba(0,224,96,0.2)', color:'#60ff90' },
   ].forEach(c => {
     const s = document.createElement('span');
@@ -3084,9 +3205,9 @@ function buildTrophyList() {
     { key:'r0',   label:`🔴 CRÍTICO (${trophyMaster.filter(t=>t.risk===0).length})`, color:C.red },
     { key:'r1',   label:`🟡 ATENÇÃO (${trophyMaster.filter(t=>t.risk===1).length})`, color:C.amber },
     { key:'r2',   label:`🟢 NORMAL (${trophyMaster.filter(t=>t.risk===2).length})`,  color:C.green },
-    { key:'platinum', label:'🏆 PLATINA', color:'#c4a0f0' },
-    { key:'silver',   label:'🥈 PRATA',   color:'#90c0a0' },
-    { key:'bronze',   label:'🥉 BRONZE',  color:'#c0a060' },
+    { key:'platinum', label:'🏆 PLATINA', color:C.platinumLt },
+    { key:'silver',   label:'🥈 PRATA',   color:C.silverLt },
+    { key:'bronze',   label:'🥉 BRONZE',  color:C.bronzeLt },
   ];
 
   riskFilters.forEach(rf => {
