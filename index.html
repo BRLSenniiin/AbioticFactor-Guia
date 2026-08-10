@@ -93,16 +93,13 @@
   /* ── HEADER ── */
   .hdr-sys { font-size: 10px; color: var(--textDim); letter-spacing: 4px; margin-bottom: 6px; }
   .hdr-boot { font-size: 10px; color: var(--textMuted); margin-bottom: 16px; }
-  .hdr-title {
-    text-align: center;
-    width: 100%;
-    font-size: clamp(26px, 5.5vw, 48px);
-    color: var(--greenLt);
-    text-shadow: 0 0 20px rgba(0,224,96,0.53);
-    letter-spacing: 3px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
+.hdr-logo {
+  display: block;
+  max-width: 320px;
+  width: 60%;
+  margin: 0 auto 4px;
+  filter: drop-shadow(0 0 20px rgba(0,224,96,0.53));
+}
   .hdr-sub { font-size: 12px; color: var(--steel); letter-spacing: 4px; margin-bottom: 14px; }
   .hdr-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; }
   .hdr-badge { font-size: 10px; letter-spacing: 2px; padding: 2px 10px; border: 1px solid; }
@@ -720,8 +717,8 @@
 
   <!-- HEADER -->
   <div>
-    <h1 class="hdr-title">ABIOTIC FACTOR</h1>
-    <div class="hdr-badges" id="hdr-badges"></div>
+<img src="Images/Logo.webp" alt="Abiotic Factor" class="hdr-logo">    
+<div class="hdr-badges" id="hdr-badges"></div>
   </div>
 
   <!-- TABS -->
