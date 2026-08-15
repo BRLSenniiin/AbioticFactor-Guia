@@ -146,6 +146,7 @@
   width: 60%;
   margin: 0 auto 4px;
   filter: drop-shadow(0 0 20px rgba(0,224,96,0.53));
+  cursor: pointer;
 }
   .hdr-sub { font-size: var(--fs-md); color: var(--steel); letter-spacing: 4px; margin-bottom: 14px; }
   .hdr-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; }
@@ -479,47 +480,81 @@
   .tlist-link { font-size: var(--fs-xs); display: block; color: var(--green); text-decoration: none; margin-bottom: 3px; }
   .tlist-link:hover { color: var(--greenLt); }
 
-  /* ── NPCs PERDÍVEIS PANEL ── */
+  /* ── NPCs PERDÍVEIS PANEL — CARD DOSSIÊ ── */
   .npc-alert { background: rgba(160,96,224,0.08); border: 1px solid rgba(160,96,224,0.3); border-left: 3px solid var(--purple); padding: 16px; margin-bottom: 18px; }
   .npc-alert-title { font-size: var(--fs-xs); color: var(--purple); letter-spacing: 3px; margin-bottom: 8px; }
-  .npc-item { margin-bottom: 8px; }
-  .npc-btn {
-    width: 100%;
-    text-align: left;
-    padding: 14px 16px;
+
+  .npc-dossier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    align-items: start;
+    gap: 16px;
+    margin-bottom: 4px;
+  }
+  .npc-dossier-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--purple);
-    cursor: pointer;
-    font-family: inherit;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .npc-dossier-header {
+    background: var(--bgSection);
+    padding: 10px 14px;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    color: var(--text);
-    transition: background 0.15s;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: var(--fs-2xs);
   }
-  .npc-btn:hover { background: var(--bgSection); }
-  .npc-icon { font-size: var(--fs-3xl); flex-shrink: 0; padding-top: 1px; }
-  .npc-name { font-size: var(--fs-lg); color: var(--purple); margin-bottom: 2px; }
-  .npc-sector-tag { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid rgba(160,96,224,0.4); background: rgba(160,96,224,0.1); color: var(--purple); letter-spacing: 1px; }
-  .npc-risk-badge { font-size: var(--fs-2xs); padding: 1px 7px; border: 1px solid; letter-spacing: 1px; }
-  .npc-body {
-    border: 1px solid rgba(160,96,224,0.2);
-    border-top: none;
-    padding: 14px 16px;
-    background: rgba(160,96,224,0.04);
-    display: none;
-    font-size: var(--fs-md);
-    color: var(--text);
-    line-height: 1.8;
+  .npc-dossier-location { font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
+  .npc-dossier-status {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
-  .npc-body.open { display: block; }
-  .npc-step { padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
-  .npc-step:last-child { border-bottom: none; }
-  .npc-step-num { color: var(--purple); font-weight: 700; flex-shrink: 0; font-size: var(--fs-sm); }
-  .npc-step-text { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.6; }
-  .npc-reward { margin-top: 10px; padding: 8px 10px; background: rgba(0,224,96,0.05); border: 1px solid rgba(0,224,96,0.15); font-size: var(--fs-sm); color: var(--green); }
-  .npc-warn { margin-top: 8px; font-size: var(--fs-xs); color: var(--red); font-style: italic; }
+  .npc-dossier-imgbox {
+    width: 100%;
+    height: 190px;
+    background: var(--bgSection);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .npc-dossier-imgbox img { width: 100%; height: 100%; object-fit: cover; }
+  .npc-dossier-emoji { font-size: var(--fs-6xl); }
+  .npc-dossier-body { padding: 16px; }
+  .npc-dossier-name { font-size: var(--fs-lg); color: var(--text); font-weight: 700; margin-bottom: 2px; }
+  .npc-dossier-trophy {
+    font-size: var(--fs-2xs);
+    color: var(--purple);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  .npc-dossier-desc {
+    font-size: var(--fs-sm);
+    color: var(--textDim);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 3px solid var(--purple);
+  }
+  .npc-dossier-actions { background: var(--bgSection); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .npc-dossier-actions h4 { font-size: var(--fs-2xs); color: var(--textMuted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .npc-dossier-steplist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .npc-dossier-step { font-size: var(--fs-sm); color: var(--textDim); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+  .npc-dossier-step::before { content: "⚡"; font-size: var(--fs-2xs); color: var(--purple); flex-shrink: 0; margin-top: 2px; }
+  .npc-dossier-warn { margin-top: 10px; font-size: var(--fs-xs); color: var(--red); font-style: italic; }
+  .npc-dossier-reward { margin-top: 10px; padding: 8px 10px; background: rgba(0,224,96,0.05); border: 1px solid rgba(0,224,96,0.15); font-size: var(--fs-sm); color: var(--green); }
   .npc-source-box { margin-top: 14px; background: var(--bgCard); border: 1px solid var(--borderGn); padding: 12px; }
 
   /* ── MAPAS PANEL ── */
@@ -566,9 +601,9 @@
   .tips-cat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    align-items: start;
     gap: 10px;
     margin-bottom: 20px;
-    align-items: start;
   }
   .tips-cat-imgbox img { width:100%; height:100%; object-fit:cover; }
   .tips-cat-card {
@@ -577,6 +612,9 @@
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.15s;
+    break-inside: avoid;
+    margin-bottom: 10px;
+    align-items: start;
   }
   .tips-cat-card:hover { transform: translateY(-2px); }
   .tips-cat-imgbox {
@@ -622,6 +660,7 @@
     overflow: hidden;
     transition: max-height 0.35s ease, padding 0.35s ease;
     padding: 0 14px;
+    box-sizing: border-box;
   }
   .tips-cat-panel.ativo { padding: 12px 14px 14px; border-top: 1px solid var(--border); }
   .tip-item { font-size: var(--fs-sm); color: var(--textDim); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.6; display: flex; gap: 6px; }
@@ -682,7 +721,7 @@
   /* ── SKILLS PANEL (inside tips) ── */
   .skills-section { margin-bottom: 20px; }
   .skills-title { font-size: var(--fs-xs); color: var(--cyan); letter-spacing: 3px; margin-bottom: 12px; }
-  .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; margin-bottom: 4px; }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); align-items: start; gap: 8px; margin-bottom: 4px; }
   .skill-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
@@ -763,6 +802,10 @@
     .weapons-grid { grid-template-columns: 1fr; }
     .prog-row { grid-template-columns: 28px 1fr; }
     .prog-detail { grid-column: 1 / -1; padding-left: 38px; }
+    .npc-dossier-grid { grid-template-columns: 1fr; gap: 12px; }
+    .npc-dossier-imgbox { height: 160px; }
+    .npc-dossier-body { padding: 12px; }
+    .npc-dossier-emoji { font-size: var(--fs-5xl); }
   }
 </style>
 </head>
@@ -773,7 +816,7 @@
 
   <!-- HEADER -->
   <div>
-<img src="Images/Logo.webp" alt="Abiotic Factor" class="hdr-logo">    
+<img src="Images/Logo.webp" alt="Abiotic Factor" class="hdr-logo" onclick="goHome()" title="Voltar ao início">    
 <div class="hdr-badges" id="hdr-badges"></div>
   </div>
 
@@ -1455,15 +1498,25 @@ const typeS = {
 
 const sectors = [
   {
-    id:"tutorial", name:"TUTORIAL — Chegada na Facility", nameEN:"Down Under", color:C.green, icon:"🔬",
-    ordem:"ETAPA 1", subtitulo:"Aprenda os controles. Mecânicas básicas. Impossível falhar.",
-    objetivos:["Crafteie sua primeira ferramenta no inventário (sem Bancada).","Monte sua primeira Bancada de Criação com madeira + sucata.","Mate sua primeira praga."],
-    itens:[
-      { nome:"Pé de Cabra (loot ou craft)", eng:"Crowbar", img:"Images/Itens/Crowbar.webp", desc:"<strong>Pé de Cabra</strong> — ferramenta versátil usada pra forçar portas e caixotes trancados. Exemplo de texto: substitua por uma descrição real quando revisar." },
-      { nome:"Sucata Metálica", eng:"Scrap Metal", img:"Images/Itens/sucata-metal.webp", desc:"<strong>Sucata Metálica</strong> — material básico de crafting, usado em receitas de melhorias e reparos. Exemplo de texto: substitua por uma descrição real quando revisar." },
-      { nome:"Tábuas de Madeira", eng:"Wood Planks", img:"Images/Itens/wood-planks.webp", desc:"<strong>Tábuas de Madeira</strong> — recurso estrutural comum, aparece em receitas de construção. Exemplo de texto: substitua por uma descrição real quando revisar." },
-      { nome:"Sucata Plástica", eng:"Plastic Scrap", img:"Images/Itens/plastic-sucata.webp", desc:"<strong>Sucata Plástica</strong> — material leve usado em itens utilitários. Exemplo de texto: substitua por uma descrição real quando revisar." },
-    ],
+  id: "tutorial", name: "TUTORIAL — Chegada na Facility", nameEN: "Down Under", color: C.green, icon: "🔬",
+  ordem: "ETAPA 1", subtitulo: "Aprenda os controles. Mecânicas básicas. Impossível falhar.",
+  objetivos: ["Crafteie sua primeira ferramenta no inventário (sem Bancada).", "Monte sua primeira Bancada de Criação com madeira + sucata.", "Mate sua primeira praga e colete seus recursos."],
+  itens: [
+    { nome: "Pé de Cabra", eng: "Crowbar", img: "Images/Itens/Pédecabra.webp", desc: "<strong>Pé de Cabra</strong> — Ferramenta inicial versátil usada para forçar portas e caixotes trancados, além de servir como arma corpo a corpo." },
+    { nome: "Sucata Metálica", eng: "Scrap Metal", img: "Images/Itens/Sucatametálica.webp", desc: "<strong>Sucata Metálica</strong> — Material básico de crafting, obtido ao quebrar móveis e estruturas metálicas." },
+    { nome: "Tábuas de Madeira", eng: "Wood Planks", img: "Images/Itens/Tábuasdemadeira.webp", desc: "<strong>Tábuas de Madeira</strong> — Recurso estrutural obtido ao destruir caixotes e móveis de madeira, necessário para a Bancada." },
+    { nome: "Sucata Plástica", eng: "Plastic Scrap", img: "Images/Itens/Sucataplástica.webp", desc: "<strong>Sucata Plástica</strong> — Material leve retirado de garrafas, recipientes e eletrônicos destruídos." },
+    { nome: "Pano", eng: "Cloth Scrap", img: "Images/Itens/Pano.webp", desc: "<strong>Pano</strong> — Coletado ao destruir sofás, cadeiras estofadas ou cortinas. Usado em curativos e itens de iluminação." },
+    { nome: "Vidro", eng: "Glass Scrap", img: "Images/Itens/Vidro.webp", desc: "<strong>Vidro</strong> — Obtido ao quebrar telas de computador, janelas e lâmpadas. Usado na confecção de visores e lanternas." },
+    { nome: "Sucata Eletrônica", eng: "Tech Scrap", img: "Images/Itens/Sucataeletrônica.webp", desc: "<strong>Sucata Eletrônica</strong> — Retirada do interior de computadores e equipamentos da facility para receitas tecnológicas." },
+    { nome: "Fio Elétrico", eng: "Wire", img: "Images/Itens/Fioelétrico.webp", desc: "<strong>Fio Elétrico</strong> — Encontrado ao destruir caixas elétricas e equipamentos eletrônicos." },
+    { nome: "Carne de Praga", eng: "Raw Pest Meat", img: "Images/Itens/Carnedepraga.png", desc: "<strong>Carne de Praga</strong> — Obtida ao derrotar e esfregar/limpar uma Praga. Deve ser cozida antes de consumir." },
+    { nome: "Cauda de Praga", eng: "Pest Tail", img: "Images/Itens/Caudadepraga.webp", desc: "<strong>Cauda de Praga</strong> — Recurso biológico obtido ao derrotar pragas. Usado em receitas de utilitários e biotecnologia." },
+    { nome: "Lança Improvisada", eng: "Makeshift Spear", img: "Images/Itens/Lançaimprovisada.webp", desc: "<strong>Lança Improvisada</strong> — Arma de combate inicial feita no inventário com bom alcance para manter distância das ameaças." },
+    { nome: "Lanterna Improvisada", eng: "Makeshift Flashlight", img: "Images/Itens/Lanternaimprovisada.webp", desc: "<strong>Lanterna Improvisada</strong> — Fonte de luz inicial que consome bateria, fundamental para os túneis e salas escuras." },
+    { nome: "Curativo Simples", eng: "Bandage", img: "Images/Itens/Curativosimples.webp", desc: "<strong>Curativo Simples</strong> — Criado no inventário com pano. Usado para estancar sangramentos e curar ferimentos leves." },
+    { nome: "Refrigerante Kizz-Cola", eng: "Kizz-Cola", img: "Images/Itens/Kizzcola.webp", desc: "<strong>Refrigerante Kizz-Cola</strong> — Consumível encontrado em máquinas e mesas. Sacia a sede e fornece um pequeno impulso de energia." },
+  ],
     npcs:[], portais:[],
     alertas:[],
     antes:"Saia do tutorial com uma Bancada de Criação montada e materiais básicos no inventário.",
@@ -1740,18 +1793,18 @@ const sectors = [
       "Obj. Final-3: Complete a história principal.",
     ],
     itens:[
-      { nome:"Mug of Coffee", img:"Images/Itens/mug-of-coffee.png", desc:"OBRIGATÓRIO no inventário para o Coworker" },
+      { nome:"Mug of Coffee", img:"Images/Itens/mug-of-coffee.png", desc:"OBRIGATÓRIO no inventário para o Colega de trabalho" },
       { nome:"Proteção contra frio", img:"Images/Itens/protecao-contra-frio.png", desc:"setor congelado" },
     ],
     npcs:[
-      "O Coworker — aparece sem aviso. TENHA CAFÉ no inventário.",
+      "O Colega de trabalho — aparece sem aviso. TENHA CAFÉ no inventário.",
       "Leyak IS-0091 — em Containment Unit: 91. Explore cada sala.",
     ],
     portais:[
       "Albatross — destino final da quest da Kylie Muir.",
     ],
     alertas:[
-      "⚠️ CRÍTICO: Mug of Coffee no inventário — Coworker aparece sem aviso.",
+      "⚠️ CRÍTICO: Mug of Coffee no inventário — Colega de trabalho aparece sem aviso.",
       "Containment Unit IS-0091: explore CADA sala do Residencial.",
       "Confirme: todos os portais, sidequests e grind de kills completos.",
       "Última chance para troféus pendentes antes do final da história.",
@@ -1759,7 +1812,7 @@ const sectors = [
     antes:"CHECKLIST FINAL: Café? Leyak contido? Kylie em Albatross? Todos os portais? 50 Ordem + 100 Gatekeepers? Captura Rara? 4 tipos de caixas?",
     trophies:[
       { id:"endofearth", name:"Fim da Terra",           eng:"End of the Earth",          type:"silver",   icon:"🌍", tag:"✦ AUTOMÁTICO", tagColor:C.green,   how:"Complete o Setor Residencial. Automático.", note:null },
-      { id:"coffee",     name:"Café no Buraco do Café", eng:"Coffee in the Coffee Hole", type:"bronze",   icon:"☕", tag:"⚠️ CRÍTICO",   tagColor:C.red,     how:"Dê uma Mug of Coffee ao Coworker quando encontrá-lo. Aparece sem aviso.", note:"SEMPRE café no inventário desde o Manufacturing." },
+      { id:"coffee",     name:"Café no Buraco do Café", eng:"Coffee in the Coffee Hole", type:"bronze",   icon:"☕", tag:"⚠️ CRÍTICO",   tagColor:C.red,     how:"Dê uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Aparece sem aviso.", note:"SEMPRE café no inventário desde o Manufacturing." },
       { id:"friendlyp",  name:"Presença Amigável",      eng:"Friendly Presence",         type:"bronze",   icon:"👁️", tag:"◆ ATENÇÃO",    tagColor:C.amber,   how:"Interaja com a Containment Unit: 91 para conter o Leyak.", note:"Explore cada quarto do Residencial." },
       { id:"puresci",    name:"PLATINA — Ciência Pura", eng:"Apocalypse Now",            type:"platinum", icon:"🏆", tag:"✦ AUTOMÁTICO", tagColor:C.platinumLt, how:"Complete a história principal. Automático ao finalizar.", note:null },
     ]
@@ -1773,7 +1826,7 @@ const progOrder = [
   { n:"04", s:"Setor Segurança + RISE",         d:"Survive the Night, ⚠️ portal RISE (orbe azul perto da entrada), Accidents Happen (se cague no local errado)" },
   { n:"05", s:"Hidroplanta",                       d:"⚠️ Uniforme elevador, ⚠️ Kylie Muir (Chip Neural), 4 Reatores" },
   { n:"06", s:"Reatores + Mundos Portais",         d:"Jotun boss, continuar grind 100 Gatekeepers, todos os portais" },
-  { n:"07", s:"Setor Residencial + Final",         d:"⚠️ Café ao Coworker, Leyak, Rise Facility, história completa" },
+  { n:"07", s:"Setor Residencial + Final",         d:"⚠️ Café ao Colega de trabalho, Leyak, Rise Facility, história completa" },
 ];
 
 const grindData = [
@@ -1788,39 +1841,374 @@ const checklistItems = [
   "Construí o Net Launcher ANTES de matar todos os Lab Rats?",
   "Usei o Chip Neural Hiperdenso no cérebro de Kylie na Robótica da Hydroplant?",
   "Examinei o corpo no elevador subaquático da Robótica (uniforme Hydroplant)?",
-  "Tenho uma Mug of Coffee quando encontrar o Coworker?",
+  "Tenho uma Mug of Coffee quando encontrar o Colega de trabalho?",
   "Entrei no portal RISE (orbe azul perto da entrada do Setor Segurança, atrás do elevador gigante)?",
   "Estou pescando regularmente para tentar Captura Rara?",
   "Abri todos os tipos de caixas especiais (Cacophonous, Ornate, Security, Runic)?",
-  "Interagi com todos os NPCs encontrados (Coworker, Kylie, Leyak, NPCs de sidequests)?",
+  "Interagi com todos os NPCs encontrados (Colega de trabalho, Kylie, Leyak, NPCs de sidequests)?",
   "Tentei o Privada-Portal com barra de necessidade vermelha para Some Distant Shore?",
 ];
 
 // ── NPCs DATA ──
 const npcsData = [
   {
+    name: "Dr. Ulrich Thule",
+    sector: "OFFICE SECTOR",
+    sectorColor: C.green,
+    icon: "🔬",
+    risk: "BAIXO",
+    riskColor: C.green,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. Ulrich Thule é o primeiro NPC encontrado após o início do jogo e participa diretamente da progressão inicial.",
+    steps: [
+      { n:"1", t:"Chegue à cafeteria do Office Sector." },
+      { n:"2", t:"Fale com Dr. Ulrich Thule para abrir a porta da cafeteria." },
+      { n:"3", t:"Continue a progressão da história e retorne a Thule quando necessário." },
+    ],
+    warn: "É o primeiro NPC importante da progressão e também o primeiro personagem registrado no Compendium.",
+    reward: "Progressão inicial + entrada no Compendium."
+  },
+  {
+    name: "Warren Bunning",
+    sector: "OFFICE SECTOR",
+    sectorColor: C.green,
+    icon: "🛡️",
+    risk: "BAIXO",
+    riskColor: C.green,
+    trophy: null,
+    trophyType: null,
+    desc: "Warren Bunning é o Security Officer do Office Sector. Ele orienta o jogador sobre a evacuação e também funciona como comerciante.",
+    steps: [
+      { n:"1", t:"Encontre Warren no posto de segurança da praça." },
+      { n:"2", t:"Fale com Warren para receber a orientação de evacuar o Office Sector através de Manufacturing West." },
+      { n:"3", t:"Continue a progressão e utilize Warren como comerciante quando necessário." },
+    ],
+    warn: "Warren é necessário para avançar para a próxima etapa da evacuação.",
+    reward: "Progressão da história + comércio."
+  },
+  {
+    name: "Grayson Isling",
+    sector: "OFFICE SECTOR",
+    sectorColor: C.green,
+    icon: "🧰",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Grayson Isling é um Materials Engineer encontrado ferido diante da passagem para Manufacturing West. Ele fornece informações sobre as Power Cells e posteriormente atua como comerciante itinerante.",
+    steps: [
+      { n:"1", t:"Encontre Grayson ferido próximo à passagem para Manufacturing West." },
+      { n:"2", t:"Trate seus ferimentos usando um curativo." },
+      { n:"3", t:"Converse com Grayson para descobrir quem pode saber sobre as Power Cells." },
+      { n:"4", t:"Continue a progressão; Grayson posteriormente pode aparecer como comerciante itinerante." },
+    ],
+    warn: "Não confunda as aparições posteriores de Grayson com NPCs diferentes.",
+    reward: "Progressão das Power Cells + comércio de Grayson."
+  },
+  {
+    name: "Dr. Archie Roberts",
+    sector: "OFFICE SECTOR / SILO 3",
+    sectorColor: C.green,
+    icon: "🔐",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. Archie Roberts é um pesquisador escondido no Office Sector e está ligado à sequência necessária para abrir Silo 3 e recuperar as Power Cells.",
+    steps: [
+      { n:"1", t:"Avance pela progressão do Office Sector até descobrir que as Power Cells foram levadas para Silo 3." },
+      { n:"2", t:"Encontre Archie Roberts." },
+      { n:"3", t:"Converse com Archie para avançar o objetivo de abrir Silo 3." },
+      { n:"4", t:"Entre no silo e continue a sequência até recuperar as Power Cells em Flathill." },
+    ],
+    warn: "Archie é uma das alternativas para avançar a etapa de Silo 3.",
+    reward: "Progressão de Silo 3 + Power Cells."
+  },
+  {
+    name: "Dr. Regal",
+    sector: "OFFICE SECTOR / SILO 3",
+    sectorColor: C.green,
+    icon: "⚡",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. Regal trabalhou com as Power Cells e participa da sequência de Silo 3. Ele pode ser utilizado como alternativa a Archie Roberts para avançar essa etapa.",
+    steps: [
+      { n:"1", t:"Avance até a etapa relacionada às Power Cells de Silo 3." },
+      { n:"2", t:"Localize Dr. Regal." },
+      { n:"3", t:"Converse com Regal para avançar o objetivo de abrir Silo 3." },
+      { n:"4", t:"Continue até acessar Flathill e recuperar as Power Cells." },
+    ],
+    warn: "Archie Roberts ou Regal podem cumprir a função de avançar essa etapa. Não é necessário tratar os dois como objetivos independentes.",
+    reward: "Progressão de Silo 3 + Power Cells."
+  },
+  {
+    name: "The Blacksmith",
+    sector: "MANUFACTURING WEST",
+    sectorColor: C.amber,
+    icon: "⚒️",
+    risk: "BAIXO",
+    riskColor: C.green,
+    trophy: null,
+    trophyType: null,
+    desc: "The Blacksmith é o especialista da F.O.R.G.E. em Manufacturing West. Ele é fundamental para a reparação do Synchrotron e também funciona como comerciante.",
+    steps: [
+      { n:"1", t:"Entre em Manufacturing West usando uma Power Cell." },
+      { n:"2", t:"Localize a forja do Blacksmith." },
+      { n:"3", t:"Converse com ele para descobrir como chegar ao Surface Tunnel." },
+      { n:"4", t:"Obtenha os componentes necessários para reparar os Electron Pumps." },
+      { n:"5", t:"Retorne ao Blacksmith e continue a sequência do Synchrotron." },
+    ],
+    warn: "O Blacksmith é essencial para a progressão de Manufacturing West.",
+    reward: "Progressão do Synchrotron + comércio."
+  },
+  {
+    name: "Kovak",
+    sector: "MANUFACTURING WEST",
+    sectorColor: C.amber,
+    icon: "⛏️",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Kovak é um engenheiro escondido em uma área de mineração de Manufacturing West. Ele fornece informações sobre o Surface Tunnel, os espiões e as portas de segurança.",
+    steps: [
+      { n:"1", t:"Explore as áreas de mineração de Manufacturing West." },
+      { n:"2", t:"Encontre Kovak escondido em um túnel próximo ao Surface Tunnel." },
+      { n:"3", t:"Converse com ele para obter informações sobre a rota de fuga." },
+    ],
+    warn: "Kovak é principalmente um NPC de informação e lore, mas seu diálogo gera uma entrada de Journal.",
+    reward: "Entrada de Journal + informações sobre o Surface Tunnel."
+  },
+  {
+    name: "Julia Montgomery",
+    sector: "MANUFACTURING WEST",
+    sectorColor: C.amber,
+    icon: "🔧",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Julia Montgomery é uma engenheira escondida sob a garagem de Manufacturing West. Ela revela que Frake possui um plano para escapar e direciona o jogador ao Blacksmith.",
+    steps: [
+      { n:"1", t:"Explore a região abaixo da garagem." },
+      { n:"2", t:"Encontre Julia Montgomery." },
+      { n:"3", t:"Converse com Julia para descobrir informações sobre Frake e o Blacksmith." },
+      { n:"4", t:"Continue a progressão em direção ao Blacksmith e Frake." },
+    ],
+    warn: "Julia é uma NPC de apoio à progressão e ao lore, sem troféu próprio.",
+    reward: "Entrada de Journal + informações sobre Frake."
+  },
+  {
+    name: "Dr. Sarah Frake",
+    sector: "MANUFACTURING WEST",
+    sectorColor: C.amber,
+    icon: "⚙️",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. Sarah Frake é a Head Engineer da GATE e possui papel central na sequência do Synchrotron.",
+    steps: [
+      { n:"1", t:"Avance pela sequência de Manufacturing West até localizar Frake." },
+      { n:"2", t:"Converse com Frake para descobrir como prosseguir." },
+      { n:"3", t:"Retorne ao Blacksmith para iniciar a reparação dos Electron Pumps." },
+      { n:"4", t:"Repare os três Electron Pumps e sobrecarregue o Synchrotron." },
+    ],
+    warn: "Frake é parte direta da progressão principal de Manufacturing West.",
+    reward: "Progressão do Synchrotron."
+  },
+  {
+    name: "Dr. Ulrich Thule / Abe Stern / Janet Ross",
+    sector: "CASCADE LABORATORIES",
+    sectorColor: C.cyan,
+    icon: "🧪",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Thule, Abe Stern e Janet Ross participam da sequência de Cascade Laboratories. A conversa com Abe e Janet permite avançar para o Inner Wing.",
+    steps: [
+      { n:"1", t:"Entre em Cascade Laboratories após ativar o Synchrotron." },
+      { n:"2", t:"Converse com Thule ou com Abe Stern e Janet Ross para avançar o acesso ao Inner Wing." },
+      { n:"3", t:"Continue a sequência até chegar ao Control Center." },
+    ],
+    warn: "Abe e Janet são registrados como personagens individuais no Compendium; esta entrada agrupada serve apenas para representar a etapa conjunta da quest.",
+    reward: "Progressão de Cascade Laboratories."
+  },
+  {
+    name: "Dr. A. Cahn",
+    sector: "CASCADE LABORATORIES",
+    sectorColor: C.cyan,
+    icon: "🧬",
+    risk: "ALTO",
+    riskColor: C.red,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. A. Cahn é um Senior Researcher encontrado no Containment Block Baird. Ele é um dos principais NPCs da progressão de Cascade Laboratories e continua relevante em setores posteriores.",
+    steps: [
+      { n:"1", t:"Encontre Cahn durante a progressão de Cascade Laboratories." },
+      { n:"2", t:"Converse com Cahn para descobrir como alcançar o Control Center." },
+      { n:"3", t:"Complete a sequência do Control Center e avance pela contenção." },
+      { n:"4", t:"Continue encontrando Cahn em etapas posteriores da história." },
+    ],
+    warn: "Cahn continua sendo importante depois de Cascade Laboratories, inclusive durante a sequência dos Reactors.",
+    reward: "Progressão principal da história."
+  },
+  {
+    name: "Jonas Conti",
+    sector: "HYDROPLANT",
+    sectorColor: C.cyan,
+    icon: "🛡️",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Jonas Conti é membro da Defense Team e um dos sobreviventes encontrados na Hydroplant. Ele participa diretamente do objetivo de encontrar sobreviventes na Electrical Station.",
+    steps: [
+      { n:"1", t:"Entre na Hydroplant após escapar do Security Sector." },
+      { n:"2", t:"Localize Jonas Conti na Electrical Station." },
+      { n:"3", t:"Converse com Jonas para iniciar a sequência dos sobreviventes e dos sistemas do spillway." },
+    ],
+    warn: "Jonas é o primeiro contato importante da progressão da Hydroplant.",
+    reward: "Progressão da Hydroplant."
+  },
+  {
+    name: "Elanor Newman",
+    sector: "HYDROPLANT",
+    sectorColor: C.cyan,
+    icon: "⚡",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Dr. Elanor Newman é uma Particle Physicist e a criadora do Dark Lens. Ela participa da sequência de reativação dos sistemas da Hydroplant.",
+    steps: [
+      { n:"1", t:"Avance pela Electrical Station após falar com Jonas." },
+      { n:"2", t:"Encontre Newman e os demais sobreviventes envolvidos na reativação do spillway." },
+      { n:"3", t:"Conclua os sistemas necessários para abrir o caminho para os Reactors." },
+    ],
+    warn: "Newman possui importância adicional para o lore por ser a criadora do Dark Lens.",
+    reward: "Progressão da Hydroplant + informações sobre o Dark Lens."
+  },
+  {
+    name: "Isaiah Deal",
+    sector: "HYDROPLANT",
+    sectorColor: C.cyan,
+    icon: "🏭",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Isaiah Deal é o Senior Plant Manager da Hydroplant e um dos sobreviventes envolvidos na recuperação dos sistemas da instalação.",
+    steps: [
+      { n:"1", t:"Encontre Isaiah na Electrical Station." },
+      { n:"2", t:"Converse com ele durante a sequência de reativação da Hydroplant." },
+      { n:"3", t:"Conclua os sistemas necessários para reabrir o spillway." },
+    ],
+    warn: "Isaiah faz parte da sequência coletiva de reativação da Hydroplant.",
+    reward: "Progressão da Hydroplant."
+  },
+  {
     name: "Kylie Muir",
-    sector: "HIDROPLANTA (Robótica)",
+    sector: "HYDROPLANT — ROBÓTICA",
     sectorColor: C.cyan,
     icon: "🤖",
     risk: "ALTO",
     riskColor: C.red,
     trophy: "Sonhos Elétricos (Electric Dreams)",
     trophyType: "bronze",
-    desc: "Kylie Muir é uma pesquisadora cujo cérebro foi preservado em um tanque na seção Robótica da Hydroplant. É uma das sidequests mais longas e complexas do jogo.",
+    desc: "Kylie Muir é uma personagem encontrada como cérebro preservado em um tanque na seção de Robótica da Hydroplant. Sua sequência envolve transferir sua consciência para um robô.",
     steps: [
-      { n:"1", t:"Encontre o tanque com o cérebro de Kylie na seção Robótica da Hydroplant." },
-      { n:"2", t:"Obtenha o Chip Neural Hiperdenso — item encontrado na Robótica. NÃO avance sem ele." },
-      { n:"3", t:"Use o Chip no tanque para extrair Kylie como um Trinket (item equipável)." },
-      { n:"4", t:"Equipe Kylie e leve-a até os Botanical Labs." },
-      { n:"5", t:"Nos Botanical Labs, insira Kylie em um Robô de Segurança disponível." },
-      { n:"6", t:"Leve o Robô de Segurança com Kylie até Albatross para concluir a quest." },
+      { n:"1", t:"Encontre o tanque contendo o cérebro de Kylie na seção de Robótica." },
+      { n:"2", t:"Obtenha o item necessário para retirar Kylie do tanque." },
+      { n:"3", t:"Extraia Kylie como Trinket e equipe-a." },
+      { n:"4", t:"Leve Kylie até os Botanical Labs." },
+      { n:"5", t:"Insira Kylie em um Robô de Segurança disponível." },
+      { n:"6", t:"Leve o robô até Albatross para concluir a sequência." },
     ],
-    warn: "Se avançar da Hydroplant sem o Chip Neural Hiperdenso, a quest fica inacessível. Explore completamente antes de sair.",
-    reward: "Troféu: Sonhos Elétricos (Electric Dreams) — Bronze"
+    warn: "Esta é uma sidequest independente da progressão principal, mas está diretamente relacionada ao troféu Electric Dreams.",
+    reward: "Troféu: Sonhos Elétricos (Electric Dreams) — Bronze."
   },
   {
-    name: "O Coworker",
+    name: "IS-0091 / Leyak",
+    sector: "RESIDENCE SECTOR",
+    sectorColor: C.green,
+    icon: "👁️",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: "Presença Amigável (Friendly Presence)",
+    trophyType: "bronze",
+    desc: "Leyak é uma entidade paranormal associada à unidade de contenção IS-0091. A interação com a entidade está relacionada ao troféu Friendly Presence.",
+    steps: [
+      { n:"1", t:"Chegue ao Residence Sector." },
+      { n:"2", t:"Localize a unidade de contenção identificada como IS-0091." },
+      { n:"3", t:"Interaja com a unidade para realizar a ação necessária para o troféu." },
+    ],
+    warn: "Não confunda Leyak com um NPC humano tradicional; trata-se de uma entidade contida.",
+    reward: "Troféu: Presença Amigável (Friendly Presence) — Bronze."
+  },
+  {
+    name: "Hasta Tria",
+    sector: "RESIDENCE SECTOR",
+    sectorColor: C.green,
+    icon: "☀️",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Hasta Tria é uma personagem fundamental da progressão do Residence Sector. Ela orienta o jogador sobre o Sun Disk e a maneira de resistir ao frio extremo.",
+    steps: [
+      { n:"1", t:"Chegue ao Residence Sector através do Wayseeker Rift." },
+      { n:"2", t:"Encontre Hasta Tria." },
+      { n:"3", t:"Converse com Hasta para descobrir a localização do Sun Disk." },
+      { n:"4", t:"Entre no Praetorium e recupere o Sun Disk." },
+      { n:"5", t:"Use o Sun Disk para continuar a exploração do Residence Sector." },
+    ],
+    warn: "Hasta Tria é essencial para a progressão do Residence Sector.",
+    reward: "Progressão do Residence Sector + acesso ao Sun Disk."
+  },
+  {
+    name: "Dr. Abe Stern e Dr. Janet Ross",
+    sector: "RESIDENCE SECTOR",
+    sectorColor: C.green,
+    icon: "🔬",
+    risk: "MÉDIO",
+    riskColor: C.amber,
+    trophy: null,
+    trophyType: null,
+    desc: "Abe Stern e Janet Ross reaparecem na Residence Sector e são necessários para avançar a sequência relacionada à tempestade e ao acesso às áreas superiores.",
+    steps: [
+      { n:"1", t:"Avance pelo Residence Sector após obter o Sun Disk." },
+      { n:"2", t:"Encontre Abe Stern e Janet Ross." },
+      { n:"3", t:"Converse com os dois para avançar o objetivo de suprimir a tempestade." },
+      { n:"4", t:"Continue a sequência até alcançar o Dark Lens." },
+    ],
+    warn: "São os mesmos personagens encontrados anteriormente; não devem ser contabilizados novamente como NPCs diferentes.",
+    reward: "Progressão do Residence Sector."
+  },
+  {
+    name: "Niketas",
+    sector: "CANAAN — PORTAL WORLD",
+    sectorColor: C.purple,
+    icon: "⚔️",
+    risk: "ALTO",
+    riskColor: C.red,
+    trophy: "Peso Retirado dos Ombros (A Lode Off My Mind)",
+    trophyType: "bronze",
+    desc: "Niketas é o líder de Canaan e está relacionado à exploração desse Portal World e ao troféu A Lode Off My Mind.",
+    steps: [
+      { n:"1", t:"Acesse Canaan através do Portal World correspondente." },
+      { n:"2", t:"Explore Canaan até encontrar Niketas." },
+      { n:"3", t:"Derrote Niketas para concluir a condição do troféu." },
+    ],
+    warn: "Canaan é um Portal World e sua visita não segue a mesma ordem linear dos setores principais.",
+    reward: "Troféu: Peso Retirado dos Ombros (A Lode Off My Mind) — Bronze."
+  },
+  {
+    name: "O Colega de trabalho",
     sector: "MÚLTIPLOS SETORES",
     sectorColor: C.green,
     icon: "☕",
@@ -1828,69 +2216,14 @@ const npcsData = [
     riskColor: C.amber,
     trophy: "Café no Buraco do Café (Coffee in the Coffee Hole)",
     trophyType: "bronze",
-    desc: "O Coworker é um NPC misterioso e errante que aparece em vários pontos da Facility. Ele tem aparições surpresa — você deve estar preparado quando ele aparecer.",
+    desc: "O Colega de trabalho é um NPC errante que pode aparecer em diferentes pontos da Facility. Sua localização não segue uma ordem linear de progressão.",
     steps: [
-      { n:"1", t:"Construa ou encontre uma Mug of Coffee. Mantenha pelo menos 1 sempre no inventário após o Manufacturing." },
-      { n:"2", t:"Encontre o Coworker — ele aparece em locais variados (Escritório, Residential, outros setores)." },
-      { n:"3", t:"Interaja com ele e ofereça a Mug of Coffee quando a opção aparecer." },
+      { n:"1", t:"Tenha uma Mug of Coffee disponível." },
+      { n:"2", t:"Encontre o Colega de trabalho quando ele aparecer." },
+      { n:"3", t:"Interaja com ele e ofereça o café quando a interação estiver disponível." },
     ],
-    warn: "Se encontrar o Coworker sem café no inventário, a interação do troféu não dispara. Prepare-se com antecedência.",
-    reward: "Troféu: Café no Buraco do Café — Bronze"
-  },
-  {
-    name: "IS-0091 / Leyak",
-    sector: "SETOR RESIDENCIAL",
-    sectorColor: C.green,
-    icon: "👁️",
-    risk: "MÉDIO",
-    riskColor: C.amber,
-    trophy: "Presença Amigável (Friendly Presence)",
-    trophyType: "bronze",
-    desc: "O Leyak é uma entidade paranormal contida na Unidade de Contenção IS-0091 no Setor Residencial. A interação é simples mas requer que você ativamente use a containment unit.",
-    steps: [
-      { n:"1", t:"Chegue ao Setor Residencial." },
-      { n:"2", t:"Localize a Containment Unit: 91 — procure pela etiqueta IS-0091 na área." },
-      { n:"3", t:"Interaja com a unidade de contenção para 'conter' o Leyak e ativar o troféu." },
-    ],
-    warn: "A unidade de contenção pode ser facilmente ignorada se você correr pelo setor. Explore cada sala do Residencial.",
-    reward: "Troféu: Presença Amigável — Bronze"
-  },
-  {
-    name: "Niketas (Priest do Canaan)",
-    sector: "CANAAN (Portal World)",
-    sectorColor: C.purple,
-    icon: "⚔️",
-    risk: "BAIXO",
-    riskColor: C.green,
-    trophy: "Peso Retirado dos Ombros (A Lode Off My Mind)",
-    trophyType: "bronze",
-    desc: "Niketas é o líder do culto que habita o mundo portal Canaan. Para obter o troféu, você precisa derrotá-lo.",
-    steps: [
-      { n:"1", t:"Acesse o mundo portal Canaan (disponível nos Mundos Portais avançados)." },
-      { n:"2", t:"Explore o mundo até encontrar Niketas — o Priest líder do culto." },
-      { n:"3", t:"Derrote Niketas. O troféu ativa imediatamente após a morte dele." },
-    ],
-    warn: "Canaan é um mundo portal — certifique-se de acessá-lo e não pular o portal pensando ser opcional.",
-    reward: "Troféu: Peso Retirado dos Ombros — Bronze"
-  },
-  {
-    name: "NPCs Gerais da Facility",
-    sector: "TODOS OS SETORES",
-    sectorColor: C.steel,
-    icon: "👤",
-    risk: "BAIXO",
-    riskColor: C.green,
-    trophy: "Impacto indireto em múltiplos troféus",
-    trophyType: null,
-    desc: "Além dos NPCs com troféus específicos, existem sobreviventes e pesquisadores espalhados que oferecem itens, dicas e contexto de lore. Interagir com eles pode desbloquear diálogos únicos e ajudar na localização de itens essenciais para a platina.",
-    steps: [
-      { n:"▸", t:"Interaja com TODOS os NPCs encontrados, mesmo os que parecem não ter função imediata." },
-      { n:"▸", t:"Alguns NPCs têm diálogos em múltiplas etapas — retorne após avançar para novas falas." },
-      { n:"▸", t:"NPCs sobreviventes podem dar pistas sobre localizações de caixas especiais e eventos." },
-      { n:"▸", t:"Em co-op: cada jogador pode interagir independentemente — garanta que todos falem com os NPCs críticos." },
-    ],
-    warn: null,
-    reward: "Nenhum troféu direto, mas essencial para contexto e itens secretos."
+    warn: "Como ele é um NPC errante, não é possível colocá-lo em uma posição exata da ordem principal dos setores.",
+    reward: "Troféu: Café no Buraco do Café (Coffee in the Coffee Hole) — Bronze."
   },
 ];
 
@@ -1947,8 +2280,8 @@ const mapsData = [
   {
     icon:"🏠", name:"SETOR RESIDENCIAL", order:"Área 07 (Final)",
     color: C.green,
-    desc:"Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Coworker. Prepare-se com café e itens antes de entrar.",
-    tags:[{l:"Coworker — Café!", c:C.red},{l:"Leyak", c:C.amber},{l:"Final do Jogo", c:C.green}]
+    desc:"Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar.",
+    tags:[{l:"Colega de trabalho — Café!", c:C.red},{l:"Leyak", c:C.amber},{l:"Final do Jogo", c:C.green}]
   },
 ];
 
@@ -2075,7 +2408,7 @@ const tipsCats = [
     icon:"💡", title:"Dicas da Comunidade — Steam & Reddit",
     tips:[
       "Não venda nem descarte o Security Keycard encontrado cedo — ele abre Security Crates necessários para troféu.",
-      "O Coworker pode aparecer em locais aleatórios a cada visita — retorne a áreas antigas periodicamente.",
+      "O Colega de trabalho pode aparecer em locais aleatórios a cada visita — retorne a áreas antigas periodicamente.",
       "Backtrack frequentemente: algumas salas só abrem com Keypad Hacker de nível maior ou itens específicos obtidos depois.",
       "Bionic Legs (encontradas após o Escritório): não quebram com quedas de altura e aumentam velocidade de sprint. Vale muito o grind para obter.",
       "Vacuum: quebra múltiplos objetos simultaneamente e mais rápido que faca ou martelo — ótimo para farming de materiais.",
@@ -2482,7 +2815,7 @@ const allMissables = [
   { name:"Micélio sobre o Concílio",   risk:"ALTO",  c:C.red,   icon:"🍄", tip:"Mushroom Peccary Skull nos Mycofields (Laboratórios Cascata). Não saia do portal sem o Skull — único local onde dropa." },
   { name:"Seguindo o Fluxo",           risk:"ALTO",  c:C.red,   icon:"💧", tip:"Uniforme no elevador subaquático da seção Robótica da Hydroplant. Examine o corpo antes de subir o elevador." },
   { name:"Sonhos Elétricos (Kylie)",   risk:"ALTO",  c:C.red,   icon:"🤖", tip:"Use o Chip Neural Hiperdenso no tanque de Kylie (Robótica da Hydroplant) ANTES de sair. Quest em 5 etapas — impossível retomar sem o chip." },
-  { name:"Café no Buraco do Café",     risk:"MÉDIO", c:C.amber, icon:"☕", tip:"Tenha sempre uma Mug of Coffee no inventário desde o Manufacturing. O Coworker aparece sem aviso." },
+  { name:"Café no Buraco do Café",     risk:"MÉDIO", c:C.amber, icon:"☕", tip:"Tenha sempre uma Mug of Coffee no inventário desde o Manufacturing. O Colega de trabalho aparece sem aviso." },
   { name:"A Grande Maçã (RISE)",       risk:"MÉDIO", c:C.amber, icon:"🗽", tip:"Portal RISE = orbe azul atrás do elevador gigante, perto da ENTRADA do Setor Segurança. NÃO fica no Residencial." },
   { name:"Grayson (Trader)",           risk:"MÉDIO", c:C.amber, icon:"🩹", tip:"Cure Grayson com uma Bandage quando encontrá-lo ferido perto do forklift no Manufacturing. Sem isso ele nunca se torna trader." },
   { name:"Captura Rara",               risk:"BAIXO", c:C.green, icon:"🎣", tip:"RNG puro. Pesque perto de portais ativos (Portal Fish). Comece cedo e pesque em toda água encontrada." },
@@ -2534,43 +2867,40 @@ checklistItems.forEach((c, i) => {
 
 // ── NPCs ──
 const npcsContainer = document.getElementById('npcs-container');
+npcsContainer.className = 'npc-dossier-grid';
 npcsData.forEach((npc, i) => {
-  const item = document.createElement('div');
-  item.className = 'npc-item';
+  const card = document.createElement('div');
+  card.className = 'npc-dossier-card';
   const tsLabel = npc.trophyType ? (typeS[npc.trophyType] || typeS.bronze) : null;
+  const slug = npc.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const stepsHtml = npc.steps.map(s =>
-    `<div class="npc-step"><span class="npc-step-num">[${s.n}]</span><span class="npc-step-text">${s.t}</span></div>`
+    `<li class="npc-dossier-step">${s.t}</li>`
   ).join('');
-  item.innerHTML = `
-    <button class="npc-btn" id="npcbtn-${i}" onclick="toggleNpc(${i})">
-      <span class="npc-icon">${npc.icon}</span>
-      <div style="flex:1">
-        <div class="npc-name">${npc.name}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;align-items:center">
-          <span class="npc-sector-tag">${npc.sector}</span>
-          <span class="npc-risk-badge" style="color:${npc.riskColor};border-color:${npc.riskColor}44;background:${npc.riskColor}18">RISCO: ${npc.risk}</span>
-          ${tsLabel ? `<span class="trophy-type-badge" style="background:${tsLabel.bg};border-color:${tsLabel.border};color:${tsLabel.text}">${tsLabel.label}</span>` : ''}
-        </div>
+  card.innerHTML = `
+    <div class="npc-dossier-header">
+      <span class="npc-dossier-location" style="color:${npc.sectorColor}">📍 ${npc.sector}</span>
+      <span class="npc-dossier-status" style="color:${npc.riskColor};border:1px solid ${npc.riskColor}44;background:${npc.riskColor}18">RISCO: ${npc.risk}</span>
+    </div>
+    <div class="npc-dossier-imgbox">
+      <img src="Images/NPCs/${slug}.webp" alt="${npc.name}" onerror="this.parentElement.innerHTML='<span class=\\'npc-dossier-emoji\\'>${npc.icon}</span>'">
+    </div>
+    <div class="npc-dossier-body">
+      <div class="npc-dossier-name">${npc.name}</div>
+      <div class="npc-dossier-trophy">
+        ${tsLabel ? `<span class="trophy-type-badge" style="background:${tsLabel.bg};border-color:${tsLabel.border};color:${tsLabel.text}">${tsLabel.label}</span>` : ''}
+        ${npc.trophy}
       </div>
-      <span style="color:var(--textDim);flex-shrink:0" id="npcarr-${i}">▼</span>
-    </button>
-    <div class="npc-body" id="npcbody-${i}">
-      <div style="font-size:var(--fs-md);color:var(--text);margin-bottom:12px;line-height:1.7">${npc.desc}</div>
-      <div style="font-size:var(--fs-xs);color:var(--purple);letter-spacing:2px;margin-bottom:8px">// PASSOS DA SIDEQUEST</div>
-      ${stepsHtml}
-      ${npc.warn ? `<div class="npc-warn">⚠️ ${npc.warn}</div>` : ''}
-      <div class="npc-reward">✓ ${npc.reward}</div>
+      <div class="npc-dossier-desc">${npc.desc}</div>
+      <div class="npc-dossier-actions">
+        <h4>Passos da sidequest</h4>
+        <ul class="npc-dossier-steplist">${stepsHtml}</ul>
+        ${npc.warn ? `<div class="npc-dossier-warn">⚠️ ${npc.warn}</div>` : ''}
+        <div class="npc-dossier-reward">✓ ${npc.reward}</div>
+      </div>
     </div>
   `;
-  npcsContainer.appendChild(item);
+  npcsContainer.appendChild(card);
 });
-
-function toggleNpc(i) {
-  const body = document.getElementById(`npcbody-${i}`);
-  const arr = document.getElementById(`npcarr-${i}`);
-  body.classList.toggle('open');
-  arr.textContent = body.classList.contains('open') ? '▲' : '▼';
-}
 
 // ── MAPS ──
 const mapGrid = document.getElementById('map-grid');
@@ -2814,6 +3144,8 @@ function initTipsCardToggle(container) {
     const isOpen = painel.classList.contains('ativo');
 
     if (isOpen) {
+      painel.style.maxHeight = painel.scrollHeight + 'px';
+      painel.offsetHeight; // força reflow para travar esse valor como ponto de partida da animação
       painel.classList.remove('ativo');
       painel.style.maxHeight = '0px';
       icone.textContent = '+';
@@ -2821,6 +3153,15 @@ function initTipsCardToggle(container) {
       painel.classList.add('ativo');
       painel.style.maxHeight = painel.scrollHeight + 'px';
       icone.textContent = '−';
+
+      function destravarTeto(e) {
+          if (e.propertyName === 'max-height' && painel.classList.contains('ativo')) {
+          painel.style.maxHeight = 'none'; // <--- O teto em pixels cai aqui!
+          painel.removeEventListener('transitionend', destravarTeto); // Remove o ouvinte
+          }
+      }
+
+      painel.addEventListener('transitionend', destravarTeto);
     }
   });
 }
@@ -3187,7 +3528,7 @@ const trophyMaster = [
   { id:"electricdreams",name:"Sonhos Elétricos",               eng:"Electric Dreams",                type:"bronze",  icon:"🤖", sector:"💧 HIDROPLANTA",       risk:0, desc:"You took Kylie Muir to the end, as promised.", how:"Use o Chip Neural Hiperdenso no tanque com o cérebro de Kylie Muir (seção Robótica da Hydroplant) → obtenha Kylie (Trinket) → leve aos Botanical Labs → insira num Robô de Segurança → vá a Albatross.", note:"CRÍTICO: O Chip Neural Hiperdenso está na Robótica. Se avançar da Hydroplant sem usá-lo, a quest fica inacessível nessa jogatina." },
   { id:"engsuccess",  name:"Sucesso de Engenharia",            eng:"Engineering Success",            type:"bronze",  icon:"👷", sector:"🏭 MANUFACTURING",    risk:0, desc:"Collect the full Manufacturing uniform.", how:"Interaja com o corpo de um trabalhador morto na área Upper Shipping do Manufacturing West para coletar o uniforme completo.", note:"CRÍTICO: O corpo com o uniforme fica especificamente no Upper Shipping. Passe por essa área sem checar os corpos e o troféu fica para trás." },
   { id:"goWithFlow",  name:"Seguindo o Fluxo",                 eng:"Go With The Flow",               type:"bronze",  icon:"💧", sector:"💧 HIDROPLANTA",       risk:0, desc:"Collect the full Hydroplant uniform.", how:"Interaja com o trabalhador morto vestindo o uniforme no elevador subaquático da Hydroplant — especificamente na seção Robótica.", note:"CRÍTICO: O corpo fica no elevador subaquático. Passe pelo elevador sem checar o cadáver e o troféu some." },
-  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Coworker quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Coworker sem café, a interação do troféu não dispara." },
+  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Colega de trabalho sem café, a interação do troféu não dispara." },
   { id:"mushroomhelm",name:"Micélio sobre o Concílio",         eng:"Mycelium about the Consilium",   type:"bronze",  icon:"🍄", sector:"🔭 CASCADE LABS",      risk:0, desc:"Enjoy the dreams of the Mycofields.", how:"Crafteie e equipe o Capacete de Cogumelo. Receita: 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Skull dropa dos Mushroom Peccaries nos Mycofields.", note:"CRÍTICO: O Peccary Skull só existe nos Mycofields. Não saia desse portal sem ele — voltar é custoso." },
 
   // ─── ATENÇÃO (método específico, timing ou RNG) ───
@@ -3391,6 +3732,13 @@ function switchTab(id, btn) {
   if (id === 'trophylist') buildTrophyList();
 }
 
+// Clique na logo: volta pra aba inicial (Visão Geral) e rola a página pro topo.
+// Reaproveita switchTab em vez de duplicar a lógica de troca de aba.
+function goHome() {
+  switchTab('overview', document.querySelector('.tab-btn'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ══ TRADERS DATA ══
 const tradersData = [
   { name:"Warren Bunning",   icon:"🔫", type:"FIXO",            typeColor:C.green,  sector:"🏢 Escritório — Plaza perto da Cafeteria",                                   unlock:"Disponível desde o início.",                                                                                                       tip:"Visite frequentemente — inventário atualiza com a progressão. Principal fonte de Gun Repair Kits.",                        items:["Light Gun Repair Kit","Kit de Reparo de Arma Intermediário","Ammo variada","Night Essence → Magnetic Alloy","GATE Keys"] },
@@ -3520,7 +3868,7 @@ const entitiesData = [
   { name:"Robô de Contenção",  eng:"Containment Bot", icon:"🔒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"Lança (Spear)",          immune:"Veneno",        loot:"CPU Desbloqueada, bebidas raras",                           tip:"Vulnerável a armas de longo alcance. Dropa CPUs e bebidas especiais raras." },
   { name:"Gatekeeper",         eng:"Gatekeeper",      icon:"💀", type:"ROBÔ",      typeColor:C.cyan,  sector:"Reatores+",           threat:5, weak:"Holy, EMP",              immune:"Físico leve",   loot:"Loot do Gatekeeper, Liga Magnética",                        tip:"⚠️ GRIND: 100 kills para Ragnarök. Holy damage ignora escudo pessoal hardlight." },
   { name:"Leyak (IS-0091)",    eng:"Leyak (IS-0091)", icon:"👁️", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Residencial",   threat:4, weak:"X-Ray",                 immune:"Físico",        loot:"Essência de Leyak",                                         tip:"X-Ray o repele e dropa Essência. Interaja com Unidade de Contenção para troféu Presença Amigável." },
-  { name:"Colega de Trabalho", eng:"Coworker",        icon:"🕴️", type:"ENTIDADE",  typeColor:C.purple,sector:"Todos (noite)",       threat:0, weak:"—",                     immune:"—",             loot:"Item de escritório aleatório",                              tip:"PASSIVO. Dê qualquer consumível e ele troca por item de escritório. Café = troféu." },
+  { name:"Colega de Trabalho", eng:"Colega de trabalho",        icon:"🕴️", type:"ENTIDADE",  typeColor:C.purple,sector:"Todos (noite)",       threat:0, weak:"—",                     immune:"—",             loot:"Item de escritório aleatório",                              tip:"PASSIVO. Dê qualquer consumível e ele troca por item de escritório. Café = troféu." },
 ];
 let entityFilter='TODOS';
 function renderEntities(){
