@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: 'Burkhan';
@@ -367,7 +368,7 @@
     cursor: pointer;
     font-family: inherit;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     color: var(--text);
     transition: background 0.15s;
@@ -375,7 +376,13 @@
   .miss-btn:hover { background: var(--bgSection); }
   .miss-name { font-size: var(--fs-lg); }
   .risk-badge { font-size: var(--fs-2xs); padding: 1px 7px; border: 1px solid; letter-spacing: 1px; }
-  .miss-body { font-family: var(--font-mono); border: 1px solid; border-top: none; padding: 12px 14px; font-size: var(--fs-md); color: #5CFF5C; font-weight: 700; line-height: 1.7; display: none; }
+  .rarity-badge { font-size: var(--fs-2xs); padding: 1px 7px; border: 1px solid var(--border); background: var(--bgSection); color: var(--textDim); letter-spacing: 0.5px; }
+  .rarity-badge.rarity-na { color: var(--textMuted); font-style: italic; }
+  .miss-thumb-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .miss-thumb { width: 52px; height: 52px; object-fit: contain; border-radius: 3px; }
+  .miss-thumb-fallback { display: none; align-items: center; justify-content: center; width: 52px; height: 52px; font-size: var(--fs-3xl); }
+  .miss-desc { font-size: var(--fs-sm); color: var(--text); line-height: 1.5; }
+  .miss-body { font-family: var(--font-mono); border: 1px solid; border-top: none; padding: 12px 14px; font-size: var(--fs-md); color: var(--text); font-weight: 400; line-height: 1.8; display: none; }
   .miss-body.open { display: block; }
 
   .checklist-box { background: var(--bgCard); border: 1px solid var(--border); padding: 16px; margin-top: 14px; }
@@ -472,9 +479,9 @@
   .tlist-eng { font-size: var(--fs-xs); color: var(--textMuted); font-style: italic; }
   .tlist-sector-tag { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid; letter-spacing: 1px; margin-top: 2px; display: inline-block; }
   .tlist-arrow { color: var(--textMuted); font-size: var(--fs-md); flex-shrink: 0; }
-  .tlist-body { border: 1px solid; border-top: none; padding: 10px 14px; font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; display: none; }
+  .tlist-body { border: 1px solid; border-top: none; padding: 12px 14px; font-size: var(--fs-md); color: var(--text); line-height: 1.8; display: none; }
   .tlist-body.open { display: block; }
-  .tlist-note { color: var(--amber); margin-top: 6px; }
+  .tlist-note { color: var(--amber); margin-top: 8px; padding: 8px 10px; background: rgba(224,160,32,0.08); border: 1px solid rgba(224,160,32,0.25); line-height: 1.6; }
   .tlist-links { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
   .tlist-links-title { font-size: var(--fs-2xs); color: var(--green); letter-spacing: 2px; margin-bottom: 5px; }
   .tlist-link { font-size: var(--fs-xs); display: block; color: var(--green); text-decoration: none; margin-bottom: 3px; }
@@ -557,6 +564,80 @@
   .npc-dossier-reward { margin-top: 10px; padding: 8px 10px; background: rgba(0,224,96,0.05); border: 1px solid rgba(0,224,96,0.15); font-size: var(--fs-sm); color: var(--green); }
   .npc-source-box { margin-top: 14px; background: var(--bgCard); border: 1px solid var(--borderGn); padding: 12px; }
 
+  /* ── NPC CIRCLES (Passo a Passo — "NPCs Encontrados") ── */
+  .npc-step-list { display: flex; flex-wrap: wrap; gap: 14px; }
+  .npc-step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--bgSection);
+    border: 2px solid rgba(160,96,224,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-2xl);
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .npc-step-circle:active { transform: scale(0.94); }
+  .npc-step-circle:hover { border-color: var(--purple); }
+  .npc-step-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── NPC POPUP (modal) ── */
+  .npc-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .npc-popup-overlay.open { display: flex; }
+  .npc-popup-box {
+    position: relative;
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--purple);
+    border-radius: 12px;
+    padding: 28px 22px 22px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+  }
+  .npc-popup-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--textMuted);
+    font-size: var(--fs-lg);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 1;
+  }
+  .npc-popup-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 14px;
+    background: var(--bgSection);
+    border: 2px solid var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-6xl);
+  }
+  .npc-popup-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .npc-popup-name { font-size: var(--fs-lg); font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .npc-popup-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.6; }
+
+
   /* ── MAPAS PANEL ── */
   .map-intro { background: var(--bgCard); border: 1px solid var(--borderGn); border-left: 3px solid var(--cyan); padding: 16px; margin-bottom: 18px; }
   .map-intro-title { font-size: var(--fs-xs); color: var(--cyan); letter-spacing: 3px; margin-bottom: 8px; }
@@ -606,6 +687,7 @@
     margin-bottom: 20px;
   }
   .tips-cat-imgbox img { width:100%; height:100%; object-fit:cover; }
+  .tips-cat-imgbox.icon-mode img { width: 68px; height: 68px; object-fit: contain; }
   .tips-cat-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
@@ -789,6 +871,149 @@
   .weapon-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.5; }
   .weapon-tip { font-size: var(--fs-xs); color: var(--green); margin-top: 4px; }
 
+  /* ── ENTITIES: GATE TERMINAL CARDS ── */
+  #panel-entities {
+    --gt-cyan: #00f3ff;
+    --gt-amber: #ffb700;
+    --gt-red: #ff2a2a;
+    --gt-purple: #bb86fc;
+    --gt-bg-dark: #05070a;
+    --gt-bg-card: #0a0d14;
+    --gt-bg-head: #101520;
+    --gt-text-muted: #8da4c4;
+    --gt-text-list: #d1d5db;
+    --gt-loot-bg: #06080d;
+    --gt-loot-border: #1e293b;
+    --gt-loot-item-bg: #111622;
+    --gt-loot-item-border: #2a354d;
+  }
+  #entities-list { display: flex; flex-wrap: wrap; gap: 20px; }
+  #panel-entities .gate-terminal {
+    font-family: 'Share Tech Mono', monospace;
+    width: 390px;
+    max-width: 100%;
+    background: var(--gt-bg-card);
+    border: 2px solid var(--gt-cyan);
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+  }
+  #panel-entities .gate-terminal::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  #panel-entities .hazard-stripe {
+    height: 8px;
+    background: repeating-linear-gradient(-45deg, var(--gt-amber), var(--gt-amber) 10px, #111 10px, #111 20px);
+  }
+  #panel-entities .terminal-header {
+    background: var(--gt-bg-head);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gt-cyan);
+    font-size: var(--fs-2xs);
+    color: var(--gt-text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  #panel-entities .status-led {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--gt-red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--gt-red);
+    animation: gtBlink 1.2s infinite;
+    margin-right: 5px;
+  }
+  @keyframes gtBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  #panel-entities .holo-chamber {
+    width: 100%;
+    height: 200px;
+    background:
+      radial-gradient(circle, rgba(0, 243, 255, 0.12) 0%, rgba(5, 7, 10, 0.9) 80%),
+      linear-gradient(0deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 20px 20px, 20px 20px;
+    border-bottom: 1px dashed var(--gt-cyan);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  #panel-entities .target-reticle {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: var(--fs-2xs);
+    color: rgba(0, 243, 255, 0.5);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    padding: 2px 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  #panel-entities .monster-png {
+    position: absolute;
+    bottom: -10px;
+    max-height: 240px;
+    max-width: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.3)) drop-shadow(0 10px 10px rgba(0,0,0,0.9));
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 2;
+  }
+  #panel-entities .monster-fallback-icon {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    font-size: var(--fs-6xl);
+    z-index: 2;
+    filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.4));
+  }
+  #panel-entities .gate-terminal:hover .monster-png {
+    transform: scale(1.06) translateY(-6px);
+    filter: drop-shadow(0 0 18px rgba(0, 243, 255, 0.6)) drop-shadow(0 12px 12px rgba(0,0,0,0.9));
+  }
+  #panel-entities .terminal-body { padding: 18px; z-index: 3; position: relative; font-family: 'Share Tech Mono', monospace; }
+  #panel-entities .specimen-code { display: block; font-size: var(--fs-2xs); color: var(--gt-amber); letter-spacing: 1px; }
+  #panel-entities .specimen-title { font-size: var(--fs-3xl); color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.4); text-transform: uppercase; margin: 2px 0 0; }
+  #panel-entities .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-2xs);
+    color: var(--gt-text-muted);
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    padding-bottom: 6px;
+  }
+  #panel-entities .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  #panel-entities .diag-box { background: rgba(0, 243, 255, 0.03); border: 1px solid rgba(0, 243, 255, 0.2); padding: 8px; }
+  #panel-entities .diag-box.weakness { border-color: rgba(255, 85, 85, 0.4); }
+  #panel-entities .diag-box.immunity { border-color: rgba(187, 134, 252, 0.4); }
+  #panel-entities .diag-title { font-size: var(--fs-2xs); font-weight: bold; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+  #panel-entities .diag-box.weakness .diag-title { color: var(--gt-red); }
+  #panel-entities .diag-box.immunity .diag-title { color: var(--gt-purple); }
+  #panel-entities .diag-list { list-style: none; font-size: var(--fs-2xs); color: var(--gt-text-list); }
+  #panel-entities .diag-list li::before { content: "> "; color: rgba(0, 243, 255, 0.5); }
+  #panel-entities .loot-box { background: var(--gt-loot-bg); border: 1px solid var(--gt-loot-border); padding: 10px; margin-bottom: 10px; }
+  #panel-entities .loot-title { font-size: var(--fs-2xs); color: var(--gt-amber); text-transform: uppercase; margin-bottom: 6px; }
+  #panel-entities .loot-items { display: flex; gap: 6px; flex-wrap: wrap; }
+  #panel-entities .loot-item {
+    font-size: var(--fs-2xs);
+    background: var(--gt-loot-item-bg);
+    border: 1px solid var(--gt-loot-item-border);
+    color: var(--gt-cyan);
+    padding: 3px 8px;
+  }
+  #panel-entities .specimen-tip { font-size: var(--fs-sm); color: var(--gt-cyan); font-family: 'Share Tech Mono', monospace; }
+
   /* ── FOOTER ── */
   .footer { text-align: center; margin-top: 48px; font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 2px; border-top: 1px solid var(--border); padding-top: 16px; line-height: 2; }
 
@@ -806,6 +1031,8 @@
     .npc-dossier-imgbox { height: 160px; }
     .npc-dossier-body { padding: 12px; }
     .npc-dossier-emoji { font-size: var(--fs-5xl); }
+    #panel-entities .gate-terminal { width: 100%; }
+    #panel-entities .diag-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -847,7 +1074,7 @@
     <!-- FICHA TÉCNICA -->
     <div class="diff-box" style="margin-bottom:14px">
       <div class="section-title">FICHA TÉCNICA DO JOGO</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;margin-top:6px">
+      <div style="display:flex;flex-direction:column;margin-top:6px">
         <div class="ficha-row"><span class="ficha-label">DEV</span>Deep Field Games (Nova Zelândia)</div>
         <div class="ficha-row"><span class="ficha-label">PUBLISHER</span>Playstack</div>
         <div class="ficha-row"><span class="ficha-label">ENGINE</span>Unreal Engine</div>
@@ -974,7 +1201,7 @@
           </div>
           <div>
             <div style="font-size:var(--fs-md);color:var(--amberLt);margin-bottom:3px">Dark Energy</div>
-            <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.6">Adicionou os Reatores com flora bioluminescente, a facção Gatekeepers, teletransportadores, pontes de luz sólida e novo sistema de mercadores itinerantes.</div>
+            <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.6">Adicionou os Reatores com flora bioluminescente, a facção Guardião do Portãos, teletransportadores, pontes de luz sólida e novo sistema de mercadores itinerantes.</div>
           </div>
         </div>
         <div style="display:flex;gap:10px;padding:10px 0;align-items:flex-start">
@@ -1474,6 +1701,15 @@
   </div>
 </div>
 
+<div class="npc-popup-overlay" id="npc-popup-overlay" onclick="if(event.target===this) closeNpcPopup()">
+  <div class="npc-popup-box">
+    <button class="npc-popup-close" onclick="closeNpcPopup()">✕</button>
+    <div class="npc-popup-avatar" id="npc-popup-avatar"></div>
+    <div class="npc-popup-name" id="npc-popup-name"></div>
+    <div class="npc-popup-desc" id="npc-popup-desc"></div>
+  </div>
+</div>
+
 <script>
 // ── DADOS ──
 const C = {
@@ -1516,6 +1752,9 @@ const sectors = [
     { nome: "Lanterna Improvisada", eng: "Makeshift Flashlight", img: "Images/Itens/Lanternaimprovisada.webp", desc: "<strong>Lanterna Improvisada</strong> — Fonte de luz inicial que consome bateria, fundamental para os túneis e salas escuras." },
     { nome: "Curativo Simples", eng: "Bandage", img: "Images/Itens/Curativosimples.webp", desc: "<strong>Curativo Simples</strong> — Criado no inventário com pano. Usado para estancar sangramentos e curar ferimentos leves." },
     { nome: "Refrigerante Kizz-Cola", eng: "Kizz-Cola", img: "Images/Itens/Kizzcola.webp", desc: "<strong>Refrigerante Kizz-Cola</strong> — Consumível encontrado em máquinas e mesas. Sacia a sede e fornece um pequeno impulso de energia." },
+    "Frigideira — Dada automaticamente ao atravessar a cafeteria no tutorial. Essencial para fritar carnes e peixes cedo no jogo.",
+    "Faca de Cozinha — Encontrada na cozinha da cafeteria. Uma das primeiras armas de corte, ótima para abater (butcher) pragas e corpos.",
+    "Avental de Chef — Peça de vestuário encontrada na cozinha da cafeteria (parte do conjunto de cozinheiro, junto ao Chapéu de Chef).",
   ],
     npcs:[], portais:[],
     alertas:[],
@@ -1594,7 +1833,7 @@ const sectors = [
       { nome:"Reinforced Hose + Optic Lens", img:"Images/Itens/reinforced-hose-optic-lens.png", desc:"compre do Blacksmith para o Síncrotron" },
       { nome:"Uniforme de Manufacturing", img:"Images/Itens/uniforme-de-manufacturing.png", desc:"corpo no Upper Shipping" },
       { nome:"Rat Suit (desmembrar Lab Rat) + Rat Pack (capturar vivo com Net Launcher)", img:"Images/Itens/rat-suit-desmembrar-lab-rat-rat-pack-capturar-vivo-com-net-launcher.png" },
-      { nome:"Giga Glue", img:"Images/Itens/giga-glue.png", desc:"dropa de Gluebacks (recurso crítico para todo o jogo)" },
+      { nome:"Giga Glue", img:"Images/Itens/giga-glue.png", desc:"dropa de Grudadors (recurso crítico para todo o jogo)" },
       { nome:"Armadura F.O.R.G.E.", img:"Images/Itens/armadura-f-o-r-g-e.png", desc:"disponível pelo Síncrotron/craft neste setor" },
     ],
     npcs:[
@@ -1611,7 +1850,7 @@ const sectors = [
       "⚠️ CRÍTICO: Minas — torre no poço, portal no topo, interaja com o Pest Dummy.",
       "⚠️ CRÍTICO: Upper Shipping — examine TODOS os corpos para o uniforme.",
       "⚠️ Cure Grayson com Bandage — se não curar ele não se torna trader.",
-      "A Ordem começa aqui — inicie o grind de 50 kills (Supremus) e 100 Gatekeepers.",
+      "A Ordem começa aqui — inicie o grind de 50 kills (Supremus) e 100 Guardião do Portãos.",
     ],
     antes:"Lab Rat obtido? Dummy interagido? Uniforme Upper Shipping coletado? Grayson curado? Train World completado? Síncrotron sobrecarregado?",
     trophies:[
@@ -1623,7 +1862,7 @@ const sectors = [
       { id:"fashionspec", name:"Especialista em Moda",  eng:"Fashion Spec",        type:"bronze", icon:"👔", tag:"◆ ATENÇÃO",   tagColor:C.amber, how:"Equipe 4 peças do mesmo set com bônus de set ativo. Set de Jaleco, Armadura F.O.R.G.E. ou Armadura da Ordem.", note:null },
       { id:"kittedout",   name:"Equipado",              eng:"Kitted Out",          type:"bronze", icon:"🎽", tag:"◆ ATENÇÃO",   tagColor:C.amber, how:"Equipe 7 itens simultaneamente.", note:null },
       { id:"supremus",    name:"Supremus Ordo Petrae",  eng:"Supremus Ordo Petrae",type:"bronze", icon:"⚔️", tag:"◆ GRIND",     tagColor:C.amber, how:"Mate 50 soldados da Ordem. Acumulativo — começa aqui e conta até o fim do jogo.", note:"Em co-op kills são compartilhadas. Não force — vai acumular naturalmente." },
-      { id:"ragnarok_inicio", name:"Ragnarök (início do grind)", eng:"Ragnarok — Start",   type:"bronze", icon:"💀", tag:"◆ GRIND",     tagColor:C.amber, how:"Mate 100 Gatekeepers no total. O grind começa aqui com soldados da Ordem, mas a maioria das kills de Gatekeepers vem nos Reatores. Mantenha o ritmo de kills ao longo de todo o jogo.", note:"Acompanhe o progresso nas conquistas do sistema. A maioria das kills vem nos setores finais." },
+      { id:"ragnarok_inicio", name:"Ragnarök (início do grind)", eng:"Ragnarok — Start",   type:"bronze", icon:"💀", tag:"◆ GRIND",     tagColor:C.amber, how:"Mate 100 Guardião do Portãos no total. O grind começa aqui com soldados da Ordem, mas a maioria das kills de Guardião do Portãos vem nos Reatores. Mantenha o ritmo de kills ao longo de todo o jogo.", note:"Acompanhe o progresso nas conquistas do sistema. A maioria das kills vem nos setores finais." },
     ]
   },
   {
@@ -1640,7 +1879,7 @@ const sectors = [
       { nome:"Security Keycard", img:"Images/Itens/security-keycard.png", desc:"não descarte! Abre Security Crates em toda a Facility" },
       { nome:"Runic Key", img:"Images/Itens/runic-key.png", desc:"abre Runic Crates" },
       { nome:"Anti-Fungal Gelatin", img:"Images/Itens/anti-fungal-gelatin.png", desc:"obtido em Village Den (abre portal de saída)" },
-      { nome:"Giga Glue", img:"Images/Itens/giga-glue.png", desc:"continue farmando Gluebacks" },
+      { nome:"Giga Glue", img:"Images/Itens/giga-glue.png", desc:"continue farmando Grudadores" },
     ],
     npcs:[
       "IS-0017 — terminal para trocar de Job (reseta skills para nível 3).",
@@ -1756,10 +1995,10 @@ const sectors = [
     itens:[
       { nome:"Iodo ou Radish Chowder", img:"Images/Itens/iodo-ou-radish-chowder.png", desc:"obrigatório contra radiação" },
       { nome:"Neutrino Lantern Trinket", img:"Images/Itens/neutrino-lantern-trinket.png", desc:"menos 40% absorção de radiação" },
-      { nome:"Gatekeeper loot", img:"Images/Itens/gatekeeper-loot.png", desc:"Magnetic Alloy e CPUs" },
+      { nome:"Guardião do Portão loot", img:"Images/Itens/Guardião do Portão-loot.png", desc:"Magnetic Alloy e CPUs" },
       { nome:"Superliga Transurânica", img:"Images/Itens/superliga-transuranica.png", desc:"material raro para Bancada de Aprimoramento" },
     ],
-    npcs:["Gatekeepers — 100 kills para Ragnarök. Holy damage ignora o escudo."],
+    npcs:["Guardião do Portãos — 100 kills para Ragnarök. Holy damage ignora o escudo."],
     portais:[
       "Shadowgate — troféu prata. Progressão obrigatória.",
       "The Encroachment (Anteverse 299) — troféu Coraversão. Ative o Núcleo.",
@@ -1769,7 +2008,7 @@ const sectors = [
     alertas:[
       "Leve proteção contra radiação — dano contínuo sem ela.",
       "Jotun: distância máxima e armas de alto dano por tiro.",
-      "Grind 100 Gatekeepers: foque aqui onde aparecem com mais frequência.",
+      "Grind 100 Guardião do Portãos: foque aqui onde aparecem com mais frequência.",
       "Se tem Kylie como Trinket: leve ao Botanical Gardens agora.",
     ],
     antes:"Jotun morto? Kylie levada aos Botanical Labs? Shadowgate, Encroachment e Praetorium completos? Ragnarök próximo de 100?",
@@ -1780,7 +2019,7 @@ const sectors = [
       { id:"coreverse",  name:"Coraversão",      eng:"Coreverse",       type:"silver", icon:"💥", tag:"✦ AUTOMÁTICO", tagColor:C.green, how:"Ative o Núcleo em The Encroachment (Anteverse 299).", note:null },
       { id:"inquisition",name:"A Inquisição",    eng:"The Inquisition", type:"silver", icon:"⚔️", tag:"✦ AUTOMÁTICO", tagColor:C.green, how:"Complete o Praetorium.", note:null },
       { id:"gardens",    name:"Os Jardins",      eng:"The Gardens",     type:"silver", icon:"🌺", tag:"◆ ATENÇÃO",   tagColor:C.amber, how:"Complete o Botanical Gardens. Robô de Segurança com Kylie deve ser trazido aqui (Etapa 4 da quest).", note:"Se tem Kylie como Trinket, traga o Robô de Segurança aqui." },
-      { id:"ragnarok",   name:"Ragnarök",        eng:"Ragnarok",        type:"bronze", icon:"💀", tag:"◆ GRIND",     tagColor:C.amber, how:"Mate 100 Gatekeepers total. Aqui aparecem com mais frequência.", note:"Em co-op de 6: cerca de 17 kills por pessoa." },
+      { id:"ragnarok",   name:"Ragnarök",        eng:"Ragnarok",        type:"bronze", icon:"💀", tag:"◆ GRIND",     tagColor:C.amber, how:"Mate 100 Guardião do Portãos total. Aqui aparecem com mais frequência.", note:"Em co-op de 6: cerca de 17 kills por pessoa." },
       { id:"nomorehelmholtz",name:"Sem Mais Espaço",eng:"No More Room In Helmholtz",type:"bronze",icon:"🛋️",tag:"✦ AUTOMÁTICO",tagColor:C.green,how:"Saia do Furniture Store pelo portal no final.",note:null},
     ]
   },
@@ -1809,11 +2048,12 @@ const sectors = [
       "Confirme: todos os portais, sidequests e grind de kills completos.",
       "Última chance para troféus pendentes antes do final da história.",
     ],
-    antes:"CHECKLIST FINAL: Café? Leyak contido? Kylie em Albatross? Todos os portais? 50 Ordem + 100 Gatekeepers? Captura Rara? 4 tipos de caixas?",
+    antes:"CHECKLIST FINAL: Café? Leyak contido? Kylie em Albatross? Todos os portais? 50 Ordem + 100 Guardião do Portãos? Captura Rara? 4 tipos de caixas?",
     trophies:[
       { id:"endofearth", name:"Fim da Terra",           eng:"End of the Earth",          type:"silver",   icon:"🌍", tag:"✦ AUTOMÁTICO", tagColor:C.green,   how:"Complete o Setor Residencial. Automático.", note:null },
       { id:"coffee",     name:"Café no Buraco do Café", eng:"Coffee in the Coffee Hole", type:"bronze",   icon:"☕", tag:"⚠️ CRÍTICO",   tagColor:C.red,     how:"Dê uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Aparece sem aviso.", note:"SEMPRE café no inventário desde o Manufacturing." },
       { id:"friendlyp",  name:"Presença Amigável",      eng:"Friendly Presence",         type:"bronze",   icon:"👁️", tag:"◆ ATENÇÃO",    tagColor:C.amber,   how:"Interaja com a Containment Unit: 91 para conter o Leyak.", note:"Explore cada quarto do Residencial." },
+      { id:"apocnow",    name:"Apocalypse Now",         eng:"Apocalypse Now",            type:"gold",      icon:"🌌", tag:"✦ AUTOMÁTICO", tagColor:C.amberLt, how:"Complete a história principal (derrote o chefe final/Anomaly). Automático ao finalizar o jogo.", note:null },
       { id:"puresci",    name:"PLATINA — Ciência Pura", eng:"Apocalypse Now",            type:"platinum", icon:"🏆", tag:"✦ AUTOMÁTICO", tagColor:C.platinumLt, how:"Complete a história principal. Automático ao finalizar.", note:null },
     ]
   },
@@ -1825,13 +2065,13 @@ const progOrder = [
   { n:"03", s:"Laboratórios Cascata",              d:"Mycofields (⚠️ Skull), Caixas especiais, Night Realm, Grind 50 Ordem" },
   { n:"04", s:"Setor Segurança + RISE",         d:"Survive the Night, ⚠️ portal RISE (orbe azul perto da entrada), Accidents Happen (se cague no local errado)" },
   { n:"05", s:"Hidroplanta",                       d:"⚠️ Uniforme elevador, ⚠️ Kylie Muir (Chip Neural), 4 Reatores" },
-  { n:"06", s:"Reatores + Mundos Portais",         d:"Jotun boss, continuar grind 100 Gatekeepers, todos os portais" },
+  { n:"06", s:"Reatores + Mundos Portais",         d:"Jotun boss, continuar grind 100 Guardião do Portãos, todos os portais" },
   { n:"07", s:"Setor Residencial + Final",         d:"⚠️ Café ao Colega de trabalho, Leyak, Rise Facility, história completa" },
 ];
 
 const grindData = [
   { name:"Supremus Ordo Petrae", goal:"50 kills",  type:"A Ordem soldiers", tip:"Aparecem após Manufacturing. Kills acumulam ao longo do jogo." },
-  { name:"Ragnarök",             goal:"100 kills", type:"Gatekeepers",        tip:"Gatekeepers são os guardas mais comuns. Em co-op é muito mais rápido." },
+  { name:"Ragnarök",             goal:"100 kills", type:"Guardião do Portãos",        tip:"Guardião do Portãos são os guardas mais comuns. Em co-op é muito mais rápido." },
   { name:"Captura Rara",         goal:"1 peixe raro",type:"Portal Fish (RNG)",tip:"Pesque perto de portais ativos. Tente várias vezes — RNG puro." },
 ];
 
@@ -2309,6 +2549,7 @@ const tipsCats = [
   },
   {
     icon:"🌱", title:"Iniciante — Primeiros Passos",
+    img: "Images/Cards/Iniciante.webp",
     tips:[
       "Durabilidade importa: repare suas ferramentas regularmente na Bancada de Criação para não perdê-las no pior momento.",
       "Construa uma cama (Saco de Dormir) cedo — dormir regenera saúde e avança o dia rapidamente.",
@@ -2324,10 +2565,11 @@ const tipsCats = [
   },
   {
     icon:"⚔️", title:"Combate & Sobrevivência",
+    img: "Images/Cards/Combate.webp",
     tips:[
       "Sempre mire na cabeça — mesmo com melee. Dano crítico na cabeça aplica a qualquer arma.",
       "Inimigos da Ordem são muito mais fortes em grupo — use o ambiente para atrair um de cada vez.",
-      "Gatekeepers têm padrão de ataque previsível: esquive para o lado, não para trás.",
+      "Guardião do Portãos têm padrão de ataque previsível: esquive para o lado, não para trás.",
       "O Net Launcher é a ferramenta mais versátil do jogo — além do Lab Rat, pode imobilizar outros inimigos.",
       "Em caso de perigo, portais ativos são seu melhor esconderijo — inimigos raramente entram.",
       "Priorize craftar armadura antes de entrar no Manufacturing West — a dificuldade aumenta significativamente.",
@@ -2339,8 +2581,9 @@ const tipsCats = [
   },
   {
     icon:"⚙️", title:"Crafting & Recursos",
+    img: "Images/Cards/Craft.webp",
     tips:[
-      "Giga Glue é recurso crítico — farme regularmente dos inimigos Gluebacks e armazene sempre.",
+      "Giga Glue é recurso crítico — farme regularmente dos inimigos Grudadores e armazene sempre.",
       "Refined Carbon é produzido na smelter — coloque combustível antes de sair para explorar e volte com o material pronto.",
       "O Keypad Hacker economiza muitos recursos — hackeie portas em vez de destruí-las quando possível.",
       "Materiais de construção (Madeira, Metal) são abundantes mas pesados — use o carrinho de transporte quando disponível.",
@@ -2353,6 +2596,7 @@ const tipsCats = [
   },
   {
     icon:"🎣", title:"Pesca & Troféu Raro",
+    img: "Images/Cards/Pesca.webp",
     tips:[
       "Pesque sempre que passar perto de água — a Fishing Rod não consome durabilidade.",
       "Corruscating Portal Fish aparece EXCLUSIVAMENTE perto de portais ativos — pesque nesses pontos prioritariamente.",
@@ -2364,6 +2608,7 @@ const tipsCats = [
   },
   {
     icon:"💎", title:"Trinkets — Lista Completa",
+    img: "Images/Cards/Trinkets.webp",
     tips:[
       "Carbuncle Balloon: +10 de capacidade de carga. Útil no early game enquanto não tem mochila boa.",
       "Companheiro do Núcleo: dobra o dano máximo e vida dos pets. Essencial se usar pets.",
@@ -2385,18 +2630,20 @@ const tipsCats = [
   },
   {
     icon:"🤝", title:"Co-op — Multiplayer",
+    img: "Images/Cards/Co-op.webp",
     tips:[
-      "Em co-op, kills da Ordem e Gatekeepers são compartilhadas entre todos os jogadores.",
+      "Em co-op, kills da Ordem e Guardião do Portãos são compartilhadas entre todos os jogadores.",
       "Um jogador pode capturar o Lab Rat enquanto outro crafta o Net Launcher — divisão de tarefas.",
       "Cada jogador tem seu próprio progresso de troféus — não é possível 'boostar' troféus de exploração para outros.",
       "Portais podem ser explorados por jogadores diferentes simultaneamente — acelera muito o progresso.",
       "Use comunicação constante para evitar que um jogador mate todos os Lab Rats antes do outro craftear o Net Launcher.",
       "Portal Worlds resetam 2x por semana — em co-op a coleta de recursos renováveis é muito mais eficiente dividindo zonas.",
-      "O progresso de grind (50 Ordem / 100 Gatekeepers) é compartilhado — em grupos de 6 o grind cai para ~1/6 do tempo.",
+      "O progresso de grind (50 Ordem / 100 Guardião do Portãos) é compartilhado — em grupos de 6 o grind cai para ~1/6 do tempo.",
     ]
   },
   {
     icon:"🖥️", title:"Performance & Configuração",
+    img: "Images/Cards/Performance.webp",
     tips:[
       "Abiotic Factor usa UE5 com Lumen. Se tiver travamentos ou FPS baixo: Configurações → Gráficos → Global Illumination → OFF.",
       "Após desligar o GI a tela fica escura. Para corrigir: mude o Post Processing para outro valor e volte ao original — a iluminação se restaura.",
@@ -2406,6 +2653,7 @@ const tipsCats = [
   },
   {
     icon:"💡", title:"Dicas da Comunidade — Steam & Reddit",
+    img: "Images/Cards/Comunidade.webp",
     tips:[
       "Não venda nem descarte o Security Keycard encontrado cedo — ele abre Security Crates necessários para troféu.",
       "O Colega de trabalho pode aparecer em locais aleatórios a cada visita — retorne a áreas antigas periodicamente.",
@@ -2414,7 +2662,7 @@ const tipsCats = [
       "Vacuum: quebra múltiplos objetos simultaneamente e mais rápido que faca ou martelo — ótimo para farming de materiais.",
       "Carro (Vehicle): disponível no Manufacturing West. Economiza enorme quantidade de tempo de travessia nos setores grandes.",
       "Portable Toilet + Catre Militar: leve sempre um de cada. Você vai precisar dormir e usar o banheiro onde menos espera.",
-      "Não há tracker de kills in-game para Ordem/Gatekeepers. Acompanhe pelo progresso do próprio troféu nas configurações do sistema.",
+      "Não há tracker de kills in-game para Ordem/Guardião do Portãos. Acompanhe pelo progresso do próprio troféu nas configurações do sistema.",
     ]
   },
 ];
@@ -2522,6 +2770,7 @@ let openTrophy = null;
 let sectorFilter = "all";
 let checklistDone = {};
 const itemDescLookup = {}; // preenchido durante o render de itensHtml: chave "secId::idx" -> texto
+const npcPopupLookup = {}; // preenchido durante o render de npcsHtml: chave "secId::idx" -> {nome, resumo, img}
 
 function obShowItemDesc(secId, idx) {
   const desc = itemDescLookup[`${secId}::${idx}`];
@@ -2533,6 +2782,21 @@ function obShowItemDesc(secId, idx) {
   const card = document.getElementById(`itm-card-${secId}-${idx}`);
   if (card) card.classList.add('active');
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function openNpcPopup(secId, idx) {
+  const data = npcPopupLookup[`${secId}::${idx}`];
+  if (!data) return;
+  document.getElementById('npc-popup-name').textContent = data.nome;
+  document.getElementById('npc-popup-desc').textContent = data.resumo;
+  document.getElementById('npc-popup-avatar').innerHTML = data.img
+    ? `<img src="${data.img}" alt="${data.nome}" onerror="this.parentElement.innerHTML='👤'">`
+    : '👤';
+  document.getElementById('npc-popup-overlay').classList.add('open');
+}
+
+function closeNpcPopup() {
+  document.getElementById('npc-popup-overlay').classList.remove('open');
 }
 
 // ── BUILD HEADER BADGES ──
@@ -2701,8 +2965,26 @@ sectors.forEach((sec, si) => {
   // NPCs
   const npcsHtml = sec.npcs && sec.npcs.length
     ? `<div style="margin-bottom:10px">
-        <div style="font-size:var(--fs-2xs);color:${C.purple};letter-spacing:2px;margin-bottom:6px">// NPCs ENCONTRADOS</div>
-        ${sec.npcs.map(n => `<div style="font-size:var(--fs-sm);color:var(--textDim);padding:2px 0;display:flex;gap:8px"><span style="color:${C.purple};flex-shrink:0">👤</span>${n}</div>`).join('')}
+        <div style="font-size:var(--fs-2xs);color:${C.purple};letter-spacing:2px;margin-bottom:6px">// NPCs ENCONTRADOS <span style="color:var(--textDim);letter-spacing:0;text-transform:none">(toque no círculo)</span></div>
+        <div class="npc-step-list">
+        ${sec.npcs.map((n, idx) => {
+          let nome, resumo, img = null;
+          if (typeof n === 'object') {
+            nome = n.nome;
+            resumo = n.desc || '';
+            img = n.img || null;
+          } else {
+            const partes = n.split(' — ');
+            nome = partes[0].trim();
+            resumo = partes.length > 1 ? partes.slice(1).join(' — ').trim() : '';
+          }
+          npcPopupLookup[`${sec.id}::${idx}`] = { nome, resumo, img };
+          const avatarInner = img
+            ? `<img src="${img}" alt="${nome}" onerror="this.parentElement.innerHTML='👤'">`
+            : '👤';
+          return `<div class="npc-step-circle" onclick="openNpcPopup('${sec.id}', ${idx})">${avatarInner}</div>`;
+        }).join('')}
+        </div>
       </div>`
     : '';
 
@@ -2808,31 +3090,45 @@ sectors.forEach((sec, si) => {
 
 // ── MISSABLES ──
 // ── MISSABLES DATA ──
+// img/rarity/rarityCount/desc: dados oficiais extraídos do Exophase (conquistas Steam correspondentes).
+// "Grayson (Trader)" não corresponde a nenhuma conquista Steam — é conteúdo perdível sem troféu vinculado.
 const allMissables = [
-  { name:"Manequim (Dummy)",           risk:"ALTO",  c:C.red,   icon:"🎯", tip:"Minas do Manufacturing West → poço com torre → suba → portal no topo → Pest Dummy. Explore as Minas 100% antes de avançar." },
-  { name:"Sucesso de Engenharia",      risk:"ALTO",  c:C.red,   icon:"👷", tip:"Uniforme de Manufacturing no Upper Shipping. Examine todos os corpos da área antes de avançar." },
-  { name:"Rato de Laboratório",        risk:"ALTO",  c:C.red,   icon:"🐭", tip:"Construa o Net Launcher ANTES de matar todos os Lab Rats. Capture um vivo com Net Launcher primeiro, mate com arma contundente (Rat Pack), depois desmembre outro (Rat Suit)." },
-  { name:"Micélio sobre o Concílio",   risk:"ALTO",  c:C.red,   icon:"🍄", tip:"Mushroom Peccary Skull nos Mycofields (Laboratórios Cascata). Não saia do portal sem o Skull — único local onde dropa." },
-  { name:"Seguindo o Fluxo",           risk:"ALTO",  c:C.red,   icon:"💧", tip:"Uniforme no elevador subaquático da seção Robótica da Hydroplant. Examine o corpo antes de subir o elevador." },
-  { name:"Sonhos Elétricos (Kylie)",   risk:"ALTO",  c:C.red,   icon:"🤖", tip:"Use o Chip Neural Hiperdenso no tanque de Kylie (Robótica da Hydroplant) ANTES de sair. Quest em 5 etapas — impossível retomar sem o chip." },
-  { name:"Café no Buraco do Café",     risk:"MÉDIO", c:C.amber, icon:"☕", tip:"Tenha sempre uma Mug of Coffee no inventário desde o Manufacturing. O Colega de trabalho aparece sem aviso." },
-  { name:"A Grande Maçã (RISE)",       risk:"MÉDIO", c:C.amber, icon:"🗽", tip:"Portal RISE = orbe azul atrás do elevador gigante, perto da ENTRADA do Setor Segurança. NÃO fica no Residencial." },
-  { name:"Grayson (Trader)",           risk:"MÉDIO", c:C.amber, icon:"🩹", tip:"Cure Grayson com uma Bandage quando encontrá-lo ferido perto do forklift no Manufacturing. Sem isso ele nunca se torna trader." },
-  { name:"Captura Rara",               risk:"BAIXO", c:C.green, icon:"🎣", tip:"RNG puro. Pesque perto de portais ativos (Portal Fish). Comece cedo e pesque em toda água encontrada." },
+  { name:"Café no Buraco do Café",     risk:"MÉDIO", c:C.amber, icon:"☕", img:"https://m.exophase.com/steam/awards/s/j01053b6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:17.03, rarityCount:233, desc:"Você deu café a uma entidade que possivelmente não precisa de mais café.", tip:"É preciso DAR (feed) uma Mug of Coffee ao Colega de Trabalho — só ter café no inventário não conta. Ele aparece sem aviso a partir do Manufacturing. Facilite: carregue 2-3 Mugs of Coffee de reserva assim que chegar no setor, pois a interação certa nem sempre é óbvia na primeira tentativa." },
+  { name:"Grayson (Trader)",           risk:"MÉDIO", c:C.amber, icon:"🩹", img:null, rarity:null, rarityCount:null, desc:"Não vinculado a um troféu específico — Grayson vira trader ambulante após ser curado, mas essa ação não concede conquista própria.", tip:"Cure Grayson com uma Bandage (Curativo Simples) assim que encontrá-lo ferido perto do forklift no Manufacturing. Facilite: já entre no setor carregando pelo menos 1 Bandage no inventário, pois o encontro pode pegar de surpresa e ele só vira trader se for curado nessa primeira interação." },
+  { name:"Sucesso de Engenharia",      risk:"ALTO",  c:C.red,   icon:"👷", img:"https://m.exophase.com/steam/awards/s/dgg36034.png?4c64e261a0479f15a66a2a2beaab456c", rarity:34.38, rarityCount:116, desc:"Colecione o uniforme completo da Fabricação.", tip:"O uniforme completo (4 peças) está no corpo de um engenheiro morto numa sala lateral do Upper Shipping (Manufacturing West). Facilite: pegue TODAS as peças do corpo de uma vez e equipe o conjunto completo simultaneamente — o troféu só destrava com as 4 peças vestidas ao mesmo tempo, não basta carregar no inventário." },
+  { name:"Manequim (Dummy)",           risk:"ALTO",  c:C.red,   icon:"🎯", img:"https://m.exophase.com/steam/awards/s/dg00g46e.png?4c64e261a0479f15a66a2a2beaab456c", rarity:35.76, rarityCount:111, desc:"Você encontrou um amigo familiar num lugar familiar — nada fora da Ordo aqui.", tip:"Minas do Manufacturing West → poço com torre → suba → portal no topo → Pest Dummy. Facilite: explore as Minas 100% antes de avançar de setor — esse portal secreto é fácil de passar batido se você seguir só o objetivo principal." },
+  { name:"Rato de Laboratório",        risk:"ALTO",  c:C.red,   icon:"🐭", img:"https://m.exophase.com/steam/awards/s/000g43b1.png?4c64e261a0479f15a66a2a2beaab456c", rarity:16.61, rarityCount:239, desc:"Nunca vá com tudo.", tip:"Precisa vestir Rat Suit + Rat Pack ao mesmo tempo. Rat Suit: mate um Lab Rat e esquarteje (butcher) o corpo com faca — é chance percentual, pode levar algumas tentativas. Rat Pack: construa o Net Launcher (2 Rebar, 2 Staplers, 4 Rubberband Balls, 2 Plastic Scraps na Bancada), capture um Lab Rat vivo com ele, e finalize com arma CONTUNDENTE enquanto ele estiver enredado — armas com efeito (ex: Thermal Mallet) reduzem a chance, porque o rato pode morrer do efeito em vez do dano contundente. Facilite: rats reaparecem perto da Tram Plaza no início do jogo, é um bom ponto de farm." },
+  { name:"Micélio sobre o Concílio",   risk:"ALTO",  c:C.red,   icon:"🍄", img:"https://m.exophase.com/steam/awards/s/777eb0g4.png?4c64e261a0479f15a66a2a2beaab456c", rarity:15.34, rarityCount:259, desc:"Aproveite os sonhos dos campos fúngicos.", tip:"Não basta pegar o Mushroom Peccary Skull nos Mycofields (Laboratórios Cascata) — é preciso CRAFTAR e VESTIR o Mushroom Helmet feito com 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Facilite: não saia do portal dos Mycofields sem o Skull (único local onde dropa) e já leve Giga Glue/Refined Carbon prontos pra craftar o capacete na hora." },
+  { name:"A Grande Maçã (RISE)",       risk:"MÉDIO", c:C.amber, icon:"🗽", img:"https://m.exophase.com/steam/awards/s/gj11jgdd.png?4c64e261a0479f15a66a2a2beaab456c", rarity:27.35, rarityCount:145, desc:"Você viu como vive a outra metade — e não é nada bom.", tip:"Portal RISE = orbe azul atrás do elevador gigante, perto da ENTRADA do Setor Segurança. NÃO fica no Residencial — é o erro mais comum. Facilite: basta se aproximar do portal pra ativar, não precisa completar nada dentro dele." },
+  { name:"Seguindo o Fluxo",           risk:"ALTO",  c:C.red,   icon:"💧", img:"https://m.exophase.com/steam/awards/s/35775jg5.png?4c64e261a0479f15a66a2a2beaab456c", rarity:20.77, rarityCount:191, desc:"Colecione o uniforme completo da Hidrelétrica.", tip:"O corpo do trabalhador com o uniforme fica no elevador subaquático da seção Robótica da Hydroplant. Facilite: examine o corpo e equipe o conjunto completo ANTES de subir o elevador — assim como no uniforme de Manufacturing, precisa vestir tudo ao mesmo tempo pra destravar." },
+  { name:"Sonhos Elétricos (Kylie)",   risk:"ALTO",  c:C.red,   icon:"🤖", img:"https://m.exophase.com/steam/awards/s/6dgd5j01.png?4c64e261a0479f15a66a2a2beaab456c", rarity:9.28,  rarityCount:428, desc:"Você levou Kylie Muir até o fim, como prometido.", tip:"Sequência completa: 1) fale com Kylie Muir para desbloquear a receita do Hyper-Dense Neural Chip; 2) crafte o chip na Bancada; 3) use o chip no tanque com o cérebro dela na Robótica da Hydroplant (isso gera o Trinket Kylie); 4) leve o Trinket até os Botanical Labs e insira-a num Security Bot; 5) vá até o Albatross (área do chefe final) com ela já inserida. Facilite: o troféu só destrava quando você CHEGA no Albatross com Kylie já transferida — se você completar os passos depois de já ter passado por ali, pode ser necessário voltar até o Albatross de novo pra destravar." },
+  { name:"Captura Rara",               risk:"BAIXO", c:C.green, icon:"🎣", img:"https://m.exophase.com/steam/awards/s/13773g65.png?4c64e261a0479f15a66a2a2beaab456c", rarity:10.28, rarityCount:387, desc:"Você pescou algo raro! Sorte a sua.", tip:"RNG puro — não é ligado a nenhum peixe específico, basta pescar. Crafte a Fishing Rod cedo (1x Stapler, 2x Desk Phone, 4x Plastic Scrap, 2x Wood Plank na Bancada) e pesque em toda água que encontrar, de preferência perto de portais ativos (chance maior de Portal Fish). Facilite: comece a pescar o quanto antes — quanto mais cedo você começa a tentar, menor a chance de esse ser o último troféu que falta." },
 ];
+
 
 const missContainer = document.getElementById('missables-container');
 allMissables.forEach((m, i) => {
   const item = document.createElement('div');
   item.className = 'miss-item';
+  const thumbHtml = m.img
+    ? `<span class="miss-thumb-wrap">
+         <img class="miss-thumb" src="${m.img}" alt="${m.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <span class="miss-thumb-fallback">${m.icon}</span>
+       </span>`
+    : `<span class="miss-thumb-wrap"><span class="miss-thumb-fallback" style="display:flex">${m.icon}</span></span>`;
+  const rarityHtml = m.rarity!=null
+    ? `<span class="rarity-badge">🏆 ${m.rarity.toFixed(2)}% dos jogadores (${m.rarityCount})</span>`
+    : `<span class="rarity-badge rarity-na">sem conquista vinculada</span>`;
   item.innerHTML = `
     <button class="miss-btn" id="mbtn-${i}" onclick="toggleMiss(${i})" style="border-left:3px solid ${m.c}">
-      <span style="font-size:var(--fs-2xl);flex-shrink:0">${m.icon}</span>
+      ${thumbHtml}
       <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
           <span class="miss-name" style="color:${m.c}">${m.name}</span>
           <span class="risk-badge" style="color:${m.c};border-color:${m.c}44;background:${m.c}22">RISCO: ${m.risk}</span>
+          ${rarityHtml}
         </div>
+        <div class="miss-desc">${m.desc}</div>
       </div>
       <span style="color:var(--textDim)" id="marr-${i}">▼</span>
     </button>
@@ -3305,21 +3601,21 @@ const portaisData = [
 
 // ── SKILLS DATA ──
 const skillsData = [
-  { name:"🏃 Sprint (Corrida)", method:"Corra constantemente pelo mapa. Não há atalho além de correr.", bonus:"Bônus XP: Sopa de Ervilha Insossa" },
-  { name:"💪 Força", method:"Carregue peso caminhando em círculos (sem penalidade vermelha) ou interaja com máquinas de venda repetidamente.", bonus:"Bônus XP: Sopa A&L Mega" },
-  { name:"🎯 Arremesso", method:"Crie redes e fique lançando/recolhendo continuamente. Pode usar macro para automatizar.", bonus:null },
-  { name:"🥷 Furtividade", method:"Configure agachamento como 'alternar' e fique abaixado atrás de uma praga estática. O escritório próximo ao robô de segurança à noite é ideal.", bonus:"Bônus XP: Sopa de Ervilha Insossa" },
-  { name:"🔨 Armas Contundentes", method:"Ataque inimigos, destrua computadores ou bata em corpos espalhados pelo cenário.", bonus:"Bônus XP: Carne Ensopada" },
-  { name:"🔪 Armas Cortantes", method:"Mesma lógica das contundentes — use facas e machados contra inimigos ou objetos destrutíveis.", bonus:"Bônus XP: Carne Ensopada" },
-  { name:"🏹 Precisão", method:"Use a besta sempre que possível. Colete canetas para fabricar virotes. Refaça a área Colinas Planas para material.", bonus:"Bônus XP: Elmo da Ordem + Sopa de Sustentação (acumuláveis)" },
-  { name:"🔄 Recarga", method:"No inventário: clique com botão direito na arma, descarregue o pente e recarregue. Repita várias vezes.", bonus:"Bônus XP: Sopa de Sustentação" },
-  { name:"❤️ Fortitude", method:"Morra repetidamente sob um fio elétrico no 2º andar dos Escritórios. Deixe cama no local, vá sem itens.", bonus:null },
-  { name:"🔧 Artesanato", method:"Crie redes de arremesso → desmonte em papel → converta em tecido → repita o ciclo.", bonus:"Bônus XP: Ensopado Balanceado" },
-  { name:"🏗️ Construção", method:"Desmonte tudo que puder: cadeiras, mesas, bancos, vasos. Rápido e eficiente.", bonus:"Bônus XP: Ensopado Balanceado" },
-  { name:"🩹 Primeiros Socorros", method:"Prepare talas e machuque-se propositalmente (pule de pequenas alturas). Use talas para curar. Cama por perto.", bonus:null },
-  { name:"🍳 Culinária", method:"Tenha várias fogueiras/frigideiras e cozinhe carne de praga ou peixes simultaneamente.", bonus:null },
-  { name:"🌱 Agricultura", method:"Monte grande fazenda (com água) ou visite áreas com ante-trigo: Jardim Distante, Laboratórios Cascata, Mycofields, Docas.", bonus:null },
-  { name:"🎣 Pesca", method:"Pesque em toda água encontrada. A piscina do ginásio é ótima. Aproveite para treinar Culinária junto.", bonus:null },
+  { name:"🏃 Sprint (Corrida)", img: "Images/Cards/Sprint.webp", method:"Corra constantemente pelo mapa. Não há atalho além de correr.", bonus:"Bônus XP: Sopa de Ervilha Insossa" },
+  { name:"💪 Força", img: "Images/Cards/Strenght.webp", method:"Carregue peso caminhando em círculos (sem penalidade vermelha) ou interaja com máquinas de venda repetidamente.", bonus:"Bônus XP: Sopa A&L Mega" },
+  { name:"🎯 Arremesso", img: "Images/Cards/Throwing.webp", method:"Crie redes e fique lançando/recolhendo continuamente. Pode usar macro para automatizar.", bonus:null },
+  { name:"🥷 Furtividade", img: "Images/Cards/Sneaking.webp", method:"Configure agachamento como 'alternar' e fique abaixado atrás de uma praga estática. O escritório próximo ao robô de segurança à noite é ideal.", bonus:"Bônus XP: Sopa de Ervilha Insossa" },
+  { name:"🔨 Armas Contundentes", img: "Images/Cards/Bluntmelee.webp", method:"Ataque inimigos, destrua computadores ou bata em corpos espalhados pelo cenário.", bonus:"Bônus XP: Carne Ensopada" },
+  { name:"🔪 Armas Cortantes", img: "Images/Cards/Sharpmelee.webp", method:"Mesma lógica das contundentes — use facas e machados contra inimigos ou objetos destrutíveis.", bonus:"Bônus XP: Carne Ensopada" },
+  { name:"🏹 Precisão", img: "Images/Cards/Accuracy.webp", method:"Use a besta sempre que possível. Colete canetas para fabricar virotes. Refaça a área Colinas Planas para material.", bonus:"Bônus XP: Elmo da Ordem + Sopa de Sustentação (acumuláveis)" },
+  { name:"🔄 Recarga", img: "Images/Cards/Reloading.webp", method:"No inventário: clique com botão direito na arma, descarregue o pente e recarregue. Repita várias vezes.", bonus:"Bônus XP: Sopa de Sustentação" },
+  { name:"❤️ Fortitude", img: "Images/Cards/Fortitude.webp", method:"Morra repetidamente sob um fio elétrico no 2º andar dos Escritórios. Deixe cama no local, vá sem itens.", bonus:null },
+  { name:"🔧 Artesanato", img: "Images/Cards/Crafting.webp", method:"Crie redes de arremesso → desmonte em papel → converta em tecido → repita o ciclo.", bonus:"Bônus XP: Ensopado Balanceado" },
+  { name:"🏗️ Construção", img: "Images/Cards/Construction.webp", method:"Desmonte tudo que puder: cadeiras, mesas, bancos, vasos. Rápido e eficiente.", bonus:"Bônus XP: Ensopado Balanceado" },
+  { name:"🩹 Primeiros Socorros", img: "Images/Cards/Firstaid.webp", method:"Prepare talas e machuque-se propositalmente (pule de pequenas alturas). Use talas para curar. Cama por perto.", bonus:null },
+  { name:"🍳 Culinária", img: "Images/Cards/Cooking.webp", method:"Tenha várias fogueiras/frigideiras e cozinhe carne de praga ou peixes simultaneamente.", bonus:null },
+  { name:"🌱 Agricultura", img: "Images/Cards/Agriculture.webp", method:"Monte grande fazenda (com água) ou visite áreas com ante-trigo: Jardim Distante, Laboratórios Cascata, Mycofields, Docas.", bonus:null },
+  { name:"🎣 Pesca", img: "Images/Cards/Fishing.webp", method:"Pesque em toda água encontrada. A piscina do ginásio é ótima. Aproveite para treinar Culinária junto.", bonus:null },
 ];
 
 // ── HEAL DATA ──
@@ -3435,8 +3731,10 @@ skillsData.forEach(s => {
   const card = document.createElement('div');
   card.className = 'tips-cat-card';
   card.innerHTML = `
-    <div class="tips-cat-imgbox">
-      <span class="tips-cat-emoji">${emoji}</span>
+    <div class="tips-cat-imgbox icon-mode">
+      ${s.img
+        ? `<img src="${s.img}" alt="${titulo}" onerror="this.outerHTML='<span class=\\'tips-cat-emoji\\'>${emoji}</span>'">`
+        : `<span class="tips-cat-emoji">${emoji}</span>`}
       <h3 class="tips-cat-imgtitle">${titulo}</h3>
     </div>
     <button class="tips-cat-toggle">
@@ -3523,26 +3821,27 @@ weaponsData.forEach(w => {
 // risk: 0=crítico(perdível), 1=atenção(método específico/grind/RNG), 2=normal(automático/simples)
 const trophyMaster = [
   // ─── RISCO CRÍTICO (risco real de perder) ───
-  { id:"laborat",     name:"Rato de Laboratório",              eng:"Lab Rat",                        type:"bronze",  icon:"🐭", sector:"🏭 MANUFACTURING",    risk:0, desc:"Never go full rat.", how:"Use o Rat Suit E o Rat Pack ao mesmo tempo. Rat Suit: mate e desmembre um Lab Rat. Rat Pack: capture um Lab Rat VIVO com o Net Launcher e mate com arma contundente.", note:"CRÍTICO: Construa o Net Launcher ANTES de matar todos os Lab Rats. Se eliminar todos sem capturar um vivo, o troféu fica bloqueado sem inimigos disponíveis." },
-  { id:"dummy",       name:"Manequim",                         eng:"Dummy",                          type:"bronze",  icon:"🎯", sector:"🏭 MANUFACTURING",    risk:0, desc:"You've found a familiar friend in a familiar place.", how:"Nas Minas do Manufacturing West há uma torre num poço. Suba a torre, entre no portal no topo para acessar a área secreta de tutorial e interaja com o Pest Dummy.", note:"CRÍTICO: Portal escondido no topo da torre — fácil de ignorar completamente. Explore as Minas 100% antes de avançar." },
-  { id:"electricdreams",name:"Sonhos Elétricos",               eng:"Electric Dreams",                type:"bronze",  icon:"🤖", sector:"💧 HIDROPLANTA",       risk:0, desc:"You took Kylie Muir to the end, as promised.", how:"Use o Chip Neural Hiperdenso no tanque com o cérebro de Kylie Muir (seção Robótica da Hydroplant) → obtenha Kylie (Trinket) → leve aos Botanical Labs → insira num Robô de Segurança → vá a Albatross.", note:"CRÍTICO: O Chip Neural Hiperdenso está na Robótica. Se avançar da Hydroplant sem usá-lo, a quest fica inacessível nessa jogatina." },
-  { id:"engsuccess",  name:"Sucesso de Engenharia",            eng:"Engineering Success",            type:"bronze",  icon:"👷", sector:"🏭 MANUFACTURING",    risk:0, desc:"Collect the full Manufacturing uniform.", how:"Interaja com o corpo de um trabalhador morto na área Upper Shipping do Manufacturing West para coletar o uniforme completo.", note:"CRÍTICO: O corpo com o uniforme fica especificamente no Upper Shipping. Passe por essa área sem checar os corpos e o troféu fica para trás." },
-  { id:"goWithFlow",  name:"Seguindo o Fluxo",                 eng:"Go With The Flow",               type:"bronze",  icon:"💧", sector:"💧 HIDROPLANTA",       risk:0, desc:"Collect the full Hydroplant uniform.", how:"Interaja com o trabalhador morto vestindo o uniforme no elevador subaquático da Hydroplant — especificamente na seção Robótica.", note:"CRÍTICO: O corpo fica no elevador subaquático. Passe pelo elevador sem checar o cadáver e o troféu some." },
-  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Colega de trabalho sem café, a interação do troféu não dispara." },
-  { id:"mushroomhelm",name:"Micélio sobre o Concílio",         eng:"Mycelium about the Consilium",   type:"bronze",  icon:"🍄", sector:"🔭 CASCADE LABS",      risk:0, desc:"Enjoy the dreams of the Mycofields.", how:"Crafteie e equipe o Capacete de Cogumelo. Receita: 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Skull dropa dos Mushroom Peccaries nos Mycofields.", note:"CRÍTICO: O Peccary Skull só existe nos Mycofields. Não saia desse portal sem ele — voltar é custoso." },
+  { id:"laborat",     name:"Rato de Laboratório",              eng:"Lab Rat",                        type:"bronze",  icon:"🐭", sector:"🏭 MANUFACTURING",    risk:0, desc:"Never go full rat.", how:"Use o Rat Suit E o Rat Pack ao mesmo tempo. Rat Suit: mate e desmembre um Lab Rat. Rat Pack: capture um Lab Rat VIVO com o Net Launcher e mate com arma contundente.", note:"CRÍTICO: Construa o Net Launcher ANTES de matar todos os Lab Rats. Se eliminar todos sem capturar um vivo, o troféu fica bloqueado sem inimigos disponíveis. Facilite: receita do Net Launcher é 2 Rebar + 2 Staplers + 4 Rubberband Balls + 2 Plastic Scraps. Use arma contundente SEM efeito (nada de Thermal Mallet) no rato enredado, senão ele pode morrer do efeito em vez do dano." },
+  { id:"dummy",       name:"Manequim",                         eng:"Dummy",                          type:"bronze",  icon:"🎯", sector:"🏭 MANUFACTURING",    risk:0, desc:"You've found a familiar friend in a familiar place.", how:"Nas Minas do Manufacturing West há uma torre num poço. Suba a torre, entre no portal no topo para acessar a área secreta de tutorial e interaja com o Pest Dummy.", note:"CRÍTICO: Portal escondido no topo da torre — fácil de ignorar completamente. Explore as Minas 100% antes de avançar. Facilite: marque no mapa qualquer torre/poço que avistar nas Minas antes de seguir pro próximo objetivo — voltar depois de avançar de setor é bem mais trabalhoso." },
+  { id:"electricdreams",name:"Sonhos Elétricos",               eng:"Electric Dreams",                type:"bronze",  icon:"🤖", sector:"💧 HIDROPLANTA",       risk:0, desc:"You took Kylie Muir to the end, as promised.", how:"Use o Chip Neural Hiperdenso no tanque com o cérebro de Kylie Muir (seção Robótica da Hydroplant) → obtenha Kylie (Trinket) → leve aos Botanical Labs → insira num Robô de Segurança → vá a Albatross.", note:"CRÍTICO: O Chip Neural Hiperdenso está na Robótica. Se avançar da Hydroplant sem usá-lo, a quest fica inacessível nessa jogatina. Facilite: a receita do chip só desbloqueia depois de falar com Kylie Muir. O troféu só destrava quando você CHEGA no Albatross com ela já inserida no robô — se completar os passos antes de chegar lá, pode precisar voltar até o Albatross de novo." },
+  { id:"engsuccess",  name:"Sucesso de Engenharia",            eng:"Engineering Success",            type:"bronze",  icon:"👷", sector:"🏭 MANUFACTURING",    risk:0, desc:"Collect the full Manufacturing uniform.", how:"Interaja com o corpo de um trabalhador morto na área Upper Shipping do Manufacturing West para coletar o uniforme completo.", note:"CRÍTICO: O corpo com o uniforme fica especificamente no Upper Shipping. Passe por essa área sem checar os corpos e o troféu fica para trás. Facilite: pegue as 4 peças do corpo de uma vez e equipe o conjunto completo simultaneamente — carregar no inventário sem vestir não destrava o troféu." },
+  { id:"goWithFlow",  name:"Seguindo o Fluxo",                 eng:"Go With The Flow",               type:"bronze",  icon:"💧", sector:"💧 HIDROPLANTA",       risk:0, desc:"Collect the full Hydroplant uniform.", how:"Interaja com o trabalhador morto vestindo o uniforme no elevador subaquático da Hydroplant — especificamente na seção Robótica.", note:"CRÍTICO: O corpo fica no elevador subaquático. Passe pelo elevador sem checar o cadáver e o troféu some. Facilite: equipe o conjunto completo assim que pegar as peças, antes de subir o elevador — igual ao uniforme de Manufacturing, precisa vestir tudo ao mesmo tempo." },
+  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Colega de trabalho sem café, a interação do troféu não dispara. Facilite: é preciso DAR o café ativamente (feed), não basta estar com ele guardado — carregue 2-3 Mugs de reserva assim que entrar no Manufacturing." },
+  { id:"mushroomhelm",name:"Micélio sobre o Concílio",         eng:"Mycelium about the Consilium",   type:"bronze",  icon:"🍄", sector:"🔭 CASCADE LABS",      risk:0, desc:"Enjoy the dreams of the Mycofields.", how:"Crafteie e equipe o Capacete de Cogumelo. Receita: 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Skull dropa dos Mushroom Peccaries nos Mycofields.", note:"CRÍTICO: O Peccary Skull só existe nos Mycofields. Não saia desse portal sem ele — voltar é custoso. Facilite: já leve Giga Glue e Refined Carbon prontos pra craftar o capacete na hora, assim que o Skull dropar." },
 
   // ─── ATENÇÃO (método específico, timing ou RNG) ───
-  { id:"someshort",   name:"Orla Distante",                    eng:"We Don't Talk About That Place", type:"bronze",  icon:"🏝️", sector:"🌀 PORTAIS",          risk:1, desc:"You found yourself upon some distant shore...", how:"Sente-se no Privada-Portal (vaso sanitário especial no Data Farm do Setor Escritório) com a barra de continência em 15% ou menos. Chance de 5% de teletransporte (50% se ainda não tem o troféu). Repita até conseguir.", note:"ATENÇÃO: Não é um portal no mapa. O Privada-Portal parece um banheiro comum mas tem partículas ao redor. Beba café para encher a barra de necessidade rapidamente." },
-  { id:"rarecatch",   name:"Captura Rara",                     eng:"Rare Catch",                     type:"bronze",  icon:"⭐", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've fished up something rare!", how:"Pesque um peixe raro: Oxidious Antefish, Corruscating Portal Fish ou Pelagic Moon Fish. O Portal Fish aparece exclusivamente perto de portais ativos. O Moon Fish aparece à noite.", note:"ATENÇÃO: Puro RNG. Pesque em locais com portais ativos prioritariamente. Use iscas para aumentar as chances. Espere pelo menos 20-30 tentativas por local antes de mover." },
-  { id:"blindluck",   name:"Sorte Cega",                       eng:"Blind Luck",                     type:"bronze",  icon:"🎭", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've dismantled one of the Puppeteer's wayward creations.", how:"Mate um Sinfonista. Este inimigo aparece em Flathill OU durante eventos climáticos de Fenômeno da Névoa na Facility.", note:"ATENÇÃO: Explore Flathill completamente. Se perder, o Fenômeno da Névoa é raro e aleatório — pode demorar muito." },
-  { id:"kittedout",   name:"Equipado",                         eng:"Kitted Out",                     type:"bronze",  icon:"🎽", sector:"🏭 MANUFACTURING",    risk:1, desc:"Equip an item into every available slot, at the same time.", how:"Equipe itens em 7 slots simultaneamente (não precisa preencher TODOS os slots literalmente — basta ter 7 itens equipados ao mesmo tempo).", note:"ATENÇÃO: A descrição diz 'todos os slots' mas na prática apenas 7 são necessários. Verifique com 7 itens equipados." },
-  { id:"supremus",    name:"Supremus Ordo Petrae",             eng:"Supremus Ordo Petrae",           type:"bronze",  icon:"⚔️", sector:"🏭 MANUFACTURING",    risk:1, desc:"Take down 50 combatants from A Ordem, by any means available.", how:"Mate 50 soldados da Ordem. Kills acumulam ao longo do jogo. A Ordem aparece a partir do Manufacturing West.", note:"GRIND: Em co-op é muito mais rápido — kills são compartilhadas entre todos os jogadores." },
-  { id:"ragnarok",    name:"Ragnarök",                         eng:"Ragnarok",                       type:"bronze",  icon:"💀", sector:"🏭 MANUFACTURING",    risk:1, desc:"You've bested 100 of GATE's finest, for one reason or another.", how:"Mate 100 Gatekeepers. Kills acumulam ao longo do jogo. Gatekeepers são os guardas mais comuns — encontrados em todo o jogo após o Manufacturing.", note:"GRIND: O maior grind do jogo. Em co-op o progresso é compartilhado. Foque em áreas com respawn frequente." },
-  { id:"bigapple",    name:"A Grande Maçã",                    eng:"The Big Apple",                  type:"bronze",  icon:"🗽", sector:"🏠 RESIDENCIAL",       risk:1, desc:"You've seen how the other half lives. Turns out, not very well.", how:"Saia da RISE Facility pelo portal no final. O portal de ENTRADA do RISE fica próximo à primeira entrada do Setor Segurança, atrás do elevador gigante (orbe azul grande).", note:"ATENÇÃO: Muitos jogadores procuram o portal no Residencial — ele fica no Setor Segurança. Não confunda e não avance sem entrar." },
-  { id:"hackerman",   name:"Hackerman",                        eng:"Hackerman",                      type:"bronze",  icon:"💻", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"Hack a door or other security feature.", how:"Crafteie um Keypad Hacker (Controller + LCD Screen + Infrared Emitter na Bancada de Criação, após falar com Alice Mayfield ou coletar esses itens) e use num keypad.", note:"ATENÇÃO: A receita precisa ser desbloqueada primeiro. Fale com Alice Mayfield no Escritório ou colete os componentes para ver a receita." },
-  { id:"thevillage",  name:"A Vila",                           eng:"The Village",                    type:"bronze",  icon:"🏘️", sector:"🌀 PORTAIS",          risk:1, desc:"You've stumbled across something alien, and something ancient.", how:"Saia de Village Den da'ko Yeer pelo portal vermelho que aparece após obter o Anti-Fungal Gelatin dentro do mundo.", note:"ATENÇÃO: O portal de saída só aparece após desbloquear o Anti-Fungal Gelatin. Sem completar essa etapa, não há como sair pelo lado correto." },
+  { id:"someshort",   name:"Orla Distante",                    eng:"We Don't Talk About That Place", type:"bronze",  icon:"🏝️", sector:"🌀 PORTAIS",          risk:1, desc:"You found yourself upon some distant shore...", how:"Crafte o Privada-Portal e alimente-o com um Laser Emitter apontado pra parte de trás dele. Sente-se com a barra de continência em 15% ou menos (zona laranja/vermelha). Chance de 5% de teletransporte (50% se ainda não tem o troféu). Repita até conseguir.", note:"ATENÇÃO: Não é um portal no mapa. O Privada-Portal parece um banheiro comum mas tem partículas ao redor, e só funciona alimentado por energia. Beba café pra encher a barra de necessidade rapidamente. Facilite: pra sair de Some Distant Shore depois, é só andar em direção ao 'oceano' — te teleporta de volta pro banheiro do Data Farm." },
+  { id:"rarecatch",   name:"Captura Rara",                     eng:"Rare Catch",                     type:"bronze",  icon:"⭐", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've fished up something rare!", how:"Pesque um peixe raro: Oxidious Antefish, Corruscating Portal Fish ou Pelagic Moon Fish. O Portal Fish aparece exclusivamente perto de portais ativos. O Moon Fish aparece à noite.", note:"ATENÇÃO: Puro RNG. Pesque em locais com portais ativos prioritariamente. Use iscas para aumentar as chances. Espere pelo menos 20-30 tentativas por local antes de mover. Facilite: crafte a Fishing Rod cedo (1x Stapler + 2x Desk Phone + 4x Plastic Scrap + 2x Wood Plank) e comece a pescar o quanto antes — quanto mais cedo tentar, menor a chance de virar o último troféu que falta." },
+  { id:"blindluck",   name:"Sorte Cega",                       eng:"Blind Luck",                     type:"bronze",  icon:"🎭", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've dismantled one of the Puppeteer's wayward creations.", how:"Mate um Sinfonista. Este inimigo aparece em Flathill OU durante eventos climáticos de Fenômeno da Névoa na Facility.", note:"ATENÇÃO: Explore Flathill completamente. Se perder, o Fenômeno da Névoa é raro e aleatório — pode demorar muito. Facilite: o Sinfonista é imune a dano elétrico e de gelo, então leve granadas ou armas de fogo/impacto normal em vez de armas com esses elementos." },
+  { id:"kittedout",   name:"Equipado",                         eng:"Kitted Out",                     type:"bronze",  icon:"🎽", sector:"🏭 MANUFACTURING",    risk:1, desc:"Equip an item into every available slot, at the same time.", how:"Equipe itens em 7 slots simultaneamente (não precisa preencher TODOS os slots literalmente — basta ter 7 itens equipados ao mesmo tempo).", note:"ATENÇÃO: A descrição diz 'todos os slots' mas na prática apenas 7 são necessários. Verifique com 7 itens equipados. Facilite: capacete, roupa, calça, trinket x2, arma e ferramenta já contam — não precisa de itens raros, qualquer combinação de 7 slots preenchidos ativa o troféu." },
+  { id:"supremus",    name:"Supremus Ordo Petrae",             eng:"Supremus Ordo Petrae",           type:"bronze",  icon:"⚔️", sector:"🏭 MANUFACTURING",    risk:1, desc:"Take down 50 combatants from A Ordem, by any means available.", how:"Mate 50 soldados da Ordem. Kills acumulam ao longo do jogo. A Ordem aparece a partir do Manufacturing West.", note:"GRIND: Em co-op é muito mais rápido — kills são compartilhadas entre todos os jogadores. Facilite: não precisa farmar de propósito — os 50 kills tendem a se acumular sozinhos ao longo da progressão normal, já que soldados da Ordem aparecem com frequência a partir do Manufacturing." },
+  { id:"ragnarok",    name:"Ragnarök",                         eng:"Ragnarok",                       type:"bronze",  icon:"💀", sector:"🏭 MANUFACTURING",    risk:1, desc:"You've bested 100 of GATE's finest, for one reason or another.", how:"Mate 100 Guardião do Portãos. Kills acumulam ao longo do jogo. Guardião do Portãos são os guardas mais comuns — encontrados em todo o jogo após o Manufacturing.", note:"GRIND: O maior grind do jogo. Em co-op o progresso é compartilhado. Foque em áreas com respawn frequente. Facilite: numa sala com 6 jogadores, dá pra dividir a carga — em média cerca de 17 kills por pessoa pra bater os 100 juntos." },
+  { id:"bigapple",    name:"A Grande Maçã",                    eng:"The Big Apple",                  type:"bronze",  icon:"🗽", sector:"🏠 RESIDENCIAL",       risk:1, desc:"You've seen how the other half lives. Turns out, not very well.", how:"Saia da RISE Facility pelo portal no final. O portal de ENTRADA do RISE fica próximo à primeira entrada do Setor Segurança, atrás do elevador gigante (orbe azul grande).", note:"ATENÇÃO: Muitos jogadores procuram o portal no Residencial — ele fica no Setor Segurança. Não confunda e não avance sem entrar. Facilite: basta se aproximar do orbe azul pra ativar o portal — não precisa completar nada dentro da RISE além de sair pelo portal do final." },
+  { id:"hackerman",   name:"Hackerman",                        eng:"Hackerman",                      type:"bronze",  icon:"💻", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"Hack a door or other security feature.", how:"Crafteie um Keypad Hacker (Controller + LCD Screen + Infrared Emitter na Bancada de Criação, após falar com Alice Mayfield ou coletar esses itens) e use num keypad.", note:"ATENÇÃO: A receita precisa ser desbloqueada primeiro. Fale com Alice Mayfield no Escritório ou colete os componentes para ver a receita. Facilite: se não achar a Alice, colecionar um Controller, um LCD Screen OU um Infrared Emitter sozinho já desbloqueia a receita — não precisa dos três." },
+  { id:"thevillage",  name:"A Vila",                           eng:"The Village",                    type:"bronze",  icon:"🏘️", sector:"🌀 PORTAIS",          risk:1, desc:"You've stumbled across something alien, and something ancient.", how:"Saia de Village Den da'ko Yeer pelo portal vermelho que aparece após obter o Anti-Fungal Gelatin dentro do mundo.", note:"ATENÇÃO: O portal de saída só aparece após desbloquear o Anti-Fungal Gelatin. Sem completar essa etapa, não há como sair pelo lado correto. Facilite: não tente forçar a saída por outro caminho — dedique tempo a encontrar/craftar o Anti-Fungal Gelatin dentro da própria Village antes de tentar sair." },
 
   // ─── NORMAL — Progressão principal (Silver/Prata) ───
+  { id:"apocnow",     name:"Apocalypse Now",                   eng:"Apocalypse Now",                 type:"gold",     icon:"🌌", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have, with the universe rending in your wake.", how:"Complete a história principal de Abiotic Factor (derrote o chefe final). Automático ao finalizar o jogo.", note:null },
   { id:"puresci",     name:"Ciência Pura",                     eng:"Apocalypse Now",                 type:"platinum",icon:"🏆", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have.", how:"Complete a história principal de Abiotic Factor. Automático ao finalizar o jogo.", note:null },
   { id:"shadowgate",  name:"Shadowgate",                       eng:"Shadowgate",                     type:"silver",  icon:"🌑", sector:"🌀 PORTAIS",          risk:2, desc:"You uncovered something dark in the forests of the north.", how:"Complete o Shadowgate. Parte da progressão principal.", note:null },
   { id:"inquisition", name:"A Inquisição",                     eng:"The Inquisition",                type:"silver",  icon:"⚔️", sector:"🌀 PORTAIS",          risk:2, desc:"You've made your way through ancient halls.", how:"Complete o Praetorium.", note:null },
@@ -3848,27 +4147,26 @@ renderSoups();
 
 // ══ ENTITIES DATA ══
 const entitiesData = [
-  { name:"Rato de Laboratório", eng:"Lab Rat",       icon:"🐭", type:"CRIATURA",  typeColor:C.amber, sector:"Manufacturing",       threat:1, weak:"Contundente",           immune:"—",             loot:"⚠️ Traje de Rato (desmembrar) + Pacote de Rato (Lançador de Rede vivo)", tip:"CRÍTICO para troféu. Capture um vivo com Lançador de Rede ANTES de matar todos." },
-  { name:"Recruta / Invasor",  eng:"Grunt / Breacher",icon:"🪖", type:"HUMANO",    typeColor:C.red,   sector:"Manufacturing+",      threat:2, weak:"Elétrico",               immune:"—",             loot:"Espingarda Militar, Munição Calibre 12, Ração Militar (M.R.E.)", tip:"Fraco a Granadas de Elétron. Aborde com stealth ou à distância." },
-  { name:"Capitão",            eng:"Captain",         icon:"🎖️", type:"HUMANO",    typeColor:C.red,   sector:"Cascade+",            threat:3, weak:"Precisão",               immune:"—",             loot:"Boina do Capitão, Magnum Militar, Munição .357, Kit de Rádio", tip:"Perigoso em melee — usa pistola como arma de corpo a corpo. Use armas de longa distância." },
-  { name:"Torre (Escudo)",     eng:"Rook (Shield)",   icon:"🛡️", type:"HUMANO",    typeColor:C.red,   sector:"Segurança+",          threat:3, weak:"Holy (ignora escudo)",   immune:"Físico frontal",loot:"Escudo Anti-Motim, Eletrônicos Militares",                  tip:"Sabre de Luz Sólida causa dano Holy — ignora escudo E armadura. Flanqueie." },
-  { name:"Atirador de Elite",  eng:"Sniper",          icon:"🎯", type:"HUMANO",    typeColor:C.red,   sector:"Manufacturing+",      threat:4, weak:"Cabeça",                 immune:"—",             loot:"Rifle Sniper Militar, Mira",                                tip:"Alta prioridade — elimine primeiro. Mire na cabeça para one-shot." },
-  { name:"Peregrino",          eng:"Pilgrim",         icon:"🏹", type:"HUMANO",    typeColor:C.red,   sector:"Canaan (Portal)",     threat:2, weak:"Qualquer",               immune:"—",             loot:"Arco, Flechas, Itens de culto",                            tip:"Hostis apenas em Canaan. Lider Niketas dropa troféu Peso Retirado." },
-  { name:"Praga",              eng:"Pest",            icon:"🦟", type:"CRIATURA",  typeColor:C.amber, sector:"Todos os setores",    threat:1, weak:"Qualquer",               immune:"—",             loot:"Praga Crua, Anca de Praga Crua, Sucata Biológica",          tip:"Inimigo mais comum. Fonte básica de comida e materiais de early game." },
-  { name:"Carbúnculo",         eng:"Carbuncle",       icon:"🔴", type:"CRIATURA",  typeColor:C.amber, sector:"Facility inteira",    threat:2, weak:"Agachado = sem ataque",  immune:"—",             loot:"Carbúnculo Cru (sopas/crafting)",                           tip:"NÃO ataca se você se aproximar agachado. Essencial para sopas e crafting." },
-  { name:"Pecari",             eng:"Peccary",         icon:"🐗", type:"CRIATURA",  typeColor:C.amber, sector:"Mycofields+",         threat:2, weak:"Cortante",               immune:"—",             loot:"Costela de Pecari, Linguiça de Pecari",                    tip:"Versão Cogumelo nos Mycofields dropa o Crânio para Capacete de Cogumelo (troféu crítico)." },
-  { name:"Pecari-Cogumelo",    eng:"Mushroom Peccary",icon:"🍄", type:"CRIATURA",  typeColor:C.amber, sector:"Mycofields",          threat:2, weak:"Cortante",               immune:"Fúngico",       loot:"⚠️ Crânio de Pecari-Cogumelo — para troféu Micélio",       tip:"CRÍTICO: Crânio necessário para Capacete de Cogumelo. Não saia dos Mycofields sem ele." },
-  { name:"Crystalisk",         eng:"Crystalisk",      icon:"💎", type:"CRIATURA",  typeColor:C.amber, sector:"Manufacturing Mines", threat:3, weak:"Contundente",            immune:"—",             loot:"Cristal em Pó",                                             tip:"Fica invisível. Use Crystalline Vial Trinket para vê-lo. Ataca à distância." },
-  { name:"Praga Elétrica",     eng:"Electro-Pest",    icon:"⚡", type:"CRIATURA",  typeColor:C.amber, sector:"Laboratórios Cascata",        threat:2, weak:"Físico",                 immune:"Elétrico",      loot:"Capacitor, Sucata Tecnológica",                             tip:"Imune a dano elétrico. Use armas físicas. Fonte de Capacitores." },
-  { name:"Sinfonista",         eng:"Symphonist",      icon:"🎻", type:"CRIATURA",  typeColor:C.amber, sector:"Flathill / Evento de Névoa",threat:4, weak:"Explosivo",              immune:"Elétrico, Gelo",loot:"—",                                                         tip:"⚠️ Troféu Sorte Cega. Imune a elétrico e gelo. Use granadas ou café explosivo." },
-  { name:"Compositor",         eng:"Composer",        icon:"🎼", type:"CRIATURA",  typeColor:C.amber, sector:"Flathill",            threat:3, weak:"Visão apenas",           immune:"Audição",       loot:"—",                                                         tip:"Completamente surdo — detecta SÓ por visão. Mova-se devagar fora do campo visual." },
-  { name:"Glueback",           eng:"Glueback",        icon:"🟡", type:"CRIATURA",  typeColor:C.amber, sector:"Todos",               threat:1, weak:"Qualquer",               immune:"—",             loot:"⭐ Giga Glue — recurso crítico",                            tip:"Farm ativamente. Giga Glue é um dos materiais mais importantes do jogo inteiro." },
-  { name:"Jotun",              eng:"Jotun",           icon:"🗿", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores / Shadowgate",threat:5,weak:"Precisão alta",           immune:"Físico fraco",  loot:"Itens do Jotun",                                            tip:"Boss — troféu Sjaund. Alta vida. Mantenha distância e use armas de alto dano por tiro." },
-  { name:"Robô de Segurança",  eng:"Security Bot",    icon:"🤖", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"EMP, Haywire",           immune:"Veneno",        loot:"CPU de Robô de Segurança",                                  tip:"Patrulha só de noite. Night Pass Trinket = invisível para eles. Choppinator é o método safe." },
-  { name:"Robô de Contenção",  eng:"Containment Bot", icon:"🔒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"Lança (Spear)",          immune:"Veneno",        loot:"CPU Desbloqueada, bebidas raras",                           tip:"Vulnerável a armas de longo alcance. Dropa CPUs e bebidas especiais raras." },
-  { name:"Gatekeeper",         eng:"Gatekeeper",      icon:"💀", type:"ROBÔ",      typeColor:C.cyan,  sector:"Reatores+",           threat:5, weak:"Holy, EMP",              immune:"Físico leve",   loot:"Loot do Gatekeeper, Liga Magnética",                        tip:"⚠️ GRIND: 100 kills para Ragnarök. Holy damage ignora escudo pessoal hardlight." },
-  { name:"Leyak (IS-0091)",    eng:"Leyak (IS-0091)", icon:"👁️", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Residencial",   threat:4, weak:"X-Ray",                 immune:"Físico",        loot:"Essência de Leyak",                                         tip:"X-Ray o repele e dropa Essência. Interaja com Unidade de Contenção para troféu Presença Amigável." },
-  { name:"Colega de Trabalho", eng:"Colega de trabalho",        icon:"🕴️", type:"ENTIDADE",  typeColor:C.purple,sector:"Todos (noite)",       threat:0, weak:"—",                     immune:"—",             loot:"Item de escritório aleatório",                              tip:"PASSIVO. Dê qualquer consumível e ele troca por item de escritório. Café = troféu." },
+  { name:"Rato de Laboratório", eng:"Lab Rat", img:"Images/Entidades/Labrat.webp",       icon:"🐭", type:"CRIATURA",  typeColor:C.amber, sector:"Manufacturing",       threat:1, weak:"Contundente",           immune:"—",             loot:"⚠️ Traje de Rato (desmembrar) + Pacote de Rato (Lançador de Rede vivo)", tip:"CRÍTICO para troféu. Capture um vivo com Lançador de Rede ANTES de matar todos." },
+  { name:"Recruta / Invasor",  eng:"Grunt / Breacher", img:"Images/Entidades/Gruntorder.webp", icon:"🪖", type:"HUMANO",    typeColor:C.red,   sector:"Manufacturing+",      threat:2, weak:"Elétrico",               immune:"—",             loot:"Espingarda Militar, Munição Calibre 12, Ração Militar (M.R.E.)", tip:"Fraco a Granadas de Elétron. Aborde com stealth ou à distância." },
+  { name:"Capitão",            eng:"Captain", img:"Images/Entidades/Captain.webp",         icon:"🎖️", type:"HUMANO",    typeColor:C.red,   sector:"Cascade+",            threat:3, weak:"Precisão",               immune:"—",             loot:"Boina do Capitão, Magnum Militar, Munição .357, Kit de Rádio", tip:"Perigoso em melee — usa pistola como arma de corpo a corpo. Use armas de longa distância." },
+  { name:"Torre (Escudo)",     eng:"Rook (Shield)", img:"Images/Entidades/Rook.webp",   icon:"🛡️", type:"HUMANO",    typeColor:C.red,   sector:"Segurança+",          threat:3, weak:"Sagrado (ignora escudo)",   immune:"Físico frontal",loot:"Escudo Anti-Motim, Eletrônicos Militares",                  tip:"Sabre de Luz Sólida causa dano Sagrado — ignora escudo E armadura. Flanqueie." },
+  { name:"Atirador de Elite",  eng:"Sniper", img:"Images/Entidades/Sniper.webp",          icon:"🎯", type:"HUMANO",    typeColor:C.red,   sector:"Manufacturing+",      threat:4, weak:"Cabeça",                 immune:"—",             loot:"Rifle Sniper Militar, Mira",                                tip:"Alta prioridade — elimine primeiro. Mire na cabeça para one-shot." },
+  { name:"Peregrino",          eng:"Pilgrim", img:"Images/Entidades/Pilgrim.webp",         icon:"🏹", type:"HUMANO",    typeColor:C.red,   sector:"Canaan (Portal)",     threat:2, weak:"Qualquer",               immune:"—",             loot:"Arco, Flechas, Itens de culto",                            tip:"Hostis apenas em Canaan. Lider Niketas dropa troféu Peso Retirado." },
+  { name:"Praga",              eng:"Pest", img:"Images/Entidades/Pest.webp",            icon:"🦟", type:"CRIATURA",  typeColor:C.amber, sector:"Todos os setores",    threat:1, weak:"Qualquer",               immune:"—",             loot:"Praga Crua, Anca de Praga Crua, Sucata Biológica",          tip:"Inimigo mais comum. Fonte básica de comida e materiais de early game." },
+  { name:"Carbúnculo",         eng:"Carbuncle", img:"Images/Entidades/Carbuncle.webp",       icon:"🔴", type:"CRIATURA",  typeColor:C.amber, sector:"Facility inteira",    threat:2, weak:"Agachado = sem ataque",  immune:"—",             loot:"Carbúnculo Cru (sopas/crafting)",                           tip:"NÃO ataca se você se aproximar agachado. Essencial para sopas e crafting." },
+  { name:"Pecari",             eng:"Peccary", img:"Images/Entidades/Peccary.webp",         icon:"🐗", type:"CRIATURA",  typeColor:C.amber, sector:"Mycofields+",         threat:2, weak:"Cortante",               immune:"—",             loot:"Costela de Pecari, Linguiça de Pecari",                    tip:"Versão Cogumelo nos Mycofields dropa o Crânio para Capacete de Cogumelo (troféu crítico)." },
+  { name:"Pecari-Cogumelo",    eng:"Mushroom Peccary", img:"Images/Entidades/Mushroompeccary.webp",icon:"🍄", type:"CRIATURA",  typeColor:C.amber, sector:"Mycofields",          threat:2, weak:"Cortante",               immune:"Fúngico",       loot:"⚠️ Crânio de Pecari-Cogumelo — para troféu Micélio",       tip:"CRÍTICO: Crânio necessário para Capacete de Cogumelo. Não saia dos Mycofields sem ele." },
+  { name:"Crystalisk",         eng:"Crystalisk", img:"Images/Entidades/Crystalisk.webp",      icon:"💎", type:"CRIATURA",  typeColor:C.amber, sector:"Manufacturing Mines", threat:3, weak:"Contundente",            immune:"—",             loot:"Cristal em Pó",                                             tip:"Fica invisível. Use Crystalline Vial Trinket para vê-lo. Ataca à distância." },
+  { name:"Praga Elétrica",     eng:"Electro-Pest", img:"Images/Entidades/Electropest.webp",    icon:"⚡", type:"CRIATURA",  typeColor:C.amber, sector:"Laboratórios Cascata",        threat:2, weak:"Físico",                 immune:"Elétrico",      loot:"Capacitor, Sucata Tecnológica",                             tip:"Imune a dano elétrico. Use armas físicas. Fonte de Capacitores." },
+  { name:"Sinfonista",         eng:"Symphonist", img:"Images/Entidades/Symphonist.webp",      icon:"🎻", type:"CRIATURA",  typeColor:C.amber, sector:"Flathill / Evento de Névoa",threat:4, weak:"Explosivo",              immune:"Elétrico, Gelo",loot:"—",                                                         tip:"⚠️ Troféu Sorte Cega. Imune a elétrico e gelo. Use granadas ou café explosivo." },
+  { name:"Compositor",         eng:"Composer", img:"Images/Entidades/Composer.webp",        icon:"🎼", type:"CRIATURA",  typeColor:C.amber, sector:"Flathill",            threat:3, weak:"Visão apenas",           immune:"Audição",       loot:"—",                                                         tip:"Completamente surdo — detecta SÓ por visão. Mova-se devagar fora do campo visual." },
+  { name:"Jotun",              eng:"Jotun", img:"Images/Entidades/Jotun.webp",           icon:"🗿", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores / Shadowgate",threat:5,weak:"Precisão alta",           immune:"Físico fraco",  loot:"Itens do Jotun",                                            tip:"Boss — troféu Sjaund. Alta vida. Mantenha distância e use armas de alto dano por tiro." },
+  { name:"Robô de Segurança",  eng:"Security Bot", img:"Images/Entidades/Securitybot.webp",    icon:"🤖", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"PEM (Pulso Eletromagnético), Haywire",           immune:"Veneno",        loot:"CPU de Robô de Segurança",                                  tip:"Patrulha só de noite. Night Pass Trinket = invisível para eles. Choppinator é o método safe." },
+  { name:"Robô de Contenção",  eng:"Containment Bot", img:"Images/Entidades/Containmentbot.webp", icon:"🔒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"Lança (Spear)",          immune:"Veneno",        loot:"CPU Desbloqueada, bebidas raras",                           tip:"Vulnerável a armas de longo alcance. Dropa CPUs e bebidas especiais raras." },
+  { name:"Guardiões do Portão", eng:"Gatekeeper", img:"Images/Entidades/Gatekeeper.webp",      icon:"💀", type:"ROBÔ",      typeColor:C.cyan,  sector:"Reatores+",           threat:5, weak:"Sagrado, PEM (Pulso Eletromagnético)",              immune:"Físico leve",   loot:"Loot do Guardião do Portão, Liga Magnética",                        tip:"⚠️ GRIND: 100 kills para Ragnarök. Sagrado damage ignora escudo pessoal hardlight." },
+  { name:"Leyak (IS-0091)",    eng:"Leyak (IS-0091)", img:"Images/Entidades/Leyak.webp", icon:"👁️", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Residencial",   threat:4, weak:"X-Ray",                 immune:"Físico",        loot:"Essência de Leyak",                                         tip:"X-Ray o repele e dropa Essência. Interaja com Unidade de Contenção para troféu Presença Amigável." },
+  { name:"Colega de Trabalho", eng:"Coworker", img:"Images/Entidades/Coworker.webp",        icon:"🕴️", type:"ENTIDADE",  typeColor:C.purple,sector:"Todos (noite)",       threat:0, weak:"—",                     immune:"—",             loot:"Item de escritório aleatório",                              tip:"PASSIVO. Dê qualquer consumível e ele troca por item de escritório. Café = troféu." },
 ];
 let entityFilter='TODOS';
 function renderEntities(){
@@ -3891,23 +4189,51 @@ function renderEntities(){
   listEl.innerHTML='';
   const tLabel=['PASSIVO','FÁCIL','MODERADO','PERIGOSO','MUITO PERIGOSO','BOSS'];
   const tColor=[C.green,C.green,C.amber,C.amber,C.red,C.red];
+  const classLabel={HUMANO:'AMEAÇA HUMANA HOSTIL',CRIATURA:'AMEAÇA BIOLÓGICA',ROBÔ:'UNIDADE AUTÔNOMA GATE',ENTIDADE:'FENÔMENO PARANORMAL'};
+  const splitList=str=>{
+    if(!str||str==='—')return['—'];
+    return str.split(/,\s*| \+ /).map(s=>s.trim()).filter(Boolean);
+  };
   filtered.forEach(e=>{
     const div=document.createElement('div');
-    div.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${e.typeColor};margin-bottom:6px;padding:12px 14px`;
+    div.className='gate-terminal';
+    const weakItems=splitList(e.weak).map(w=>`<li>${w}</li>`).join('');
+    const immuneItems=splitList(e.immune).map(i=>`<li>${i}</li>`).join('');
+    const lootItems=splitList(e.loot).map(l=>`<span class="loot-item">${l}</span>`).join('');
     div.innerHTML=`
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <span style="font-size:var(--fs-3xl)">${e.icon}</span>
-        <span style="font-size:var(--fs-lg);color:${e.typeColor};font-weight:bold">${e.name}</span>
-        <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid ${e.typeColor}44;background:${e.typeColor}14;color:${e.typeColor};letter-spacing:1px">${e.type}</span>
-        <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid ${tColor[e.threat]}44;background:${tColor[e.threat]}14;color:${tColor[e.threat]};letter-spacing:1px">${tLabel[e.threat]}</span>
-        <span style="font-size:var(--fs-xs);color:var(--textMuted)">${e.sector}</span>
+      <div class="hazard-stripe"></div>
+      <div class="terminal-header">
+        <span><span class="status-led"></span>GATE_OS v3.12</span>
+        <span style="color:${tColor[e.threat]}">${tLabel[e.threat]}</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;margin-bottom:8px;font-size:var(--fs-sm)">
-        <div style="color:var(--textDim)"><span style="color:var(--green)">FRAQUEZA:</span> ${e.weak}</div>
-        <div style="color:var(--textDim)"><span style="color:var(--red)">IMUNE:</span> ${e.immune}</div>
-        <div style="color:var(--textDim)"><span style="color:var(--amber)">LOOT:</span> ${e.loot}</div>
+      <div class="holo-chamber">
+        <span class="target-reticle">SETOR: ${e.sector}</span>
+        <img src="${e.img}" class="monster-png" alt="${e.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="monster-fallback-icon">${e.icon}</span>
       </div>
-      <div style="font-size:var(--fs-sm);color:var(--cyan)">▸ ${e.tip}</div>`;
+      <div class="terminal-body">
+        <span class="specimen-code">[${e.type}] CLASSIFICAÇÃO: ${classLabel[e.type]||e.type}</span>
+        <h2 class="specimen-title">${e.name}</h2>
+        <div class="meta-row">
+          <span>ESPÉCIE: ${e.type}</span>
+          <span>SETOR: ${e.sector}</span>
+        </div>
+        <div class="diag-grid">
+          <div class="diag-box weakness">
+            <div class="diag-title">⚡ FRAQUEZAS</div>
+            <ul class="diag-list">${weakItems}</ul>
+          </div>
+          <div class="diag-box immunity">
+            <div class="diag-title">🛡️ IMUNIDADES</div>
+            <ul class="diag-list">${immuneItems}</ul>
+          </div>
+        </div>
+        <div class="loot-box">
+          <div class="loot-title">📦 MATERIAIS EXTRAÍVEIS:</div>
+          <div class="loot-items">${lootItems}</div>
+        </div>
+        <div class="specimen-tip">▸ ${e.tip}</div>
+      </div>`;
     listEl.appendChild(div);
   });
 }
@@ -3956,8 +4282,8 @@ renderWeather();
 const loreData={
   factions:[
     { name:"Fundação GATE",      icon:"🏛️", color:C.cyan,   desc:"Garrick Advanced Technology Enterprises — organização científica secreta construída em 1993 num garimpo de lítio no outback australiano. Estudava Anteversos e entidades paranormais. Financiamento: governo australiano + privado. Liderada por facções internas com agendas conflitantes." },
-    { name:"A Ordem",            icon:"⚔️", color:C.red,    desc:"Força paramilitar enviada para 'conter' a Facility após o colapso. Na prática: eliminar testemunhas. Grunts, Captains, Snipers regulares + Gatekeepers de elite. 50 kills = troféu Supremus. 100 Gatekeepers = troféu Ragnarök." },
-    { name:"Gatekeepers",          icon:"💀", color:C.red,    desc:"Elite da Ordem. Cyborgs com escudos pessoais hardlight e armamento pesado. Origem possivelmente ligada a experimentos da própria GATE. Imunes a dano físico leve — use dano Holy ou EMP." },
+    { name:"A Ordem",            icon:"⚔️", color:C.red,    desc:"Força paramilitar enviada para 'conter' a Facility após o colapso. Na prática: eliminar testemunhas. Grunts, Captains, Snipers regulares + Guardião do Portãos de elite. 50 kills = troféu Supremus. 100 Guardião do Portãos = troféu Ragnarök." },
+    { name:"Guardião do Portãos",          icon:"💀", color:C.red,    desc:"Elite da Ordem. Cyborgs com escudos pessoais hardlight e armamento pesado. Origem possivelmente ligada a experimentos da própria GATE. Imunes a dano físico leve — use dano Holy ou EMP." },
     { name:"Os Unlost",            icon:"👻", color:C.purple, desc:"Cientistas que passaram por eventos paranormais e perderam a forma física mas mantiveram consciência. Existem num limbo dimensional. O Unlost Jotun e a Unlost Sister têm bobbleheads colecionáveis." },
     { name:"Exors",                icon:"👽", color:C.amber,  desc:"Entidades do Anteverso extensivamente estudadas pela GATE. Incluem Exor Monks (fonte de Exor Hearts para o Transportador de Itens). Ligados à corrupção dimensional. Drops essenciais para crafting avançado." },
     { name:"Cultistas de Canaan",  icon:"🙏", color:C.steel,  desc:"Grupo humano no mundo portal Canaan. Liderados por Niketas. Rituais baseados em entidades do Anteverso. Hostis. Matar Niketas = troféu Peso Retirado dos Ombros." },
