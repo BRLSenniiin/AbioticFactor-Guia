@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: 'Burkhan';
@@ -676,6 +677,387 @@
   .map-tip-sym { color: var(--cyan); flex-shrink: 0; }
   .map-source-box { background: var(--bgCard); border: 1px solid var(--borderGn); padding: 14px; }
 
+  /* ── STORY CAROUSEL (Linha do Tempo — História) ── */
+  .story-carousel { display: flex; flex-direction: column; gap: 0; }
+  .story-frame { display: none; }
+  .story-frame.visible {
+    display: block;
+    animation: storyFadeIn 0.4s ease-out;
+  }
+  @keyframes storyFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .story-card {
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .story-imgbox {
+    height: 160px;
+    background: linear-gradient(135deg, rgba(160,96,224,0.18), rgba(160,96,224,0.04));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .story-imgbox img { width: 100%; height: 100%; object-fit: cover; }
+  .story-imgbox-emoji { font-size: var(--fs-6xl); }
+  .story-year-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: var(--fs-xs);
+    color: var(--purple);
+    background: rgba(10,10,14,0.75);
+    border: 1px solid rgba(160,96,224,0.5);
+    padding: 3px 10px;
+    letter-spacing: 1px;
+  }
+  .story-text {
+    padding: 14px 16px;
+    font-size: var(--fs-md);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .story-next-wrap { display: flex; justify-content: center; padding: 14px 0; }
+  .story-next-btn {
+    background: var(--bgCard);
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xl);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .story-next-btn:active { transform: scale(0.92); }
+  .story-next-btn:hover { background: rgba(160,96,224,0.15); }
+  .story-end-marker {
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--textMuted);
+    letter-spacing: 3px;
+    padding: 16px 0 4px;
+  }
+
+  /* ── CHARACTER CAROUSEL (Personagens-chave) ── */
+  #panel-lore .char-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 430px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  #panel-lore .char-track { position: relative; width: 100%; height: 100%; min-height: 430px; }
+  #panel-lore .char-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(320px, 78vw);
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.45s cubic-bezier(.22,.9,.36,1), opacity 0.45s ease, filter 0.45s ease;
+  }
+  #panel-lore .char-card.pos-center { transform: translateX(-50%) scale(1); opacity: 1; z-index: 5; filter: none; cursor: default; }
+  #panel-lore .char-card.pos-left   { transform: translateX(calc(-50% - clamp(150px, 46vw, 220px))) scale(0.8); opacity: 0.45; z-index: 3; filter: blur(0.5px); }
+  #panel-lore .char-card.pos-right  { transform: translateX(calc(-50% + clamp(150px, 46vw, 220px))) scale(0.8); opacity: 0.45; z-index: 3; filter: blur(0.5px); }
+  #panel-lore .char-card.pos-far    { transform: translateX(-50%) scale(0.55); opacity: 0; z-index: 1; pointer-events: none; }
+  #panel-lore .char-face {
+    height: 160px;
+    background: linear-gradient(135deg, rgba(160,96,224,0.18), rgba(160,96,224,0.04));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  #panel-lore .char-face-img { width: 100%; height: 100%; object-fit: cover; }
+  #panel-lore .char-face-fallback { display: none; align-items: center; justify-content: center; font-size: var(--fs-6xl); }
+  #panel-lore .char-sheet { padding: 14px 16px; }
+  #panel-lore .char-name { font-size: var(--fs-lg); color: var(--greenLt); font-weight: bold; margin-bottom: 4px; }
+  #panel-lore .char-sector { font-size: var(--fs-xs); color: var(--textMuted); margin-bottom: 8px; }
+  #panel-lore .char-note { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.6; max-height: 210px; overflow-y: auto; }
+  #panel-lore .char-arrow {
+    background: var(--bgCard);
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xl);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  #panel-lore .char-arrow:active { transform: scale(0.92); }
+  #panel-lore .char-arrow:hover { background: rgba(160,96,224,0.15); }
+  #panel-lore .char-arrow-left { margin-right: -22px; }
+  #panel-lore .char-arrow-right { margin-left: -22px; }
+
+  /* ── FACTION LIST (Facções) ── */
+  #panel-lore .faction-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+  #panel-lore .faction-card {
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  #panel-lore .faction-imgbox {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 8;
+    background: linear-gradient(135deg, rgba(160,96,224,0.18), rgba(160,96,224,0.04));
+    overflow: hidden;
+  }
+  #panel-lore .faction-imgbox img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #panel-lore .faction-name-overlay {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 16px 18px 12px;
+    background: linear-gradient(to top, rgba(5,7,10,0.92) 15%, rgba(5,7,10,0.5) 60%, transparent 100%);
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+  }
+  #panel-lore .faction-body { padding: 14px 16px; }
+  #panel-lore .faction-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.6; }
+
+  /* ── JOBS & TRAITS CARDS — versão compacta mobile-first (rev. 3: grid 2 col. + personagem saindo de trás) ── */
+  #panel-jobstraits .personnel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 10px; align-items: start; }
+  #panel-jobstraits .job-card-wrap { position: relative; padding-top: 34px; }
+  #panel-jobstraits .job-peek {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 60px;
+    border-radius: 8px;
+    border: 1px solid #1a2333;
+    background: rgba(5, 8, 14, 0.7);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    z-index: 0;
+  }
+  #panel-jobstraits .job-peek img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  #panel-jobstraits .job-peek .icon-fallback { font-size: 24px; }
+  #panel-jobstraits .job-card {
+    position: relative;
+    z-index: 1;
+    background: rgba(13, 18, 28, 0.96);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    border-radius: 4px;
+    padding: 10px 10px 10px;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 0;
+  }
+  #panel-jobstraits .job-header-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; }
+  #panel-jobstraits .job-title { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  #panel-jobstraits .job-title h3 { font-family: 'Rajdhani', sans-serif; font-size: 13px; color: #fff; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.2; text-align: center; }
+  #panel-jobstraits .job-tier-badge { font-size: 10px; font-weight: bold; padding: 0 6px; border-radius: 3px; border: 1px solid; letter-spacing: 1px; flex-shrink: 0; }
+  #panel-jobstraits .job-sub { font-size: 9.5px; color: #64748b; text-align: center; }
+  #panel-jobstraits .point-badge { display: inline-block; align-self: center; font-size: 9.5px; font-weight: bold; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; white-space: nowrap; }
+  #panel-jobstraits .pts-gain { background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid #00ff88; }
+  #panel-jobstraits .job-chipline { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
+  #panel-jobstraits .chip-label { font-size: 9px; color: #64748b; margin-right: 1px; }
+  #panel-jobstraits .chip { font-size: 8.5px; padding: 2px 5px; border-radius: 2px; background: #111927; border: 1px solid #2d3b55; color: #e2e8f0; white-space: nowrap; }
+  #panel-jobstraits .chip-skill { border-color: #00f3ff55; color: #7dd3fc; }
+  #panel-jobstraits .job-forced-trait { font-size: 9.5px; color: #ff5577; background: rgba(255,51,85,0.08); border: 1px dashed rgba(255,51,85,0.35); padding: 4px 6px; border-radius: 3px; text-align: center; }
+  #panel-jobstraits .job-desc { font-size: 9.5px; color: var(--textDim); line-height: 1.4; }
+  #panel-jobstraits .traits-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  #panel-jobstraits .traits-col-title { font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  #panel-jobstraits .traits-col-title.pos { color: #00ff88; }
+  #panel-jobstraits .traits-col-title.neg { color: #ff3355; }
+  #panel-jobstraits .traits-grid { display: flex; flex-direction: column; gap: 6px; }
+  #panel-jobstraits .trait-chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 9px;
+    border-radius: 3px;
+    font-size: 11px;
+    background: rgba(15, 23, 42, 0.7);
+    border-left: 3px solid #64748b;
+    font-family: 'Share Tech Mono', monospace;
+    gap: 6px;
+  }
+  #panel-jobstraits .trait-positive { border-left-color: #00ff88; }
+  #panel-jobstraits .trait-negative { border-left-color: #ff3355; }
+  #panel-jobstraits .trait-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  #panel-jobstraits .trait-info strong { color: #fff; font-size: 10.5px; }
+  #panel-jobstraits .trait-tier-badge { font-family: 'Rajdhani', sans-serif; font-weight: 700; }
+  #panel-jobstraits .trait-info span { font-size: 9.5px; color: #94a3b8; line-height: 1.3; }
+  #panel-jobstraits .trait-cost { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+  #panel-jobstraits .trait-positive .trait-cost { color: #00ff88; }
+  #panel-jobstraits .trait-negative .trait-cost { color: #ff3355; }
+  @media (max-width: 340px) {
+    #panel-jobstraits .traits-columns { grid-template-columns: 1fr; gap: 18px; }
+  }
+  @media (max-width: 480px) {
+    #panel-jobstraits .personnel-grid { gap: 26px 8px; }
+    #panel-jobstraits .job-card { padding: 8px 8px; padding-top: 26px; }
+    #panel-jobstraits .job-card-wrap { padding-top: 30px; }
+    #panel-jobstraits .job-peek { width: 52px; height: 52px; }
+    #panel-jobstraits .job-title h3 { font-size: 11.5px; }
+    #panel-jobstraits .trait-chip { flex-direction: column; align-items: flex-start; gap: 3px; padding: 6px 7px; }
+  }
+
+  /* ── WEATHER HUD CARDS (Clima) — baseado no modelo GATE Telemetry enviado ── */
+  #panel-weather #weather-list { display: flex; flex-direction: column; gap: 20px; }
+  #panel-weather .hud-hero {
+    width: 100%;
+    background: rgba(10, 15, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 119, 0, 0.3);
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    box-shadow: 0 0 40px rgba(255, 119, 0, 0.15), inset 0 0 15px rgba(255, 119, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  #panel-weather .hud-hero::before, #panel-weather .hud-hero::after {
+    content: "";
+    position: absolute;
+    width: 12px; height: 12px;
+    border: 2px solid #ff7700;
+    z-index: 10;
+    pointer-events: none;
+  }
+  #panel-weather .hud-hero::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+  #panel-weather .hud-hero::after { bottom: 0; right: 0; border-left: none; border-top: none; }
+  #panel-weather .visual-panel {
+    background: linear-gradient(180deg, rgba(255, 119, 0, 0.15) 0%, rgba(5, 8, 14, 0.95) 100%);
+    border-right: 1px solid rgba(255, 119, 0, 0.25);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  #panel-weather .status-stamp {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ff9933;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #panel-weather .status-stamp .pulse {
+    width: 8px; height: 8px;
+    background: #ff7700;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ff7700;
+    animation: hudPulse 1.2s infinite alternate;
+  }
+  @keyframes hudPulse { from { opacity: 0.3; } to { opacity: 1; } }
+  #panel-weather .event-portrait {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border: 1px solid rgba(255, 119, 0, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #panel-weather .event-portrait img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.4) sepia(0.2) hue-rotate(-20deg); }
+  #panel-weather .portrait-overlay { position: absolute; inset: 0; background: radial-gradient(circle, transparent 40%, rgba(3, 5, 8, 0.85) 100%); }
+  #panel-weather .portrait-fallback { display: none; font-size: var(--fs-6xl); z-index: 2; }
+  #panel-weather .temp-gauge {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 119, 0, 0.3);
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  #panel-weather .temp-gauge .val { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #ffaa55; line-height: 1; }
+  #panel-weather .temp-gauge .lbl { font-size: 9px; color: #788296; letter-spacing: 1px; margin-top: 2px; }
+  #panel-weather .data-panel { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+  #panel-weather .header-group { border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; }
+  #panel-weather .header-group .sys-code { font-size: 10px; color: #ff7700; letter-spacing: 2px; }
+  #panel-weather .header-group h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  #panel-weather .bio-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+  #panel-weather .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  #panel-weather .metric-card { background: rgba(15, 23, 42, 0.6); border-left: 2px solid #ff7700; padding: 10px 12px; border-radius: 0 4px 4px 0; }
+  #panel-weather .metric-card .m-title { font-size: 10px; color: #ffaa55; text-transform: uppercase; }
+  #panel-weather .metric-card .m-val { font-size: 11px; color: #e2e8f0; margin-top: 3px; line-height: 1.3; }
+  #panel-weather .seal-block { background: rgba(255, 119, 0, 0.06); border: 1px dashed rgba(255, 119, 0, 0.3); padding: 12px; border-radius: 4px; }
+  #panel-weather .seal-title { font-size: 10px; color: #ff9933; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+  #panel-weather .seal-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  #panel-weather .seal-tag { background: #111927; border: 1px solid #2d3b55; color: #cbd5e1; padding: 5px 10px; font-size: 11px; border-radius: 20px; }
+  #panel-weather .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
+  #panel-weather .action-box { font-size: 11px; padding: 12px; border-radius: 4px; line-height: 1.4; }
+  #panel-weather .action-override { background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.25); color: #7dd3fc; }
+  #panel-weather .action-opportunity { background: rgba(0, 255, 136, 0.05); border: 1px solid rgba(0, 255, 136, 0.25); color: #6ee7b7; }
+  #panel-weather .action-box strong { display: block; font-size: 9px; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+  @media (max-width: 768px) {
+    #panel-weather .hud-hero { grid-template-columns: 1fr; }
+    #panel-weather .visual-panel { border-right: none; border-bottom: 1px solid rgba(255, 119, 0, 0.25); padding: 16px; }
+    #panel-weather .event-portrait { height: 150px; }
+    #panel-weather .data-panel { padding: 18px 16px; gap: 16px; }
+    #panel-weather .header-group h1 { font-size: 24px; }
+  }
+  @media (max-width: 480px) {
+    #panel-weather .metrics-grid { grid-template-columns: 1fr; }
+    #panel-weather .footer-actions { grid-template-columns: 1fr; }
+    #panel-weather .seal-tags { flex-direction: column; gap: 6px; }
+    #panel-weather .seal-tag { width: 100%; text-align: center; }
+    #panel-weather .temp-gauge .val { font-size: 26px; }
+  }
+
+  /* ── LORE SECTION HEADERS (// LINHA DO TEMPO, // FAÇÕES, // PERSONAGENS-CHAVE) ── */
+  .lore-sec {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 40px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  .lore-sec:first-child { margin-top: 0; }
+
+
   /* ── DICAS PANEL ── */
   .tips-header-box { background: var(--bgCard); border: 1px solid var(--borderGn); border-left: 3px solid var(--amber); padding: 16px; margin-bottom: 18px; }
   .tips-header-title { font-size: var(--fs-xs); color: var(--amber); letter-spacing: 3px; margin-bottom: 8px; }
@@ -1033,6 +1415,12 @@
     .npc-dossier-emoji { font-size: var(--fs-5xl); }
     #panel-entities .gate-terminal { width: 100%; }
     #panel-entities .diag-grid { grid-template-columns: 1fr; }
+    #panel-lore .char-arrow { width: 34px; height: 34px; font-size: var(--fs-lg); }
+    #panel-lore .char-arrow-left { margin-right: -14px; }
+    #panel-lore .char-arrow-right { margin-left: -14px; }
+    #panel-lore .char-face { height: 130px; }
+    #panel-lore .faction-imgbox { aspect-ratio: 16 / 9; }
+    #panel-lore .faction-name-overlay { font-size: var(--fs-xl); padding: 12px 14px 10px; }
   }
 </style>
 </head>
@@ -1633,8 +2021,9 @@
     <div class="map-intro" style="border-left-color:var(--steel)">
       <div class="map-intro-title" style="color:var(--steel)">// EVENTOS CLIMÁTICOS</div>
       <div style="font-size:var(--fs-md);color:var(--text);line-height:1.8">
-        A GATE Facility sofre <strong style="color:var(--steel)">eventos climáticos aleatórios</strong> que alteram as regras do jogo drasticamente.<br>
-        Cada evento tem duração específica e pode ser oportunidade (farm de recursos raros) ou ameaça (inimigos reforçados, equipamento danificado).<br>
+        A GATE Facility sofre <strong style="color:var(--steel)">eventos climáticos aleatórios</strong> que duram o <strong style="color:var(--steel)">dia inteiro</strong> — sempre anunciados às 7h e ativos até as 7h do dia seguinte, a menos que você desligue antes.<br>
+        Depois que um evento termina, a Facility fica <strong style="color:var(--text)">4 dias sem novos eventos</strong>; passado esse período, há 20% de chance de um novo evento começar a cada 7h.<br>
+        A maioria dos eventos tem um <strong style="color:var(--amber)">botão de desligar</strong> escondido em algum lugar da Facility — conhecer o local é sua principal ferramenta contra eles.<br>
         <strong style="color:var(--amber)">Dica:</strong> Fenômeno da Névoa é a única forma de encontrar Sinfonistas fora de Flathill — necessário para o troféu Sorte Cega.
       </div>
     </div>
@@ -1675,18 +2064,26 @@
         <strong style="color:var(--amber)">Regra de ouro:</strong> Escolha o Job com mais pontos de Trait — isso dá mais liberdade para customizar o personagem.
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-      <div>
-        <div class="section-title" style="margin-bottom:10px">JOBS — TIER LIST</div>
-        <div id="jobs-list"></div>
-      </div>
-      <div>
-        <div class="section-title" style="margin-bottom:10px">TRAITS — GUIA COMPLETO</div>
-        <div id="traits-list"></div>
+    <div>
+      <div class="section-title" style="margin-bottom:10px">JOBS — TIER LIST</div>
+      <div id="jobs-list" class="personnel-grid"></div>
+    </div>
+    <div style="margin-top:24px">
+      <div class="section-title" style="margin-bottom:10px">TRAITS — GUIA COMPLETO</div>
+      <div class="traits-columns">
+        <div>
+          <div class="traits-col-title pos">✓ POSITIVOS — CUSTAM PONTOS</div>
+          <div id="traits-positive" class="traits-grid"></div>
+        </div>
+        <div>
+          <div class="traits-col-title neg">✗ NEGATIVOS — CONCEDEM PONTOS</div>
+          <div id="traits-negative" class="traits-grid"></div>
+        </div>
       </div>
     </div>
     <div class="map-source-box">
       <div class="section-title">FONTES</div>
+      <a href="https://abioticfactor.wiki.gg/wiki/Jobs" target="_blank" class="tips-source-link">→ Wiki Oficial — Jobs</a>
       <a href="https://www.thegamer.com/abiotic-factor-class-job-tier-list/" target="_blank" class="tips-source-link">→ TheGamer — Jobs Tier List (EN)</a>
       <a href="https://www.bisecthosting.com/blog/abiotic-factor-jobs-best-job-skill-bonuses-tier-list-solo-multiplayer" target="_blank" class="tips-source-link">→ BisectHosting — Best Jobs Tier List (EN)</a>
       <a href="https://abioticfactor.wiki.gg/wiki/Traits" target="_blank" class="tips-source-link">→ Wiki Oficial — Traits</a>
@@ -3821,68 +4218,68 @@ weaponsData.forEach(w => {
 // risk: 0=crítico(perdível), 1=atenção(método específico/grind/RNG), 2=normal(automático/simples)
 const trophyMaster = [
   // ─── RISCO CRÍTICO (risco real de perder) ───
-  { id:"laborat",     name:"Rato de Laboratório",              eng:"Lab Rat",                        type:"bronze",  icon:"🐭", sector:"🏭 MANUFACTURING",    risk:0, desc:"Never go full rat.", how:"Use o Rat Suit E o Rat Pack ao mesmo tempo. Rat Suit: mate e desmembre um Lab Rat. Rat Pack: capture um Lab Rat VIVO com o Net Launcher e mate com arma contundente.", note:"CRÍTICO: Construa o Net Launcher ANTES de matar todos os Lab Rats. Se eliminar todos sem capturar um vivo, o troféu fica bloqueado sem inimigos disponíveis. Facilite: receita do Net Launcher é 2 Rebar + 2 Staplers + 4 Rubberband Balls + 2 Plastic Scraps. Use arma contundente SEM efeito (nada de Thermal Mallet) no rato enredado, senão ele pode morrer do efeito em vez do dano." },
-  { id:"dummy",       name:"Manequim",                         eng:"Dummy",                          type:"bronze",  icon:"🎯", sector:"🏭 MANUFACTURING",    risk:0, desc:"You've found a familiar friend in a familiar place.", how:"Nas Minas do Manufacturing West há uma torre num poço. Suba a torre, entre no portal no topo para acessar a área secreta de tutorial e interaja com o Pest Dummy.", note:"CRÍTICO: Portal escondido no topo da torre — fácil de ignorar completamente. Explore as Minas 100% antes de avançar. Facilite: marque no mapa qualquer torre/poço que avistar nas Minas antes de seguir pro próximo objetivo — voltar depois de avançar de setor é bem mais trabalhoso." },
-  { id:"electricdreams",name:"Sonhos Elétricos",               eng:"Electric Dreams",                type:"bronze",  icon:"🤖", sector:"💧 HIDROPLANTA",       risk:0, desc:"You took Kylie Muir to the end, as promised.", how:"Use o Chip Neural Hiperdenso no tanque com o cérebro de Kylie Muir (seção Robótica da Hydroplant) → obtenha Kylie (Trinket) → leve aos Botanical Labs → insira num Robô de Segurança → vá a Albatross.", note:"CRÍTICO: O Chip Neural Hiperdenso está na Robótica. Se avançar da Hydroplant sem usá-lo, a quest fica inacessível nessa jogatina. Facilite: a receita do chip só desbloqueia depois de falar com Kylie Muir. O troféu só destrava quando você CHEGA no Albatross com ela já inserida no robô — se completar os passos antes de chegar lá, pode precisar voltar até o Albatross de novo." },
-  { id:"engsuccess",  name:"Sucesso de Engenharia",            eng:"Engineering Success",            type:"bronze",  icon:"👷", sector:"🏭 MANUFACTURING",    risk:0, desc:"Collect the full Manufacturing uniform.", how:"Interaja com o corpo de um trabalhador morto na área Upper Shipping do Manufacturing West para coletar o uniforme completo.", note:"CRÍTICO: O corpo com o uniforme fica especificamente no Upper Shipping. Passe por essa área sem checar os corpos e o troféu fica para trás. Facilite: pegue as 4 peças do corpo de uma vez e equipe o conjunto completo simultaneamente — carregar no inventário sem vestir não destrava o troféu." },
-  { id:"goWithFlow",  name:"Seguindo o Fluxo",                 eng:"Go With The Flow",               type:"bronze",  icon:"💧", sector:"💧 HIDROPLANTA",       risk:0, desc:"Collect the full Hydroplant uniform.", how:"Interaja com o trabalhador morto vestindo o uniforme no elevador subaquático da Hydroplant — especificamente na seção Robótica.", note:"CRÍTICO: O corpo fica no elevador subaquático. Passe pelo elevador sem checar o cadáver e o troféu some. Facilite: equipe o conjunto completo assim que pegar as peças, antes de subir o elevador — igual ao uniforme de Manufacturing, precisa vestir tudo ao mesmo tempo." },
-  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Colega de trabalho sem café, a interação do troféu não dispara. Facilite: é preciso DAR o café ativamente (feed), não basta estar com ele guardado — carregue 2-3 Mugs de reserva assim que entrar no Manufacturing." },
-  { id:"mushroomhelm",name:"Micélio sobre o Concílio",         eng:"Mycelium about the Consilium",   type:"bronze",  icon:"🍄", sector:"🔭 CASCADE LABS",      risk:0, desc:"Enjoy the dreams of the Mycofields.", how:"Crafteie e equipe o Capacete de Cogumelo. Receita: 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Skull dropa dos Mushroom Peccaries nos Mycofields.", note:"CRÍTICO: O Peccary Skull só existe nos Mycofields. Não saia desse portal sem ele — voltar é custoso. Facilite: já leve Giga Glue e Refined Carbon prontos pra craftar o capacete na hora, assim que o Skull dropar." },
+  { id:"laborat",     name:"Rato de Laboratório",              eng:"Lab Rat",                        type:"bronze",  icon:"🐭", img:"https://m.exophase.com/steam/awards/s/000g43b1.png?4c64e261a0479f15a66a2a2beaab456c", rarity:16.61, rarityCount:239, sector:"🏭 MANUFACTURING",    risk:0, desc:"Never go full rat.", how:"Use o Rat Suit E o Rat Pack ao mesmo tempo. Rat Suit: mate e desmembre um Lab Rat. Rat Pack: capture um Lab Rat VIVO com o Net Launcher e mate com arma contundente.", note:"CRÍTICO: Construa o Net Launcher ANTES de matar todos os Lab Rats. Se eliminar todos sem capturar um vivo, o troféu fica bloqueado sem inimigos disponíveis. Facilite: receita do Net Launcher é 2 Rebar + 2 Staplers + 4 Rubberband Balls + 2 Plastic Scraps. Use arma contundente SEM efeito (nada de Thermal Mallet) no rato enredado, senão ele pode morrer do efeito em vez do dano." },
+  { id:"dummy",       name:"Manequim",                         eng:"Dummy",                          type:"bronze",  icon:"🎯", img:"https://m.exophase.com/steam/awards/s/dg00g46e.png?4c64e261a0479f15a66a2a2beaab456c", rarity:35.76, rarityCount:111, sector:"🏭 MANUFACTURING",    risk:0, desc:"You've found a familiar friend in a familiar place.", how:"Nas Minas do Manufacturing West há uma torre num poço. Suba a torre, entre no portal no topo para acessar a área secreta de tutorial e interaja com o Pest Dummy.", note:"CRÍTICO: Portal escondido no topo da torre — fácil de ignorar completamente. Explore as Minas 100% antes de avançar. Facilite: marque no mapa qualquer torre/poço que avistar nas Minas antes de seguir pro próximo objetivo — voltar depois de avançar de setor é bem mais trabalhoso." },
+  { id:"electricdreams",name:"Sonhos Elétricos",               eng:"Electric Dreams",                type:"bronze",  icon:"🤖", img:"https://m.exophase.com/steam/awards/s/6dgd5j01.png?4c64e261a0479f15a66a2a2beaab456c", rarity:9.28, rarityCount:428, sector:"💧 HIDROPLANTA",       risk:0, desc:"You took Kylie Muir to the end, as promised.", how:"Use o Chip Neural Hiperdenso no tanque com o cérebro de Kylie Muir (seção Robótica da Hydroplant) → obtenha Kylie (Trinket) → leve aos Botanical Labs → insira num Robô de Segurança → vá a Albatross.", note:"CRÍTICO: O Chip Neural Hiperdenso está na Robótica. Se avançar da Hydroplant sem usá-lo, a quest fica inacessível nessa jogatina. Facilite: a receita do chip só desbloqueia depois de falar com Kylie Muir. O troféu só destrava quando você CHEGA no Albatross com ela já inserida no robô — se completar os passos antes de chegar lá, pode precisar voltar até o Albatross de novo." },
+  { id:"engsuccess",  name:"Sucesso de Engenharia",            eng:"Engineering Success",            type:"bronze",  icon:"👷", img:"https://m.exophase.com/steam/awards/s/dgg36034.png?4c64e261a0479f15a66a2a2beaab456c", rarity:34.38, rarityCount:116, sector:"🏭 MANUFACTURING",    risk:0, desc:"Collect the full Manufacturing uniform.", how:"Interaja com o corpo de um trabalhador morto na área Upper Shipping do Manufacturing West para coletar o uniforme completo.", note:"CRÍTICO: O corpo com o uniforme fica especificamente no Upper Shipping. Passe por essa área sem checar os corpos e o troféu fica para trás. Facilite: pegue as 4 peças do corpo de uma vez e equipe o conjunto completo simultaneamente — carregar no inventário sem vestir não destrava o troféu." },
+  { id:"goWithFlow",  name:"Seguindo o Fluxo",                 eng:"Go With The Flow",               type:"bronze",  icon:"💧", img:"https://m.exophase.com/steam/awards/s/35775jg5.png?4c64e261a0479f15a66a2a2beaab456c", rarity:20.77, rarityCount:191, sector:"💧 HIDROPLANTA",       risk:0, desc:"Collect the full Hydroplant uniform.", how:"Interaja com o trabalhador morto vestindo o uniforme no elevador subaquático da Hydroplant — especificamente na seção Robótica.", note:"CRÍTICO: O corpo fica no elevador subaquático. Passe pelo elevador sem checar o cadáver e o troféu some. Facilite: equipe o conjunto completo assim que pegar as peças, antes de subir o elevador — igual ao uniforme de Manufacturing, precisa vestir tudo ao mesmo tempo." },
+  { id:"coffee",      name:"Café no Buraco do Café",           eng:"Coffee in the Coffee Hole",      type:"bronze",  icon:"☕", img:"https://m.exophase.com/steam/awards/s/j01053b6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:17.03, rarityCount:233, sector:"🏠 RESIDENCIAL",       risk:0, desc:"You fed coffee to an entity that probably doesn't need more coffee.", how:"Ofereça uma Mug of Coffee ao Colega de trabalho quando encontrá-lo. Ele aparece em locais variados e inesperados.", note:"CRÍTICO: Tenha SEMPRE uma Mug of Coffee no inventário após o Manufacturing. Se encontrar o Colega de trabalho sem café, a interação do troféu não dispara. Facilite: é preciso DAR o café ativamente (feed), não basta estar com ele guardado — carregue 2-3 Mugs de reserva assim que entrar no Manufacturing." },
+  { id:"mushroomhelm",name:"Micélio sobre o Concílio",         eng:"Mycelium about the Consilium",   type:"bronze",  icon:"🍄", img:"https://m.exophase.com/steam/awards/s/777eb0g4.png?4c64e261a0479f15a66a2a2beaab456c", rarity:15.34, rarityCount:259, sector:"🔭 CASCADE LABS",      risk:0, desc:"Enjoy the dreams of the Mycofields.", how:"Crafteie e equipe o Capacete de Cogumelo. Receita: 1x Mushroom Peccary Skull + 1x Giga Glue + 2x Refined Carbon. Skull dropa dos Mushroom Peccaries nos Mycofields.", note:"CRÍTICO: O Peccary Skull só existe nos Mycofields. Não saia desse portal sem ele — voltar é custoso. Facilite: já leve Giga Glue e Refined Carbon prontos pra craftar o capacete na hora, assim que o Skull dropar." },
 
   // ─── ATENÇÃO (método específico, timing ou RNG) ───
-  { id:"someshort",   name:"Orla Distante",                    eng:"We Don't Talk About That Place", type:"bronze",  icon:"🏝️", sector:"🌀 PORTAIS",          risk:1, desc:"You found yourself upon some distant shore...", how:"Crafte o Privada-Portal e alimente-o com um Laser Emitter apontado pra parte de trás dele. Sente-se com a barra de continência em 15% ou menos (zona laranja/vermelha). Chance de 5% de teletransporte (50% se ainda não tem o troféu). Repita até conseguir.", note:"ATENÇÃO: Não é um portal no mapa. O Privada-Portal parece um banheiro comum mas tem partículas ao redor, e só funciona alimentado por energia. Beba café pra encher a barra de necessidade rapidamente. Facilite: pra sair de Some Distant Shore depois, é só andar em direção ao 'oceano' — te teleporta de volta pro banheiro do Data Farm." },
-  { id:"rarecatch",   name:"Captura Rara",                     eng:"Rare Catch",                     type:"bronze",  icon:"⭐", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've fished up something rare!", how:"Pesque um peixe raro: Oxidious Antefish, Corruscating Portal Fish ou Pelagic Moon Fish. O Portal Fish aparece exclusivamente perto de portais ativos. O Moon Fish aparece à noite.", note:"ATENÇÃO: Puro RNG. Pesque em locais com portais ativos prioritariamente. Use iscas para aumentar as chances. Espere pelo menos 20-30 tentativas por local antes de mover. Facilite: crafte a Fishing Rod cedo (1x Stapler + 2x Desk Phone + 4x Plastic Scrap + 2x Wood Plank) e comece a pescar o quanto antes — quanto mais cedo tentar, menor a chance de virar o último troféu que falta." },
-  { id:"blindluck",   name:"Sorte Cega",                       eng:"Blind Luck",                     type:"bronze",  icon:"🎭", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've dismantled one of the Puppeteer's wayward creations.", how:"Mate um Sinfonista. Este inimigo aparece em Flathill OU durante eventos climáticos de Fenômeno da Névoa na Facility.", note:"ATENÇÃO: Explore Flathill completamente. Se perder, o Fenômeno da Névoa é raro e aleatório — pode demorar muito. Facilite: o Sinfonista é imune a dano elétrico e de gelo, então leve granadas ou armas de fogo/impacto normal em vez de armas com esses elementos." },
-  { id:"kittedout",   name:"Equipado",                         eng:"Kitted Out",                     type:"bronze",  icon:"🎽", sector:"🏭 MANUFACTURING",    risk:1, desc:"Equip an item into every available slot, at the same time.", how:"Equipe itens em 7 slots simultaneamente (não precisa preencher TODOS os slots literalmente — basta ter 7 itens equipados ao mesmo tempo).", note:"ATENÇÃO: A descrição diz 'todos os slots' mas na prática apenas 7 são necessários. Verifique com 7 itens equipados. Facilite: capacete, roupa, calça, trinket x2, arma e ferramenta já contam — não precisa de itens raros, qualquer combinação de 7 slots preenchidos ativa o troféu." },
-  { id:"supremus",    name:"Supremus Ordo Petrae",             eng:"Supremus Ordo Petrae",           type:"bronze",  icon:"⚔️", sector:"🏭 MANUFACTURING",    risk:1, desc:"Take down 50 combatants from A Ordem, by any means available.", how:"Mate 50 soldados da Ordem. Kills acumulam ao longo do jogo. A Ordem aparece a partir do Manufacturing West.", note:"GRIND: Em co-op é muito mais rápido — kills são compartilhadas entre todos os jogadores. Facilite: não precisa farmar de propósito — os 50 kills tendem a se acumular sozinhos ao longo da progressão normal, já que soldados da Ordem aparecem com frequência a partir do Manufacturing." },
-  { id:"ragnarok",    name:"Ragnarök",                         eng:"Ragnarok",                       type:"bronze",  icon:"💀", sector:"🏭 MANUFACTURING",    risk:1, desc:"You've bested 100 of GATE's finest, for one reason or another.", how:"Mate 100 Guardião do Portãos. Kills acumulam ao longo do jogo. Guardião do Portãos são os guardas mais comuns — encontrados em todo o jogo após o Manufacturing.", note:"GRIND: O maior grind do jogo. Em co-op o progresso é compartilhado. Foque em áreas com respawn frequente. Facilite: numa sala com 6 jogadores, dá pra dividir a carga — em média cerca de 17 kills por pessoa pra bater os 100 juntos." },
-  { id:"bigapple",    name:"A Grande Maçã",                    eng:"The Big Apple",                  type:"bronze",  icon:"🗽", sector:"🏠 RESIDENCIAL",       risk:1, desc:"You've seen how the other half lives. Turns out, not very well.", how:"Saia da RISE Facility pelo portal no final. O portal de ENTRADA do RISE fica próximo à primeira entrada do Setor Segurança, atrás do elevador gigante (orbe azul grande).", note:"ATENÇÃO: Muitos jogadores procuram o portal no Residencial — ele fica no Setor Segurança. Não confunda e não avance sem entrar. Facilite: basta se aproximar do orbe azul pra ativar o portal — não precisa completar nada dentro da RISE além de sair pelo portal do final." },
-  { id:"hackerman",   name:"Hackerman",                        eng:"Hackerman",                      type:"bronze",  icon:"💻", sector:"🏢 ESCRITÓRIO",        risk:1, desc:"Hack a door or other security feature.", how:"Crafteie um Keypad Hacker (Controller + LCD Screen + Infrared Emitter na Bancada de Criação, após falar com Alice Mayfield ou coletar esses itens) e use num keypad.", note:"ATENÇÃO: A receita precisa ser desbloqueada primeiro. Fale com Alice Mayfield no Escritório ou colete os componentes para ver a receita. Facilite: se não achar a Alice, colecionar um Controller, um LCD Screen OU um Infrared Emitter sozinho já desbloqueia a receita — não precisa dos três." },
-  { id:"thevillage",  name:"A Vila",                           eng:"The Village",                    type:"bronze",  icon:"🏘️", sector:"🌀 PORTAIS",          risk:1, desc:"You've stumbled across something alien, and something ancient.", how:"Saia de Village Den da'ko Yeer pelo portal vermelho que aparece após obter o Anti-Fungal Gelatin dentro do mundo.", note:"ATENÇÃO: O portal de saída só aparece após desbloquear o Anti-Fungal Gelatin. Sem completar essa etapa, não há como sair pelo lado correto. Facilite: não tente forçar a saída por outro caminho — dedique tempo a encontrar/craftar o Anti-Fungal Gelatin dentro da própria Village antes de tentar sair." },
+  { id:"someshort",   name:"Orla Distante",                    eng:"We Don't Talk About That Place", type:"bronze",  icon:"🏝️", img:"https://m.exophase.com/steam/awards/s/35775jb5.png?4c64e261a0479f15a66a2a2beaab456c", rarity:14.17, rarityCount:281, sector:"🌀 PORTAIS",          risk:1, desc:"You found yourself upon some distant shore...", how:"Crafte o Privada-Portal e alimente-o com um Laser Emitter apontado pra parte de trás dele. Sente-se com a barra de continência em 15% ou menos (zona laranja/vermelha). Chance de 5% de teletransporte (50% se ainda não tem o troféu). Repita até conseguir.", note:"ATENÇÃO: Não é um portal no mapa. O Privada-Portal parece um banheiro comum mas tem partículas ao redor, e só funciona alimentado por energia. Beba café pra encher a barra de necessidade rapidamente. Facilite: pra sair de Some Distant Shore depois, é só andar em direção ao 'oceano' — te teleporta de volta pro banheiro do Data Farm." },
+  { id:"rarecatch",   name:"Captura Rara",                     eng:"Rare Catch",                     type:"bronze",  icon:"⭐", img:"https://m.exophase.com/steam/awards/s/13773g65.png?4c64e261a0479f15a66a2a2beaab456c", rarity:10.28, rarityCount:387, sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've fished up something rare!", how:"Pesque um peixe raro: Oxidious Antefish, Corruscating Portal Fish ou Pelagic Moon Fish. O Portal Fish aparece exclusivamente perto de portais ativos. O Moon Fish aparece à noite.", note:"ATENÇÃO: Puro RNG. Pesque em locais com portais ativos prioritariamente. Use iscas para aumentar as chances. Espere pelo menos 20-30 tentativas por local antes de mover. Facilite: crafte a Fishing Rod cedo (1x Stapler + 2x Desk Phone + 4x Plastic Scrap + 2x Wood Plank) e comece a pescar o quanto antes — quanto mais cedo tentar, menor a chance de virar o último troféu que falta." },
+  { id:"blindluck",   name:"Sorte Cega",                       eng:"Blind Luck",                     type:"bronze",  icon:"🎭", img:"https://m.exophase.com/steam/awards/s/ee8e1bd7.png?4c64e261a0479f15a66a2a2beaab456c", rarity:29.16, rarityCount:136, sector:"🏢 ESCRITÓRIO",        risk:1, desc:"You've dismantled one of the Puppeteer's wayward creations.", how:"Mate um Sinfonista. Este inimigo aparece em Flathill OU durante eventos climáticos de Fenômeno da Névoa na Facility.", note:"ATENÇÃO: Explore Flathill completamente. Se perder, o Fenômeno da Névoa é raro e aleatório — pode demorar muito. Facilite: o Sinfonista é imune a dano elétrico e de gelo, então leve granadas ou armas de fogo/impacto normal em vez de armas com esses elementos." },
+  { id:"kittedout",   name:"Equipado",                         eng:"Kitted Out",                     type:"bronze",  icon:"🎽", img:"https://m.exophase.com/steam/awards/s/133db7g3.png?4c64e261a0479f15a66a2a2beaab456c", rarity:50.56, rarityCount:79, sector:"🏭 MANUFACTURING",    risk:1, desc:"Equip an item into every available slot, at the same time.", how:"Equipe itens em 7 slots simultaneamente (não precisa preencher TODOS os slots literalmente — basta ter 7 itens equipados ao mesmo tempo).", note:"ATENÇÃO: A descrição diz 'todos os slots' mas na prática apenas 7 são necessários. Verifique com 7 itens equipados. Facilite: capacete, roupa, calça, trinket x2, arma e ferramenta já contam — não precisa de itens raros, qualquer combinação de 7 slots preenchidos ativa o troféu." },
+  { id:"supremus",    name:"Supremus Ordo Petrae",             eng:"Supremus Ordo Petrae",           type:"bronze",  icon:"⚔️", img:"https://m.exophase.com/steam/awards/s/5554076g.png?4c64e261a0479f15a66a2a2beaab456c", rarity:44.87, rarityCount:89, sector:"🏭 MANUFACTURING",    risk:1, desc:"Take down 50 combatants from A Ordem, by any means available.", how:"Mate 50 soldados da Ordem. Kills acumulam ao longo do jogo. A Ordem aparece a partir do Manufacturing West.", note:"GRIND: Em co-op é muito mais rápido — kills são compartilhadas entre todos os jogadores. Facilite: não precisa farmar de propósito — os 50 kills tendem a se acumular sozinhos ao longo da progressão normal, já que soldados da Ordem aparecem com frequência a partir do Manufacturing." },
+  { id:"ragnarok",    name:"Ragnarök",                         eng:"Ragnarok",                       type:"bronze",  icon:"💀", img:"https://m.exophase.com/steam/awards/s/8j4j631g.png?4c64e261a0479f15a66a2a2beaab456c", rarity:6.72, rarityCount:591, sector:"🏭 MANUFACTURING",    risk:1, desc:"You've bested 100 of GATE's finest, for one reason or another.", how:"Mate 100 Guardião do Portãos. Kills acumulam ao longo do jogo. Guardião do Portãos são os guardas mais comuns — encontrados em todo o jogo após o Manufacturing.", note:"GRIND: O maior grind do jogo. Em co-op o progresso é compartilhado. Foque em áreas com respawn frequente. Facilite: numa sala com 6 jogadores, dá pra dividir a carga — em média cerca de 17 kills por pessoa pra bater os 100 juntos." },
+  { id:"bigapple",    name:"A Grande Maçã",                    eng:"The Big Apple",                  type:"bronze",  icon:"🗽", img:"https://m.exophase.com/steam/awards/s/gj11jgdd.png?4c64e261a0479f15a66a2a2beaab456c", rarity:27.35, rarityCount:145, sector:"🏠 RESIDENCIAL",       risk:1, desc:"You've seen how the other half lives. Turns out, not very well.", how:"Saia da RISE Facility pelo portal no final. O portal de ENTRADA do RISE fica próximo à primeira entrada do Setor Segurança, atrás do elevador gigante (orbe azul grande).", note:"ATENÇÃO: Muitos jogadores procuram o portal no Residencial — ele fica no Setor Segurança. Não confunda e não avance sem entrar. Facilite: basta se aproximar do orbe azul pra ativar o portal — não precisa completar nada dentro da RISE além de sair pelo portal do final." },
+  { id:"hackerman",   name:"Hackerman",                        eng:"Hackerman",                      type:"bronze",  icon:"💻", img:"https://m.exophase.com/steam/awards/s/8jjgd54e.png?4c64e261a0479f15a66a2a2beaab456c", rarity:59.17, rarityCount:67, sector:"🏢 ESCRITÓRIO",        risk:1, desc:"Hack a door or other security feature.", how:"Crafteie um Keypad Hacker (Controller + LCD Screen + Infrared Emitter na Bancada de Criação, após falar com Alice Mayfield ou coletar esses itens) e use num keypad.", note:"ATENÇÃO: A receita precisa ser desbloqueada primeiro. Fale com Alice Mayfield no Escritório ou colete os componentes para ver a receita. Facilite: se não achar a Alice, colecionar um Controller, um LCD Screen OU um Infrared Emitter sozinho já desbloqueia a receita — não precisa dos três." },
+  { id:"thevillage",  name:"A Vila",                           eng:"The Village",                    type:"bronze",  icon:"🏘️", img:"https://m.exophase.com/steam/awards/s/774b1j4d.png?4c64e261a0479f15a66a2a2beaab456c", rarity:27.34, rarityCount:145, sector:"🌀 PORTAIS",          risk:1, desc:"You've stumbled across something alien, and something ancient.", how:"Saia de Village Den da'ko Yeer pelo portal vermelho que aparece após obter o Anti-Fungal Gelatin dentro do mundo.", note:"ATENÇÃO: O portal de saída só aparece após desbloquear o Anti-Fungal Gelatin. Sem completar essa etapa, não há como sair pelo lado correto. Facilite: não tente forçar a saída por outro caminho — dedique tempo a encontrar/craftar o Anti-Fungal Gelatin dentro da própria Village antes de tentar sair." },
 
   // ─── NORMAL — Progressão principal (Silver/Prata) ───
-  { id:"apocnow",     name:"Apocalypse Now",                   eng:"Apocalypse Now",                 type:"gold",     icon:"🌌", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have, with the universe rending in your wake.", how:"Complete a história principal de Abiotic Factor (derrote o chefe final). Automático ao finalizar o jogo.", note:null },
-  { id:"puresci",     name:"Ciência Pura",                     eng:"Apocalypse Now",                 type:"platinum",icon:"🏆", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have.", how:"Complete a história principal de Abiotic Factor. Automático ao finalizar o jogo.", note:null },
-  { id:"shadowgate",  name:"Shadowgate",                       eng:"Shadowgate",                     type:"silver",  icon:"🌑", sector:"🌀 PORTAIS",          risk:2, desc:"You uncovered something dark in the forests of the north.", how:"Complete o Shadowgate. Parte da progressão principal.", note:null },
-  { id:"inquisition", name:"A Inquisição",                     eng:"The Inquisition",                type:"silver",  icon:"⚔️", sector:"🌀 PORTAIS",          risk:2, desc:"You've made your way through ancient halls.", how:"Complete o Praetorium.", note:null },
-  { id:"coreverse",   name:"Coraversão",                       eng:"Coreverse",                      type:"silver",  icon:"💥", sector:"🌀 PORTAIS",          risk:2, desc:"You survived the Encroachment of Anteverse 299.", how:"Ative o Núcleo dentro de The Encroachment (Anteverse 299).", note:null },
-  { id:"gardens",     name:"Os Jardins",                       eng:"The Gardens",                    type:"silver",  icon:"🌺", sector:"🌀 PORTAIS",          risk:2, desc:"You went to, or from, the Botanical Wing.", how:"Complete o Botanical Gardens. Também é onde a sidequest da Kylie culmina.", note:null },
-  { id:"endofearth",  name:"Fim da Terra",                     eng:"End of the Earth",               type:"silver",  icon:"🌍", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've torched your way through the frigid Residential Sector.", how:"Complete o Setor Residencial. Automático.", note:null },
-  { id:"dawntildusk", name:"Do Amanhecer ao Anoitecer",        eng:"Dawn Til' Dusk",                 type:"silver",  icon:"⚡", sector:"☢️ REATORES",         risk:2, desc:"One by one, you get the job done.", how:"Complete os Reatores reativando todos os quatro reatores.", note:null },
-  { id:"survivenight",name:"Sem Descanso para os Ímpios",      eng:"Survive the Night",              type:"silver",  icon:"🔒", sector:"🔒 SEGURANÇA",         risk:2, desc:"You faced the dark of Security Sector.", how:"Complete o Setor Segurança. Automático.", note:null },
-  { id:"regainingcontrol",name:"Recuperando o Controle",       eng:"Regaining Control",             type:"silver",  icon:"🔬", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've broken free of containment failures.", how:"Complete o Laboratórios Cascata. Automático.", note:null },
-  { id:"syncedup",    name:"Sincronizado",                     eng:"Synced Up",                      type:"silver",  icon:"⚙️", sector:"🏭 MANUFACTURING",    risk:2, desc:"You've bored your way into Manufacturing West.", how:"Complete o Manufacturing West. Automático.", note:null },
-  { id:"officemanaged",name:"Escritório Administrado",         eng:"Office: Managed",                type:"silver",  icon:"📋", sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've scrambled through the Office Sector with barely a papercut.", how:"Complete o Setor Escritório. Automático.", note:null },
-  { id:"downunder",   name:"Embaixo do Chão",                  eng:"Down Under",                     type:"silver",  icon:"🧪", sector:"🔬 TUTORIAL",          risk:2, desc:"You've taken your first steps into the GATE Cascade Research Facility.", how:"Complete o tutorial e entre na GATE Facility. Automático e impossível de perder.", note:null },
+  { id:"apocnow",     name:"Apocalypse Now",                   eng:"Apocalypse Now",                 type:"gold",     icon:"🌌", img:"https://m.exophase.com/steam/awards/s/dg8g16jg.png?4c64e261a0479f15a66a2a2beaab456c", rarity:16.38, rarityCount:243, sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have, with the universe rending in your wake.", how:"Complete a história principal de Abiotic Factor (derrote o chefe final). Automático ao finalizar o jogo.", note:null },
+  { id:"puresci",     name:"Ciência Pura",                     eng:"Apocalypse Now",                 type:"platinum",icon:"🏆", img:null, rarity:null, rarityCount:null, sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've survived the way you always have.", how:"Complete a história principal de Abiotic Factor. Automático ao finalizar o jogo.", note:null },
+  { id:"shadowgate",  name:"Shadowgate",                       eng:"Shadowgate",                     type:"silver",  icon:"🌑", img:"https://m.exophase.com/steam/awards/s/8j6d316g.png?4c64e261a0479f15a66a2a2beaab456c", rarity:22.38, rarityCount:178, sector:"🌀 PORTAIS",          risk:2, desc:"You uncovered something dark in the forests of the north.", how:"Complete o Shadowgate. Parte da progressão principal.", note:null },
+  { id:"inquisition", name:"A Inquisição",                     eng:"The Inquisition",                type:"silver",  icon:"⚔️", img:"https://m.exophase.com/steam/awards/s/6dgd5841.png?4c64e261a0479f15a66a2a2beaab456c", rarity:20.12, rarityCount:198, sector:"🌀 PORTAIS",          risk:2, desc:"You've made your way through ancient halls.", how:"Complete o Praetorium.", note:null },
+  { id:"coreverse",   name:"Coraversão",                       eng:"Coreverse",                      type:"silver",  icon:"💥", img:"https://m.exophase.com/steam/awards/s/130b46d1.png?4c64e261a0479f15a66a2a2beaab456c", rarity:23.89, rarityCount:166, sector:"🌀 PORTAIS",          risk:2, desc:"You survived the Encroachment of Anteverse 299.", how:"Ative o Núcleo dentro de The Encroachment (Anteverse 299).", note:null },
+  { id:"gardens",     name:"Os Jardins",                       eng:"The Gardens",                    type:"silver",  icon:"🌺", img:"https://m.exophase.com/steam/awards/s/b8386jdd.png?4c64e261a0479f15a66a2a2beaab456c", rarity:17.25, rarityCount:230, sector:"🌀 PORTAIS",          risk:2, desc:"You went to, or from, the Botanical Wing.", how:"Complete o Botanical Gardens. Também é onde a sidequest da Kylie culmina.", note:null },
+  { id:"endofearth",  name:"Fim da Terra",                     eng:"End of the Earth",               type:"silver",  icon:"🌍", img:"https://m.exophase.com/steam/awards/s/gj7j3d00.png?4c64e261a0479f15a66a2a2beaab456c", rarity:16.71, rarityCount:238, sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've torched your way through the frigid Residential Sector.", how:"Complete o Setor Residencial. Automático.", note:null },
+  { id:"dawntildusk", name:"Do Amanhecer ao Anoitecer",        eng:"Dawn Til' Dusk",                 type:"silver",  icon:"⚡", img:"https://m.exophase.com/steam/awards/s/5530de36.png?4c64e261a0479f15a66a2a2beaab456c", rarity:27.12, rarityCount:147, sector:"☢️ REATORES",         risk:2, desc:"One by one, you get the job done.", how:"Complete os Reatores reativando todos os quatro reatores.", note:null },
+  { id:"survivenight",name:"Sem Descanso para os Ímpios",      eng:"Survive the Night",              type:"silver",  icon:"🔒", img:"https://m.exophase.com/steam/awards/s/dg00g43e.png?4c64e261a0479f15a66a2a2beaab456c", rarity:36.87, rarityCount:108, sector:"🔒 SEGURANÇA",         risk:2, desc:"You faced the dark of Security Sector.", how:"Complete o Setor Segurança. Automático.", note:null },
+  { id:"regainingcontrol",name:"Recuperando o Controle",       eng:"Regaining Control",             type:"silver",  icon:"🔬", img:"https://m.exophase.com/steam/awards/s/gjjeb174.png?4c64e261a0479f15a66a2a2beaab456c", rarity:41.53, rarityCount:96, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've broken free of containment failures.", how:"Complete o Laboratórios Cascata. Automático.", note:null },
+  { id:"syncedup",    name:"Sincronizado",                     eng:"Synced Up",                      type:"silver",  icon:"⚙️", img:"https://m.exophase.com/steam/awards/s/b880dg35.png?4c64e261a0479f15a66a2a2beaab456c", rarity:55.18, rarityCount:72, sector:"🏭 MANUFACTURING",    risk:2, desc:"You've bored your way into Manufacturing West.", how:"Complete o Manufacturing West. Automático.", note:null },
+  { id:"officemanaged",name:"Escritório Administrado",         eng:"Office: Managed",                type:"silver",  icon:"📋", img:"https://m.exophase.com/steam/awards/s/6dd647g8.png?4c64e261a0479f15a66a2a2beaab456c", rarity:71.55, rarityCount:56, sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've scrambled through the Office Sector with barely a papercut.", how:"Complete o Setor Escritório. Automático.", note:null },
+  { id:"downunder",   name:"Embaixo do Chão",                  eng:"Down Under",                     type:"silver",  icon:"🧪", img:"https://m.exophase.com/steam/awards/s/40037e63.png?4c64e261a0479f15a66a2a2beaab456c", rarity:86.98, rarityCount:46, sector:"🔬 TUTORIAL",          risk:2, desc:"You've taken your first steps into the GATE Cascade Research Facility.", how:"Complete o tutorial e entre na GATE Facility. Automático e impossível de perder.", note:null },
 
   // ─── NORMAL — Portais (Bronze, automáticos) ───
-  { id:"itgets",      name:"Só Fica Mais Estranho Daqui",      eng:"It Only Gets Stranger From Here",type:"bronze",  icon:"🌀", sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've taken your first steps into the worlds beyond our own.", how:"Chegue à saída portal do Far Garden (Anteverse 2-A). Parte da progressão do Escritório.", note:null },
-  { id:"composers",   name:"Os Compositores",                  eng:"The Composers",                  type:"bronze",  icon:"🎵", sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've ventured to Flathill and it left you misty-eyed.", how:"Obtenha a Célula de Energia final em Flathill. Flathill é acessado via Silo 3 do Escritório.", note:null },
-  { id:"allaboard",   name:"Todos a Bordo",                    eng:"All Aboard",                     type:"bronze",  icon:"🚂", sector:"🏭 MANUFACTURING",    risk:2, desc:"You've taken a journey aboard IS-0138.", how:"Saia do Train World (The Train) pelo portal no final. Parte da progressão do Manufacturing.", note:null },
-  { id:"fieldofdreams",name:"Campo dos Sonhos",                eng:"Field of Dreams",                type:"bronze",  icon:"🌾", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've leapt through the mushrooms of the Mycofields.", how:"Saia dos Mycofields pelo portal no final.", note:null },
-  { id:"sleepwalking",name:"Sonâmbulo",                        eng:"Sleepwalking",                   type:"bronze",  icon:"🌙", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've drifted through the Night Realm.", how:"Entre na sala com a última Nightsphere no Night Realm (portal no Laboratórios Cascata).", note:null },
-  { id:"darkwater",   name:"As Águas Negras",                  eng:"The Darkwater",                  type:"bronze",  icon:"💧", sector:"💧 HIDROPLANTA",       risk:2, desc:"You've reactivated the Hydroplant and are battle-hardened.", how:"Reative os sistemas do vertedouro na Hydroplant. Parte da progressão principal.", note:null },
-  { id:"darkenergy",  name:"Energia Sombria",                  eng:"Dark Energy",                    type:"bronze",  icon:"⚛️", sector:"☢️ REATORES",         risk:2, desc:"You descended into the depths of the Reactors.", how:"Desça até os Reatores. Automático com a progressão.", note:null },
-  { id:"nomorehelmholtz",name:"Sem Mais Espaço em Helmholtz",  eng:"No More Room In Helmholtz",      type:"bronze",  icon:"🛋️", sector:"🌀 PORTAIS",          risk:2, desc:"You've lingered through an apocalypse.", how:"Saia do Furniture Store (Helmholtz) pelo portal no final.", note:null },
-  { id:"jesuis",      name:"Je Suis Perdu!",                   eng:"Je Suis Perdu!",                 type:"bronze",  icon:"⛷️", sector:"🌀 PORTAIS",          risk:2, desc:"You've had one heck of a ski holiday.", how:"Saia de Voussoir pelo portal no final.", note:null },
-  { id:"worldmirror", name:"Plano Como Panqueca",              eng:"Flat as a Pancake",              type:"bronze",  icon:"🪞", sector:"🌀 PORTAIS",          risk:2, desc:"You've wandered into a reflection of another reality.", how:"Toque a grama dentro de The World in the Mirror. Simples — entre e toque o chão.", note:null },
-  { id:"norunning",   name:"Sem Correr",                       eng:"No Running",                     type:"bronze",  icon:"🏊", sector:"🌀 PORTAIS",          risk:2, desc:"You've sat in the Red Chair.", how:"Saia de The Pool Room pelo portal no final. Para ativar o portal, sente-se na Cadeira Vermelha.", note:null },
-  { id:"rumble",      name:"Briga no Royal Range",             eng:"Rumble on the Royal Range",      type:"bronze",  icon:"👸", sector:"🌀 PORTAIS",          risk:2, desc:"You've completed a chilling chapter of a long lost video game.", how:"Saia do Space Queen pelo portal no final.", note:null },
-  { id:"aloade",      name:"Peso Retirado dos Ombros",         eng:"A Lode Off My Mind",             type:"bronze",  icon:"🙏", sector:"🌀 PORTAIS",          risk:2, desc:"You've met the excitable locals at the seaside hamlet of Canaan.", how:"Mate Niketas, o líder do culto encontrado no mundo portal Canaan.", note:null },
+  { id:"itgets",      name:"Só Fica Mais Estranho Daqui",      eng:"It Only Gets Stranger From Here",type:"bronze",  icon:"🌀", img:"https://m.exophase.com/steam/awards/s/40ee04gj.png?4c64e261a0479f15a66a2a2beaab456c", rarity:61.93, rarityCount:64, sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've taken your first steps into the worlds beyond our own.", how:"Chegue à saída portal do Far Garden (Anteverse 2-A). Parte da progressão do Escritório.", note:null },
+  { id:"composers",   name:"Os Compositores",                  eng:"The Composers",                  type:"bronze",  icon:"🎵", img:"https://m.exophase.com/steam/awards/s/b8gg8e5j.png?4c64e261a0479f15a66a2a2beaab456c", rarity:55.43, rarityCount:72, sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've ventured to Flathill and it left you misty-eyed.", how:"Obtenha a Célula de Energia final em Flathill. Flathill é acessado via Silo 3 do Escritório.", note:null },
+  { id:"allaboard",   name:"Todos a Bordo",                    eng:"All Aboard",                     type:"bronze",  icon:"🚂", img:"https://m.exophase.com/steam/awards/s/6d77dbj6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:47.96, rarityCount:83, sector:"🏭 MANUFACTURING",    risk:2, desc:"You've taken a journey aboard IS-0138.", how:"Saia do Train World (The Train) pelo portal no final. Parte da progressão do Manufacturing.", note:null },
+  { id:"fieldofdreams",name:"Campo dos Sonhos",                eng:"Field of Dreams",                type:"bronze",  icon:"🌾", img:"https://m.exophase.com/steam/awards/s/ee33e6b6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:34.9, rarityCount:114, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've leapt through the mushrooms of the Mycofields.", how:"Saia dos Mycofields pelo portal no final.", note:null },
+  { id:"sleepwalking",name:"Sonâmbulo",                        eng:"Sleepwalking",                   type:"bronze",  icon:"🌙", img:"https://m.exophase.com/steam/awards/s/8j55je34.png?4c64e261a0479f15a66a2a2beaab456c", rarity:35.33, rarityCount:113, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've drifted through the Night Realm.", how:"Entre na sala com a última Nightsphere no Night Realm (portal no Laboratórios Cascata).", note:null },
+  { id:"darkwater",   name:"As Águas Negras",                  eng:"The Darkwater",                  type:"bronze",  icon:"💧", img:"https://m.exophase.com/steam/awards/s/j06604d7.png?4c64e261a0479f15a66a2a2beaab456c", rarity:31.47, rarityCount:126, sector:"💧 HIDROPLANTA",       risk:2, desc:"You've reactivated the Hydroplant and are battle-hardened.", how:"Reative os sistemas do vertedouro na Hydroplant. Parte da progressão principal.", note:null },
+  { id:"darkenergy",  name:"Energia Sombria",                  eng:"Dark Energy",                    type:"bronze",  icon:"⚛️", img:"https://m.exophase.com/steam/awards/s/00d457d6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:23.41, rarityCount:170, sector:"☢️ REATORES",         risk:2, desc:"You descended into the depths of the Reactors.", how:"Desça até os Reatores. Automático com a progressão.", note:null },
+  { id:"nomorehelmholtz",name:"Sem Mais Espaço em Helmholtz",  eng:"No More Room In Helmholtz",      type:"bronze",  icon:"🛋️", img:"https://m.exophase.com/steam/awards/s/557756d3.png?4c64e261a0479f15a66a2a2beaab456c", rarity:40.59, rarityCount:98, sector:"🌀 PORTAIS",          risk:2, desc:"You've lingered through an apocalypse.", how:"Saia do Furniture Store (Helmholtz) pelo portal no final.", note:null },
+  { id:"jesuis",      name:"Je Suis Perdu!",                   eng:"Je Suis Perdu!",                 type:"bronze",  icon:"⛷️", img:"https://m.exophase.com/steam/awards/s/13773g45.png?4c64e261a0479f15a66a2a2beaab456c", rarity:30.58, rarityCount:130, sector:"🌀 PORTAIS",          risk:2, desc:"You've had one heck of a ski holiday.", how:"Saia de Voussoir pelo portal no final.", note:null },
+  { id:"worldmirror", name:"Plano Como Panqueca",              eng:"Flat as a Pancake",              type:"bronze",  icon:"🪞", img:"https://m.exophase.com/steam/awards/s/00330b5j.png?4c64e261a0479f15a66a2a2beaab456c", rarity:22.94, rarityCount:173, sector:"🌀 PORTAIS",          risk:2, desc:"You've wandered into a reflection of another reality.", how:"Toque a grama dentro de The World in the Mirror. Simples — entre e toque o chão.", note:null },
+  { id:"norunning",   name:"Sem Correr",                       eng:"No Running",                     type:"bronze",  icon:"🏊", img:"https://m.exophase.com/steam/awards/s/77007g10.png?4c64e261a0479f15a66a2a2beaab456c", rarity:19.47, rarityCount:204, sector:"🌀 PORTAIS",          risk:2, desc:"You've sat in the Red Chair.", how:"Saia de The Pool Room pelo portal no final. Para ativar o portal, sente-se na Cadeira Vermelha.", note:null },
+  { id:"rumble",      name:"Briga no Royal Range",             eng:"Rumble on the Royal Range",      type:"bronze",  icon:"👸", img:"https://m.exophase.com/steam/awards/s/dg1d116j.png?4c64e261a0479f15a66a2a2beaab456c", rarity:22.79, rarityCount:174, sector:"🌀 PORTAIS",          risk:2, desc:"You've completed a chilling chapter of a long lost video game.", how:"Saia do Space Queen pelo portal no final.", note:null },
+  { id:"aloade",      name:"Peso Retirado dos Ombros",         eng:"A Lode Off My Mind",             type:"bronze",  icon:"🙏", img:"https://m.exophase.com/steam/awards/s/8j5g50ge.png?4c64e261a0479f15a66a2a2beaab456c", rarity:33.95, rarityCount:117, sector:"🌀 PORTAIS",          risk:2, desc:"You've met the excitable locals at the seaside hamlet of Canaan.", how:"Mate Niketas, o líder do culto encontrado no mundo portal Canaan.", note:null },
 
   // ─── NORMAL — Combate / Interação / Craft ───
-  { id:"sjaund",      name:"Sjaund",                           eng:"Sjaund",                         type:"bronze",  icon:"🗡️", sector:"☢️ REATORES",         risk:2, desc:"You've felled a giant, despite the cost.", how:"Mate um Jotun. Encontrado nos Reatores e em Shadowgate. Boss natural da progressão.", note:null },
-  { id:"friendlyp",   name:"Presença Amigável",                eng:"Friendly Presence",              type:"bronze",  icon:"👁️", sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've re-contained IS-0091 - or a variant - for now.", how:"Contenha o Leyak na Containment Unit: 91, no Setor Residencial. Interaja com a unidade marcada IS-0091.", note:null },
-  { id:"securitybreach",name:"Brecha de Segurança",           eng:"Security Breach",                type:"bronze",  icon:"🔐", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked a GATE Security Crate.", how:"Abra um GATE Security Crate. Encontrados em pontos de controle — requerem Security Keycard ou hack.", note:null },
-  { id:"nosyneighbor",name:"Vizinho Curioso",                  eng:"Nosy Neighbor",                  type:"bronze",  icon:"📦", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked an Ornate Crate.", how:"Abra um Ornate Crate. Caixas decoradas encontradas em áreas específicas — requerem item específico.", note:null },
-  { id:"musicbox",    name:"Caixinha de Música",               eng:"Music Box",                      type:"bronze",  icon:"🎁", sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked a Cacophonous Crate.", how:"Abra um Cacophonous Crate. Requer item específico para abrir.", note:null },
-  { id:"ancienttreasure",name:"Tesouro Antigo",               eng:"Ancient Treasure",               type:"bronze",  icon:"🏺", sector:"🌀 PORTAIS",          risk:2, desc:"You've unlocked a Runic Crate.", how:"Abra um Runic Crate. Encontrada em áreas especiais e portais — requer chave rúnica.", note:null },
-  { id:"fashionspec", name:"Especialista em Moda",             eng:"Fashion Spec",                   type:"bronze",  icon:"👔", sector:"🏭 MANUFACTURING",    risk:2, desc:"Equip a complete armor set, with a unique buff.", how:"Equipe as 4 peças do mesmo set de armadura ao mesmo tempo. Qualquer set completo serve.", note:null },
-  { id:"poop",        name:"Acontecimentos",                   eng:"Accidents Happen",               type:"bronze",  icon:"🚽", sector:"🔒 SEGURANÇA",         risk:2, desc:"You didn't make it to the toilet in time.", how:"Deixe a barra de continência ficar crítica (ícone vermelho) longe de um vaso sanitário. O personagem se caga automaticamente. Beba café para encher a barra rapidamente.", note:null },
-  { id:"greenthumb",  name:"Polegar Verde",                    eng:"Green Thumb",                    type:"bronze",  icon:"🌱", sector:"🏢 ESCRITÓRIO",        risk:2, desc:"Cultivate any crop.", how:"Monte uma Planting Trough, plante qualquer semente e colha quando crescer.", note:null },
-  { id:"catchfish",   name:"Peguei um Peixe",                  eng:"Catch a Fish",                   type:"bronze",  icon:"🎣", sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've successfully caught a fish!", how:"Pesque qualquer peixe. Crafteie uma Fishing Rod (1x Stapler + 2x Desk Phone + 4x Plastic Scrap + 2x Madeira Plank).", note:null },
-  { id:"craftycreations",name:"Criações Criativas",            eng:"Crafty Creations",               type:"bronze",  icon:"⚙️", sector:"🔬 TUTORIAL",          risk:2, desc:"You created your very first item, all by yourself, probably.", how:"Crafteie qualquer item na Bancada de Criação pela primeira vez. Ocorre no tutorial.", note:null },
-  { id:"onedown",     name:"Um a Menos, Milhões a Ir",         eng:"One Down, One Million To Go",    type:"bronze",  icon:"🐀", sector:"🔬 TUTORIAL",          risk:2, desc:"Kill a pest for the very first time.", how:"Mate sua primeira praga. Ocorre no tutorial — impossível de perder.", note:null },
+  { id:"sjaund",      name:"Sjaund",                           eng:"Sjaund",                         type:"bronze",  icon:"🗡️", img:"https://m.exophase.com/steam/awards/s/0010d576.png?4c64e261a0479f15a66a2a2beaab456c", rarity:23.15, rarityCount:172, sector:"☢️ REATORES",         risk:2, desc:"You've felled a giant, despite the cost.", how:"Mate um Jotun. Encontrado nos Reatores e em Shadowgate. Boss natural da progressão.", note:null },
+  { id:"friendlyp",   name:"Presença Amigável",                eng:"Friendly Presence",              type:"bronze",  icon:"👁️", img:"https://m.exophase.com/steam/awards/s/40601g5g.png?4c64e261a0479f15a66a2a2beaab456c", rarity:15.68, rarityCount:253, sector:"🏠 RESIDENCIAL",       risk:2, desc:"You've re-contained IS-0091 - or a variant - for now.", how:"Contenha o Leyak na Containment Unit: 91, no Setor Residencial. Interaja com a unidade marcada IS-0091.", note:null },
+  { id:"securitybreach",name:"Brecha de Segurança",           eng:"Security Breach",                type:"bronze",  icon:"🔐", img:"https://m.exophase.com/steam/awards/s/77d741jd.png?4c64e261a0479f15a66a2a2beaab456c", rarity:12.76, rarityCount:312, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked a GATE Security Crate.", how:"Abra um GATE Security Crate. Encontrados em pontos de controle — requerem Security Keycard ou hack.", note:null },
+  { id:"nosyneighbor",name:"Vizinho Curioso",                  eng:"Nosy Neighbor",                  type:"bronze",  icon:"📦", img:"https://m.exophase.com/steam/awards/s/35450b36.png?4c64e261a0479f15a66a2a2beaab456c", rarity:32.71, rarityCount:122, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked an Ornate Crate.", how:"Abra um Ornate Crate. Caixas decoradas encontradas em áreas específicas — requerem item específico.", note:null },
+  { id:"musicbox",    name:"Caixinha de Música",               eng:"Music Box",                      type:"bronze",  icon:"🎁", img:"https://m.exophase.com/steam/awards/s/13130450.png?4c64e261a0479f15a66a2a2beaab456c", rarity:24.45, rarityCount:163, sector:"🔭 CASCADE LABS",      risk:2, desc:"You've unlocked a Cacophonous Crate.", how:"Abra um Cacophonous Crate. Requer item específico para abrir.", note:null },
+  { id:"ancienttreasure",name:"Tesouro Antigo",               eng:"Ancient Treasure",               type:"bronze",  icon:"🏺", img:"https://m.exophase.com/steam/awards/s/55b53de6.png?4c64e261a0479f15a66a2a2beaab456c", rarity:15.86, rarityCount:251, sector:"🌀 PORTAIS",          risk:2, desc:"You've unlocked a Runic Crate.", how:"Abra um Runic Crate. Encontrada em áreas especiais e portais — requer chave rúnica.", note:null },
+  { id:"fashionspec", name:"Especialista em Moda",             eng:"Fashion Spec",                   type:"bronze",  icon:"👔", img:"https://m.exophase.com/steam/awards/s/355e17j7.png?4c64e261a0479f15a66a2a2beaab456c", rarity:47.8, rarityCount:83, sector:"🏭 MANUFACTURING",    risk:2, desc:"Equip a complete armor set, with a unique buff.", how:"Equipe as 4 peças do mesmo set de armadura ao mesmo tempo. Qualquer set completo serve.", note:null },
+  { id:"poop",        name:"Acontecimentos",                   eng:"Accidents Happen",               type:"bronze",  icon:"🚽", img:"https://m.exophase.com/steam/awards/s/dgg57087.png?4c64e261a0479f15a66a2a2beaab456c", rarity:39.91, rarityCount:100, sector:"🔒 SEGURANÇA",         risk:2, desc:"You didn't make it to the toilet in time.", how:"Deixe a barra de continência ficar crítica (ícone vermelho) longe de um vaso sanitário. O personagem se caga automaticamente. Beba café para encher a barra rapidamente.", note:null },
+  { id:"greenthumb",  name:"Polegar Verde",                    eng:"Green Thumb",                    type:"bronze",  icon:"🌱", img:"https://m.exophase.com/steam/awards/s/eee4038j.png?4c64e261a0479f15a66a2a2beaab456c", rarity:57.82, rarityCount:69, sector:"🏢 ESCRITÓRIO",        risk:2, desc:"Cultivate any crop.", how:"Monte uma Planting Trough, plante qualquer semente e colha quando crescer.", note:null },
+  { id:"catchfish",   name:"Peguei um Peixe",                  eng:"Catch a Fish",                   type:"bronze",  icon:"🎣", img:"https://m.exophase.com/steam/awards/s/j0660437.png?4c64e261a0479f15a66a2a2beaab456c", rarity:37.0, rarityCount:107, sector:"🏢 ESCRITÓRIO",        risk:2, desc:"You've successfully caught a fish!", how:"Pesque qualquer peixe. Crafteie uma Fishing Rod (1x Stapler + 2x Desk Phone + 4x Plastic Scrap + 2x Madeira Plank).", note:null },
+  { id:"craftycreations",name:"Criações Criativas",            eng:"Crafty Creations",               type:"bronze",  icon:"⚙️", img:"https://m.exophase.com/steam/awards/s/j00j764b.png?4c64e261a0479f15a66a2a2beaab456c", rarity:99.78, rarityCount:40, sector:"🔬 TUTORIAL",          risk:2, desc:"You created your very first item, all by yourself, probably.", how:"Crafteie qualquer item na Bancada de Criação pela primeira vez. Ocorre no tutorial.", note:null },
+  { id:"onedown",     name:"Um a Menos, Milhões a Ir",         eng:"One Down, One Million To Go",    type:"bronze",  icon:"🐀", img:"https://m.exophase.com/steam/awards/s/000g4311.png?4c64e261a0479f15a66a2a2beaab456c", rarity:97.68, rarityCount:41, sector:"🔬 TUTORIAL",          risk:2, desc:"Kill a pest for the very first time.", how:"Mate sua primeira praga. Ocorre no tutorial — impossível de perder.", note:null },
 ];
 
 // Contadores visuais
@@ -3979,12 +4376,22 @@ function buildTrophyList() {
       ? `<span style="font-size:var(--fs-2xs);padding:1px 6px;background:rgba(224,160,32,0.13);border:1px solid rgba(224,160,32,0.35);color:${C.amber};letter-spacing:1px">🟡 ATENÇÃO</span>`
       : '';
 
+    const thumbHtml = t.img
+      ? `<span class="miss-thumb-wrap">
+           <img class="miss-thumb" src="${t.img}" alt="${t.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <span class="miss-thumb-fallback">${t.icon}</span>
+         </span>`
+      : `<span class="miss-thumb-wrap"><span class="miss-thumb-fallback" style="display:flex">${t.icon}</span></span>`;
+    const rarityHtml = t.rarity!=null
+      ? `<span class="rarity-badge">🏆 ${t.rarity.toFixed(2)}% dos jogadores (${t.rarityCount})</span>`
+      : `<span class="rarity-badge rarity-na">sem dado Steam (exclusivo PS5)</span>`;
+
     const item = document.createElement('div');
     item.className = 'tlist-item';
     item.innerHTML = `
       <button class="tlist-btn" id="tlbtn-${t.id}" onclick="toggleTlist('${t.id}')"
         style="border-left:3px solid ${riskBorderColor}">
-        <span class="tlist-icon">${t.icon}</span>
+        ${thumbHtml}
         <div style="flex:1;min-width:0">
           <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:3px;align-items:center">
             <span class="trophy-type-badge" style="background:${ts.bg};border-color:${ts.border};color:${ts.text}">${ts.label}</span>
@@ -3996,6 +4403,7 @@ function buildTrophyList() {
             <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid var(--border);color:var(--textDim);letter-spacing:1px">${t.sector}</span>
           </div>
           <div style="font-size:var(--fs-xs);color:var(--textMuted);margin-top:3px;font-style:italic">"${t.desc}"</div>
+          <div style="margin-top:4px">${rarityHtml}</div>
         </div>
         <span class="tlist-arrow" id="tlarr-${t.id}">▼</span>
       </button>
@@ -4240,40 +4648,123 @@ function renderEntities(){
 renderEntities();
 
 // ══ WEATHER DATA ══
+// weatherData no formato "GATE Telemetry HUD" — estrutura baseada no modelo enviado (CLIMA.html).
+// threat: 0=MODERADO, 1=ALTO, 2=CRÍTICO
+const wStampLabel=['MONITORAMENTO ATIVO','AMBIENTE HOSTIL','AMBIENTE CRÍTICO'];
 const weatherData=[
-  { name:"Fenômeno da Névoa",  icon:"🌫️", color:C.steel,  duration:"10–20 min", freq:"Raro",    desc:"Névoa densa. Visibilidade severamente reduzida. Sinfonistas aparecem pela Facility — ÚNICA oportunidade fora de Flathill.", effects:["Visibilidade drasticamente reduzida","Sinfonistas surgem em áreas normais","Som ambiente alterado","Inimigos mais difíceis de detectar"], tip:"⚠️ TROFÉU: Se não pegou Sorte Cega em Flathill, o Fenômeno da Névoa é sua segunda chance.", opp:"Farm de Sinfonista + atmosfera única" },
-  { name:"Apagão",             icon:"🔌", color:C.amber,  duration:"5–15 min",  freq:"Moderado", desc:"Queda de energia total. Luzes apagam, ventiladores param. Robôs de Segurança ficam temporariamente offline.", effects:["Iluminação cortada — use Lanterna de Cabeça ou Fragmento Luminoso","Robôs de Segurança desligados","Ventiladores param — abre áreas bloqueadas","Portas automáticas falham"], tip:"No early game: o ventilador no spawn para — acesse a sala secreta com a Bigorna!", opp:"Sala da Bigorna + movimentação segura sem Robôs de Segurança" },
-  { name:"Névoa Negra",        icon:"🖤", color:C.red,    duration:"15–30 min", freq:"Raro",    desc:"Variante extrema da Névoa. Névoa negra causa dano de saúde por exposição. Muito mais perigoso.", effects:["Dano contínuo de HP fora de cobertura","Visibilidade ainda mais reduzida","Inimigos mais agressivos","Equipamentos elétricos instáveis"], tip:"Procure cobertura imediatamente. Tenha cura disponível. Não explore em campo aberto.", opp:"Drop rate aumentado de inimigos que aparecem durante o evento" },
-  { name:"Drenagem de Energia",icon:"⚡", color:C.purple, duration:"10–20 min", freq:"Moderado", desc:"Entidades vampirizam os sistemas. Baterias e equipamentos elétricos drenam 2× mais rápido.", effects:["Baterias drenam 2× mais rápido","Estações de Carregamento menos eficientes","Armas de energia menos confiáveis","Iluminação artificial pulsa"], tip:"Troque para armas físicas ou de munição. Evite depender de armas elétricas.", opp:"Ideal para usar armas físicas acumuladas — economiza munição de energia" },
-  { name:"Atividade Sísmica",  icon:"🌍", color:C.amber, duration:"5–10 min",  freq:"Raro",    desc:"Tremores sacudem a Facility. Câmera chacoalha, objetos caem, estruturas instáveis.", effects:["Câmera e movimento perturbados","Itens em prateleiras caem","Passagens temporariamente bloqueadas","Inimigos desorientados brevemente"], tip:"Espere o tremor passar antes de combate preciso. Use a desorientação para reposicionar.", opp:"Janela de ataque ou fuga segura enquanto inimigos estão desorientados" },
+  { name:"Fenômeno da Névoa", icon:"🌫️", threat:0, img:"Images/Clima/Fogphenomenon.webp", code:"TYPE-01",
+    desc:"Névoa densa cobre toda a Facility, reduzindo bastante a visibilidade. Sinfonistas passam a aparecer fora de Flathill, e Compositores surgem nos Reatores.",
+    gaugeVal:"BAIXA", gaugeLabel:"VISIBILIDADE NO SETOR",
+    effects:[
+      {title:"Visibilidade", val:"Reduzida drasticamente em toda a Facility"},
+      {title:"Sinfonistas", val:"Passam a aparecer fora de Flathill"},
+      {title:"Compositores", val:"Surgem apenas nos Reatores"},
+      {title:"Reincidência", val:"Comer Fogiri dá 50% de chance de repetir no dia seguinte"},
+    ],
+    seal:null,
+    terminate:"Botão azul no console à direita do teclado, 3º andar do Setor Escritório, perto da entrada do portal de Flathill (Silo 3).",
+    opp:"Farm de Sinfonista fora de Flathill, sem precisar entrar no mundo-portal." },
+  { name:"Vazamento de Radiação", icon:"☢️", threat:2, img:"Images/Clima/Radiationleak.webp", code:"TYPE-02",
+    desc:"Névoa esverdeada com partículas radioativas cobre a Facility. A radiação ambiente pode matar rápido sem proteção adequada.",
+    gaugeVal:"0.25 r/s", gaugeLabel:"RADIAÇÃO AMBIENTE",
+    effects:[
+      {title:"Radiação Ambiente", val:"Constante em toda a Facility — pode ser fatal rápido"},
+      {title:"Área de Acesso", val:"Botão principal fica em zona guardada por soldados da Ordem"},
+    ],
+    seal:{ title:"🛡️ EXIGE TRAJE DE PROTEÇÃO CONTRA RADIAÇÃO", tags:["🥼 Traje de Materiais Perigosos","🐀 Traje de Rato","🦺 Colete de Chumbo/Radiação"] },
+    terminate:"Botão na Control Tower do Manufacturing West (saindo do Ferreiro, vire à esquerda e suba a estrada) — área guardada por soldados da Ordem. Botão alternativo no painel do Cloud Reactor, nos Reatores.",
+    opp:"Nenhuma vantagem direta — o foco aqui é sobreviver ou terminar o evento o quanto antes." },
+  { name:"Esporos Aéreos", icon:"🍂", threat:0, img:"Images/Clima/Airbornespores.webp", code:"TYPE-03",
+    desc:"Névoa alaranjada cobre a Facility, como o clima de Mycofields. A temperatura sobe para 80°F na maioria dos setores, e Pecaris-Cogumelo substituem os Pecaris comuns.",
+    gaugeVal:"80°F", gaugeLabel:"ELEVAÇÃO TÉRMICA DO SETOR",
+    effects:[
+      {title:"Fauna Mutante", val:"Pecari-Cogumelo substitui Pecaris comuns"},
+      {title:"Risco Biológico", val:"Infecção por Esporos sem vedação"},
+    ],
+    seal:{ title:"🛡️ EXIGE EQUIPAMENTO COM VEDAÇÃO (AIRTIGHT SEAL)", tags:["🥼 Máscara de Laboratório","🍄 Capacete de Cogumelo","🛡️ Elmo de Carapaça"] },
+    terminate:"Botão na sala de controle do Mist Reactor, dentro do setor Reatores.",
+    opp:"Pecari-Cogumelo aparece em qualquer setor — útil pra quem ainda precisa do Skull do troféu Micélio sobre o Concílio sem ir aos Mycofields." },
+  { name:"Apagões Cíclicos", icon:"🔌", threat:1, img:"Images/Clima/Rollingblackouts.webp", code:"TYPE-04",
+    desc:"A energia da Facility falha em ciclos. Sanguessugas de Energia pequenas grudam nas tomadas, e uma gigante (IS-0211) patrulha a área.",
+    gaugeVal:"IS-0211", gaugeLabel:"ALVO PARA ENCERRAR O EVENTO",
+    effects:[
+      {title:"Energia", val:"Falha em ciclos por toda a Facility"},
+      {title:"Sanguessugas", val:"Pequenas grudam em tomadas elétricas"},
+      {title:"Ameaça Principal", val:"Sanguessuga Gigante (IS-0211) patrulha a Praça do Escritório"},
+    ],
+    seal:null,
+    terminate:"Derrote a Sanguessuga de Energia Gigante (IS-0211), normalmente encontrada na Praça do Setor Escritório.",
+    opp:"O combate contra a IS-0211 costuma valer XP e loot exclusivos de Sanguessuga." },
+  { name:"A Névoa Negra", icon:"🖤", threat:2, img:"Images/Clima/Blackfog.webp", code:"TYPE-05",
+    desc:"Névoa negra densa cobre a Facility. Sombras (Shades) deslizam em direção ao jogador e, ao tocar, invocam o Ceifador (Reaper) — inclusive dentro de Mundos-Portal.",
+    gaugeVal:"REAPER", gaugeLabel:"RISCO AO TOCAR EM SHADES",
+    effects:[
+      {title:"Visibilidade", val:"Extremamente reduzida em toda a Facility"},
+      {title:"Shades", val:"Deslizam em direção ao jogador"},
+      {title:"Contato", val:"Tocar um Shade invoca o Reaper"},
+      {title:"Mundos-Portal", val:"O evento pode ocorrer mesmo dentro deles"},
+    ],
+    seal:null,
+    terminate:"Sente no Trono da Noite (Night Throne), disponível no Night Realm ou no Setor Residencial.",
+    opp:"Nenhuma vantagem direta — aqui o jogo é sobrevivência até desligar ou o dia acabar." },
+  { name:"Onda de Frio", icon:"❄️", threat:1, img:"Images/Clima/Coldsnap.webp", code:"TYPE-06",
+    desc:"Minitornados que normalmente ficam restritos ao Setor Residencial passam a surgir em qualquer setor. A temperatura despenca a níveis de hipotermia, permitindo que o Krasue apareça.",
+    gaugeVal:"HIPOTERMIA", gaugeLabel:"NÍVEL TÉRMICO DO SETOR",
+    effects:[
+      {title:"Minitornados", val:"Podem surgir em qualquer setor, não só no Residencial"},
+      {title:"Temperatura", val:"Cai a níveis de hipotermia"},
+      {title:"Krasue", val:"Pode aparecer durante o evento"},
+    ],
+    seal:null,
+    terminate:null,
+    opp:"Se você já caça o Krasue, esse é o momento mais previsível de encontrá-lo." },
 ];
 function renderWeather(){
   const el=document.getElementById('weather-list');
   if(!el)return;
   weatherData.forEach(w=>{
-    const efx=w.effects.map(ef=>`<div style="font-size:var(--fs-sm);color:var(--textDim);padding:4px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:${w.color};flex-shrink:0">▸</span>${ef}</div>`).join('');
-    const div=document.createElement('div');
-    div.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${w.color};margin-bottom:10px`;
-    div.innerHTML=`
-      <div style="padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px" onclick="var b=this.nextElementSibling;b.style.display=b.style.display==='block'?'none':'block';this.querySelector('.warr').textContent=b.style.display==='block'?'▲':'▼'">
-        <span style="font-size:var(--fs-5xl);flex-shrink:0">${w.icon}</span>
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
-            <span style="font-size:var(--fs-lg);color:${w.color};font-weight:bold">${w.name}</span>
-            <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid ${w.color}44;background:${w.color}14;color:${w.color}">⏱ ${w.duration}</span>
-            <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid var(--border);color:var(--textDim)">FREQ: ${w.freq}</span>
-          </div>
-          <div style="font-size:var(--fs-sm);color:var(--textDim)">${w.desc}</div>
+    const metrics = w.effects.map(ef=>`
+      <div class="metric-card">
+        <div class="m-title">${ef.title}</div>
+        <div class="m-val">${ef.val}</div>
+      </div>`).join('');
+    const sealHtml = w.seal ? `
+      <div class="seal-block">
+        <div class="seal-title">${w.seal.title}</div>
+        <div class="seal-tags">${w.seal.tags.map(t=>`<span class="seal-tag">${t}</span>`).join('')}</div>
+      </div>` : '';
+    const terminateHtml = w.terminate
+      ? `<strong style="color:#00f3ff">🔧 NEUTRALIZAÇÃO</strong>${w.terminate}`
+      : `<strong style="color:#00f3ff">🔧 NEUTRALIZAÇÃO</strong>Sem botão conhecido — só esperar ou se afastar do setor.`;
+    const card=document.createElement('div');
+    card.className='hud-hero';
+    card.innerHTML=`
+      <div class="visual-panel">
+        <div class="status-stamp"><span class="pulse"></span> ${wStampLabel[w.threat]}</div>
+        <div class="event-portrait">
+          <img src="${w.img}" alt="${w.name}" onerror="this.style.display='none';this.nextElementSibling.nextElementSibling.style.display='flex';">
+          <div class="portrait-overlay"></div>
+          <span class="portrait-fallback">${w.icon}</span>
         </div>
-        <span class="warr" style="color:var(--textMuted);flex-shrink:0">▼</span>
+        <div class="temp-gauge">
+          <div class="val">${w.gaugeVal}</div>
+          <div class="lbl">${w.gaugeLabel}</div>
+        </div>
       </div>
-      <div style="display:none;padding:0 14px 14px;border-top:1px solid var(--border)">
-        <div style="font-size:var(--fs-xs);color:${w.color};letter-spacing:2px;margin:10px 0 6px">// EFEITOS</div>
-        ${efx}
-        <div style="margin-top:10px;padding:8px 10px;background:${w.color}0d;border:1px solid ${w.color}33;font-size:var(--fs-sm);color:${w.color}">▸ ${w.tip}</div>
-        <div style="margin-top:6px;font-size:var(--fs-xs);color:var(--green)">✦ OPORTUNIDADE: ${w.opp}</div>
+      <div class="data-panel">
+        <div class="header-group">
+          <div class="sys-code">HAZARD_EVENT // ${w.code}</div>
+          <h1>${w.name}</h1>
+        </div>
+        <p class="bio-desc">${w.desc}</p>
+        <div class="metrics-grid">${metrics}</div>
+        ${sealHtml}
+        <div class="footer-actions">
+          <div class="action-box action-override">${terminateHtml}</div>
+          <div class="action-box action-opportunity"><strong style="color:#00ff88">✦ OPORTUNIDADE</strong>${w.opp}</div>
+        </div>
       </div>`;
-    el.appendChild(div);
+    el.appendChild(card);
   });
 }
 renderWeather();
@@ -4281,89 +4772,303 @@ renderWeather();
 // ══ LORE DATA ══
 const loreData={
   factions:[
-    { name:"Fundação GATE",      icon:"🏛️", color:C.cyan,   desc:"Garrick Advanced Technology Enterprises — organização científica secreta construída em 1993 num garimpo de lítio no outback australiano. Estudava Anteversos e entidades paranormais. Financiamento: governo australiano + privado. Liderada por facções internas com agendas conflitantes." },
-    { name:"A Ordem",            icon:"⚔️", color:C.red,    desc:"Força paramilitar enviada para 'conter' a Facility após o colapso. Na prática: eliminar testemunhas. Grunts, Captains, Snipers regulares + Guardião do Portãos de elite. 50 kills = troféu Supremus. 100 Guardião do Portãos = troféu Ragnarök." },
-    { name:"Guardião do Portãos",          icon:"💀", color:C.red,    desc:"Elite da Ordem. Cyborgs com escudos pessoais hardlight e armamento pesado. Origem possivelmente ligada a experimentos da própria GATE. Imunes a dano físico leve — use dano Holy ou EMP." },
-    { name:"Os Unlost",            icon:"👻", color:C.purple, desc:"Cientistas que passaram por eventos paranormais e perderam a forma física mas mantiveram consciência. Existem num limbo dimensional. O Unlost Jotun e a Unlost Sister têm bobbleheads colecionáveis." },
-    { name:"Exors",                icon:"👽", color:C.amber,  desc:"Entidades do Anteverso extensivamente estudadas pela GATE. Incluem Exor Monks (fonte de Exor Hearts para o Transportador de Itens). Ligados à corrupção dimensional. Drops essenciais para crafting avançado." },
-    { name:"Cultistas de Canaan",  icon:"🙏", color:C.steel,  desc:"Grupo humano no mundo portal Canaan. Liderados por Niketas. Rituais baseados em entidades do Anteverso. Hostis. Matar Niketas = troféu Peso Retirado dos Ombros." },
-  ],
+    { name:"Fundação GATE",      img:"Images/Facções/GATE.webp", icon:"🏛️", color:C.cyan,   desc:"Garrick Advanced Technology Enterprises (GATE) — organização científica secreta fundada em 1967 por Dr. Annette Garrick para investigar fenômenos anômalos, entidades desconhecidas e os mistérios relacionados aos Anteversos. Em 1977, a GATE adquire uma antiga mina de lítio no outback australiano e, após extensas reformas, transforma o local na GATE Cascade Research Facility. A organização reúne cientistas, engenheiros, equipes de segurança e unidades especializadas em exploração e contenção, mantendo instalações e projetos secretos ao redor do mundo. Ao longo das décadas, suas pesquisas avançam de estudos sobre Immurement Subjects para perfurações dimensionais, tecnologia de portais e investigação sistemática dos Anteversos. Entretanto, o crescimento da organização também gera conflitos internos, pesquisas de alto risco e diferentes interesses entre seus pesquisadores e setores, culminando no desastre de Cascade em 15 de março de 1993 durante a invasão da Ordem." },    
+    { name:"A Ordem",            img:"Images/Facções/Aordem.webp", icon:"⚔️", color:C.red,    desc:"Supreme Order of the Stone — organização religiosa e militante misteriosa, extremamente antiga e de origem desconhecida, cuja principal preocupação é conter aquilo que considera 'Caos'. A Ordem considera diversas pesquisas da GATE heréticas, incluindo Geomancia, Demonologia, estudo de artefatos inexplicáveis, robótica avançada e aceleração de partículas. Seus membros combinam treinamento militar com uma forte doutrina espiritual, utilizando tradições influenciadas pelo Catolicismo e pelo Gnosticismo, além de símbolos e terminologia próprias. A organização monitora a GATE há algum tempo e mantém um espião dentro de suas instalações. Em 15 de março de 1993, inicia ataques coordenados contra instalações da GATE, incluindo Rise, Voussoir, Crown Control e Cascade. Em Cascade, a Ordem assume o controle do Control Center e dos sistemas de torres da Facility, enquanto seus soldados eliminam pesquisadores e funcionários encontrados. A remoção do Dark Lens durante a operação desestabiliza a Perforation Network da GATE, fazendo com que portais passem a surgir de maneira imprevisível. A Ordem possui uma complexa hierarquia que inclui Triarii, Exsurgo, Legates, Inquisitors, Exulum, Sagittarii, Opprimo, Saboters, High Inquisitors, Interfectors, Divinitors, Praetors e o Tribunal. Entre seus membros conhecidos estão Hasta Tria, Sydyk, Cornix Tria, Messor Prima, Aquilae, Aries, Samarkis, Nomon, Aggasi e Altussi." },    
+    { name:"Gatekeepers",          img:"Images/Facções/Gatekeepers.webp", icon:"💀", color:C.red,    desc:"⚔️ Guerreiros de elite associados à Ordem e enviados para proteger locais e artefatos considerados importantes. São combatentes extremamente resistentes, equipados com armaduras avançadas, escudos pessoais de hardlight e armamentos pesados. Sua origem permanece misteriosa e está ligada à antiga história da Ordem e aos seus métodos de transformação e aprimoramento de seus guerreiros. Os Gatekeepers possuem capacidades físicas muito superiores às dos soldados comuns e utilizam tecnologia avançada, tornando-os alguns dos inimigos mais perigosos encontrados pelo jogador. Sua presença está diretamente relacionada à proteção de locais importantes para a Ordem e à contenção de ameaças consideradas parte do 'Caos'." },    
+    { name:"Os Unlost",            img:"Images/Facções/Osunlost.webp", icon:"👻", color:C.purple, desc:"Cientistas que passaram por eventos paranormais e perderam a forma física mas mantiveram consciência. Existem num limbo dimensional. O Unlost Jotun e a Unlost Sister têm bobbleheads colecionáveis." },
+    { name:"Exors",                img:"Images/Facções/Exors.webp", icon:"👽", color:C.amber,  desc:"⭐ Criaturas originárias do Anteverse 2 e classificadas pela GATE como IS-0184-A. Foram descobertas em 1987 pela Dr. Lenora Riggs durante uma expedição de TransRecon e posteriormente passaram a ser estudadas e contidas pela GATE. Os Exors são predadores bípedes com adaptações bioelétricas e possuem capacidade de utilizar seus espinhos como armas à distância. A GATE observou comportamentos incomuns entre eles: grupos de Exors podem se reunir ao redor de um Exor Monk (IS-0184-B) em uma postura interpretada como submissão ou reverência, enquanto ambas as variantes emitem frequências moduladas que não aparecem em outras situações. Os Exor Monks possuem ainda propriedades e comportamentos distintos, incluindo a capacidade de realizar pequenas perfurações utilizando sua própria energia bioelétrica. A relação entre os Exors e os Monks permanece parcialmente inexplicada pela GATE. Seus corpos também possuem propriedades anômalas de interesse científico, e partes como o Exor Heart, Exor Arm e Exor Quill são utilizadas pelo jogador em diversos equipamentos, armas e receitas." },    
+    { name:"The Puppeteer",        img:"Images/Facções/Puppeteer.webp", icon:"🎭", color:C.purple,  desc:"🔴 Entidade misteriosa associada à criação dos Composers e Symphonists. Sua identidade, origem e objetivos permanecem desconhecidos, mas sua existência estabelece que algumas das entidades encontradas pela GATE podem ter sido criadas ou manipuladas deliberadamente por forças externas. O Puppeteer está ligado a acontecimentos e entidades fundamentais para compreender a natureza dos Anteversos e o papel de seres desconhecidos por trás de algumas anomalias." },
+    { name:"Cultistas de Canaan",  img:"Images/Facções/Cultistas.webp", icon:"🙏", color:C.steel,  desc:"⭐ Pequeno culto gnóstico que habita Canaan, no Anteverse 168, sob a liderança espiritual de Niketas. Seus membros acreditam que a realidade material é uma prisão criada para aprisionar suas almas imortais e seguem os ensinamentos de Petrae, conhecido como o 'Caminho de Petrae'. O culto venera o Lodestone, uma tecnologia extraterrestre que consideram um presente capaz de libertá-los da carne e conduzi-los ao Paraíso. Os habitantes de Canaan vivem sob um regime puritano de autoabnegação e consideram qualquer pessoa que não siga seu caminho uma ferramenta do 'Inimigo'. A origem do grupo em Canaan e a forma como obtiveram o Lodestone permanecem desconhecidas. Niketas fundou Canaan após receber os ensinamentos de Petrae de Sydyk, um antigo Inquisidor da Ordem, e utilizou o artefato para estabelecer seu culto. Os habitantes são hostis a forasteiros e defendem Canaan através de guardas, agricultores, lenhadores e outros seguidores. ⚠️ Niketas é o líder e pregador do culto; derrotá-lo revela parte da história do Lodestone e concede o troféu relacionado à sua morte." },  ],
   characters:[
-    { name:"Kylie Muir",      icon:"🤖", sector:"Robótica — Hydroplant", note:"⚠️ Sidequest crítica. Pesquisadora cujo cérebro foi preservado. Use Chip Neural no tanque → equipe Kylie → Botanical Labs → Robô de Segurança → Albatross = troféu Sonhos Elétricos." },
-    { name:"Warren Bunning",  icon:"🔫", sector:"Escritório",             note:"Guarda de segurança sobrevivente. Trader principal de armas. Seus diálogos revelam cinismo sobre a situação da Facility." },
-    { name:"O Ferreiro",  icon:"⚒️", sector:"Manufacturing West",    note:"Identidade misteriosa. Há teoria de que seja funcionário GATE sobrevivente por razões desconhecidas. Diálogos evoluem conforme você progride." },
-    { name:"Grayson",         icon:"🩹", sector:"Itinerante",             note:"Encontrado ferido perto do forklift. Cure-o com Bandage para desbloqueá-lo como trader. Primeira fonte renovável de ammo." },
-    { name:"Dr. Abe",         icon:"🧑‍🔬",sector:"Escritório",            note:"Bobblehead colecionável. Líder científico do Escritório. Seus e-mails revelam paranoia crescente antes do colapso." },
-    { name:"Janet",           icon:"👩‍💼",sector:"Escritório",             note:"Bobblehead. Administradora sênior. Documentos revelam que sabia de experimentos não autorizados antes do incidente." },
-    { name:"Dr. Hud",         icon:"🧑‍⚕️",sector:"Laboratórios Cascata",          note:"Bobblehead. Pesquisador de biologia de Anteverso. Relacionado à criação dos Exors e ao projeto Carbuncle." },
-    { name:"Dr. Carson",      icon:"🍳", sector:"Itinerante",             note:"Chef-cientista. Única fonte do Carson Family Cookbook. Aparece após o Setor Segurança. Visita cozinhas e bases com Bancada do Chef." },
-  ],
+    { name:"Dr. Ulrich Thule",      img:"Images/Personagens/Ulrichthule.webp", icon:"🧑‍🔬", sector:"Escritório / Cascade / Albatross", note:"⭐ Físico teórico da GATE e um dos primeiros personagens encontrados pelo jogador. Cético e extremamente crítico da administração da GATE, Thule fornece informações sobre as perfurações, o Dark Lens, os Anteverses e os efeitos das pesquisas da organização sobre a realidade. Em Albatross, reencontra o falso Dr. Cahn e imediatamente desconfia de sua verdadeira natureza, ajudando a revelar que ele é IS-0012. Também demonstra conhecer Cahn desde os primeiros anos de ambos na GATE." },    
+    { name:"Kylie Muir",             img:"Images/Personagens/Kyliemuir.webp", icon:"🤖", sector:"Robótica — Hydroplant",           note:"⚠️ Sidequest crítica. Para escapar da morte, Kylie foi submetida a um procedimento de 'hospedagem' para transferir sua consciência para um formato digital, mas a invasão da Ordem interrompeu o processo. Seu cérebro está na subseção subaquática de Robótica do Hydroplant. Use um Chip Neural Hiperdenso para reparar o Terminal de Transferência Neural e transferir sua consciência para o dispositivo de armazenamento. Depois, em Power Services, fale com o Waterbot enquanto Kylie estiver equipada para fazê-la falar. Na Botanical Wing, carregue a consciência de Kylie em um Defense Bot modificado; posteriormente, ela aparecerá em Albatross para ajudar com seu morteiro e foguetes. ⚡ Troféu: Sonhos Elétricos." },
+    { name:"Dr. Abe Stern",         img:"Images/Personagens/Abestern.webp", icon:"🧑‍🔬", sector:"Escritório / Cascade / Hydroplant / Reactors", note:"⭐ Dr. Abraham 'Abe' Stern é um Molecular Physicist da GATE e um dos pesquisadores mais recorrentes da Cascade, geralmente acompanhado por Dr. Janet Ross. É um cientista obcecado por novas tecnologias e pelas possibilidades de compartilhamento de conhecimento, tendo recebido de Tim Berners-Lee acesso para testar uma versão inicial da World Wide Web e posteriormente criado sua própria rede privada. Também é responsável pela criação da Pocket Dimension. Na pesquisa de IS-0173-A, Abe propõe o experimento que origina IS-0173-B (Electro-Pest), uma variante ciberneticamente modificada do Pest. Durante o processo, descobre uma anomalia ainda mais intrigante: padrões de informação coerentes escondidos nos 'gene-analogues' da criatura, como se alguém tivesse deixado uma espécie de projeto dentro de sua estrutura biológica. Durante o colapso da Cascade, Abe e Janet atravessam diferentes setores e enfrentam as consequências das perfurações e dos portais, enquanto Abe começa a questionar se eles ainda estão no mesmo universo de onde partiram. ⚡ Sua pesquisa com IS-0173-B e suas observações sobre os Anteversos fazem dele uma fonte importante para compreender a relação entre biologia, tecnologia e as anomalias da GATE." },    
+    { name:"Dr. Janet Ross",         img:"Images/Personagens/Janetross.webp", icon:"👩‍🔬", sector:"Escritório / Cascade / Hydroplant / Reactors / Albatross", note:"⭐ Pesquisadora da GATE e principal parceira científica de Dr. Abe Stern. Janet acompanha Abe durante grande parte da crise de Cascade, atravessando Flathill, Cascade Laboratories, Hydroplant e Reactors enquanto tenta encontrar uma saída da Facility. Participa das pesquisas relacionadas a IS-0107 e aos Anteversos, mantendo especial interesse em fenômenos anômalos e informações recuperadas de outras realidades. Seus diálogos revelam conhecimento sobre os Gatekeepers, incluindo antigos incidentes envolvendo Da'at, e mostram sua preocupação com os efeitos das perfurações sobre o espaço-tempo. Junto de Abe, começa a questionar se os portais realmente os levaram de volta ao mesmo universo de origem. Após a separação dos dois durante o colapso, Janet sobrevive e posteriormente aparece em Albatross, desta vez sem Abe. Também desempenha um papel direto no confronto com Hasta Tria, utilizando uma Laser Turret para vaporizá-lo na Residence Sector." },
+    { name:"Dr. Alice Mayfield",     img:"Images/Personagens/Alicemayfield.webp", icon:"💻", sector:"Escritório / Segurança",              note:"⭐ Senior Data Scientist da GATE e doutora em Ciência da Computação, tendo sido protegida de Martin Hellman no MIT. Especialista em teoria criptográfica, Alice trabalhou diretamente no desenvolvimento dos sistemas de segurança da Facility e na arquitetura dos Security Robots. Durante o incidente, seus robôs armazenam dados de acesso em seus CPUs, levando o jogador a desenvolver o Keypad Hacker para atravessar as portas de segurança. Alice também pesquisa IS-0235, descobrindo propriedades importantes sobre sua natureza informacional e sua reprodução através de gravações magnéticas. Em outro projeto, trabalha no hardlight muxer e recebe de Dr. Stewart Wakeman informações sobre um objeto extremamente antigo, com aproximadamente 1,2 milhão de anos, cuja origem permanece desconhecida. Seus registros mostram uma cientista extremamente dedicada à pesquisa, chegando a se recusar a abandonar seus dados mesmo durante o colapso da Facility." },    
+    { name:"Alice Hong",             img:"Images/Personagens/Alicehong.webp", icon:"🛡️", sector:"Rise / Cascade / Segurança",              note:"⭐ Membro da GATE Defense Team e especialista em segurança de pesquisas. Em 1988, ingressa na equipe de defesa da GATE Rise Bio-Laboratory. Em 1990, aceita uma transferência temporária para a GATE Cascade Research Facility para supervisionar a segurança das pesquisas envolvendo IS-0102 e outros sujeitos de contenção. Sua presença em Cascade ocorre antes do colapso de 1993 e coloca Alice diretamente em contato com alguns dos projetos mais perigosos da Facility. Durante o incidente, ela acaba ferida e sobrevive enquanto tenta lidar com a situação de emergência. Sua trajetória ajuda a mostrar a perspectiva da equipe de segurança diante dos experimentos da GATE e do risco crescente representado pelos Immurement Subjects." },
+    { name:"Dr. Derek Manse",        img:"Images/Personagens/Derekmanse.webp", icon:"🧑‍🔬", sector:"GATE / Cascade",                note:"⭐ Research Director da GATE Cascade Research Facility e principal responsável pelos hologramas científicos espalhados pela instalação, tornando-se uma das maiores fontes de informação sobre a história da GATE e dos Anteversos. Manse documenta pesquisas envolvendo diversos Immurement Subjects e registra avanços fundamentais na compreensão das perforations, incluindo o fenômeno de temporal tethering. Seus estudos revelam que IS-0171 (Carbuncle) é uma fase larval de IS-0173 e que IS-0178 pode fazer parte do mesmo ciclo evolutivo. Durante as pesquisas sobre os Exors, percebe que Exors, Pests e Peccaries não parecem ser nativos dos mundos onde foram encontrados e começa a suspeitar que sejam organismos criados como armas biológicas. Manse também acompanha a pesquisa de IS-0012: inicialmente considera a criatura inteligente e possivelmente benevolente, chegando a cogitar sua libertação, mas posteriormente descobre que o ser que afirma ser Dr. Cahn é, na verdade, IS-0012, e passa a acreditar que a entidade é um antigo inimigo da humanidade que assumiu diferentes identidades ao longo da história. Suas investigações em Shadowgate revelam ainda que entidades semelhantes podem ter sido interpretadas como deuses ou demônios por civilizações humanas. Ao mesmo tempo, Manse percebe que a GATE está sendo observada pela Ordem e registra o avanço da invasão à Cascade. No final de 1992, ordena a suspensão dos experimentos com Electro-Pest, interrompendo temporariamente a pesquisa de Abe Stern sobre IS-0173-B." },    
+    { name:"Dr. Sarah Frake",        img:"Images/Personagens/Sarahfrake.webp", icon:"⚙️", sector:"Manufacturing West / Reactors",  note:"⭐ Head Engineer da GATE Cascade Research Facility e Chief of Fabrication and Engineering Services. Extremamente habilidosa e conhecida por encontrar soluções práticas para problemas de engenharia aparentemente impossíveis. Lidera as equipes de fabricação e engenharia da Cascade, trabalhando diretamente com profissionais como Varsha Patel. Antes do incidente, já demonstrava preocupação com a infraestrutura da Facility, especialmente com o Hydrodam, que estava sendo levado além dos limites para atender às demandas da equipe de pesquisa. Durante o colapso de 1993, Frake assume o comando da fuga de sua equipe após os terremotos destruírem os equipamentos e os Sappers bloquearem o túnel de superfície. Ela decide repetir deliberadamente o acidente de 1985: reparar os electron pumps e ativar o Synchrotron para criar uma minissingularidade capaz de abrir uma passagem entre Manufacturing West e Cascade Laboratories. Apesar de considerar extremo destruir uma das maiores máquinas da Facility, entende que a situação já não permite preocupação com danos materiais. Após a abertura da passagem, recusa-se a abandonar sua equipe e segue procurando os engenheiros desaparecidos. Posteriormente, nos Reactors, tenta utilizar o antigo equipamento de portais para encontrar uma rota de fuga enquanto enfrenta a invasão da Ordem e a presença dos Gatekeepers." },
+    { name:"Varsha Patel",           img:"Images/Personagens/Varshapatel.webp", icon:"🔧", sector:"Manufacturing West / Cascade",   note:"⭐ Materials Engineer da GATE e especialista em metalurgia, ligas e materiais avançados. Graduou-se no James Franck Institute em 1983 e ingressou na equipe de pesquisa da GATE na Haunch Facility em 1986. Em 1987, Sarah Frake solicita sua transferência para a GATE Cascade Research Facility, onde passa a trabalhar diretamente com a equipe de engenharia e fabricação de Manufacturing West. Seu conhecimento sobre materiais e propriedades físicas é utilizado no desenvolvimento e manutenção de equipamentos da Cascade, tornando-a parte importante da infraestrutura tecnológica que sustenta as pesquisas da Facility. Varsha também mantém uma relação profissional próxima com Sarah Frake e sua equipe durante os acontecimentos que antecedem o colapso de 1993." },
+    { name:"Dr. Albert Cahn",        img:"Images/Personagens/Albertcahn.webp", icon:"🧠", sector:"Cascade / Shadowgate / Albatross", note:"⭐ Senior Researcher da GATE e uma das mentes responsáveis por diversos sucessos científicos iniciais da organização. Trabalhou ao lado de Dr. Abe Stern na pesquisa de fatores de crescimento obtidos de entidades do Anteverse 42, estudou o comportamento de IS-0017 e foi responsável por enviar IS-0107 para o espaço para impedir que seu crescimento ameaçasse o Sistema Solar. O verdadeiro Dr. Cahn morreu mais de dois anos antes dos acontecimentos de 1993, embora sua reputação continue presente nos registros e entre os pesquisadores da GATE. O indivíduo encontrado pelo jogador no Containment Block Baird aparenta ser Cahn e afirma ter ficado preso na instalação, mas posteriormente é revelado como IS-0012, uma entidade metamórfica que assumiu a aparência do cientista. IS-0012 utiliza a identidade de Cahn para manipular o jogador, conduzindo-o até Shadowgate e convencendo-o a libertar IS-0117. Em Albatross, a farsa é finalmente exposta por Ulrich Thule, que reconhece que o verdadeiro Cahn nunca esteve envolvido no projeto de IS-0012. A identidade falsa ainda demonstra uma estranha simpatia por IS-0117, levantando a possibilidade de que ambos estejam relacionados. O arco de Cahn conecta diretamente a história da GATE aos mistérios de IS-0012, Shadowgate, IS-0117, Anteverse 2 e Praetorium." },    
+    { name:"Dr. Lenora Riggs",       img:"Images/Personagens/Lenorariggs.webp", icon:"🧭", sector:"Anteversos / Canaan / Albatross", note:"⭐ TransRecon Operator e líder da TransRecon Team 2, especializada na exploração e investigação dos Anteversos. Lenora participa de algumas das expedições mais importantes da GATE para realidades desconhecidas e é responsável por registrar e estudar diversas formas de vida e fenômenos encontrados além das perfurações. Em 1987, descobre os Exors no Anteverse 2, estabelecendo um dos primeiros contatos documentados da GATE com essas criaturas e contribuindo para o estudo de sua natureza. Posteriormente, Lenora e Mark Kesey são enviados para A2C em março de 1993, pouco antes do início do incidente de Cascade. Durante suas pesquisas, Lenora também se envolve com Canaan e com os mistérios relacionados ao Anteverse 42, tornando-se uma das principais fontes de conhecimento da GATE sobre os mundos além das perfurações. Sua trajetória continua após o colapso de Cascade e a leva até Albatross, onde permanece envolvida com a investigação dos Anteversos e auxilia outros sobreviventes." },
+    { name:"Dr. Mark Kesey",          img:"Images/Personagens/Markkesey.webp", icon:"🧪", sector:"TransRecon / Canaan / Anteversos", note:"⭐ Chrono-physicist da GATE e integrante da TransRecon Team 2, liderada por Dr. Lenora Riggs. A equipe é enviada a Canaan para investigar por que a região atrai tantas perfurações e estudar o Lodestone, uma poderosa tecnologia de perfuração escondida pelos habitantes locais. Durante a expedição, Dr. Martin Jessup e Dr. Felicia Mitter são capturados e mortos, enquanto Kesey consegue sobreviver disfarçado como um pescador nos cais de Canaan. Mantendo sua identidade em segredo, tenta evitar os habitantes enquanto espera por um possível resgate e acredita que Lenora Riggs ainda esteja viva. Antes da expedição, Kesey também participa de pesquisas sobre os Anteversos, trabalhando com Suan Tengku na análise da singularidade de Anteverse 2 e seus níveis anômalos de informação. Seus registros e expedições também o conectam a Anteverse 168 e Anteverse 67, onde relata fenômenos extremos associados às perfurações, incluindo o estado de frio incomensurável provocado pela conexão com A67." },
+    { name:"Hasta Tria",             img:"Images/Personagens/Hastatria.webp", icon:"⚔️", sector:"Manufacturing West / Praetorium / Albatross", note:"⭐ High Inquisitor da Ordem e um dos personagens mais importantes para compreender a organização e sua relação com os Anteversos. É encontrado pelo jogador pela primeira vez em Manufacturing West, próximo ao túnel de superfície destruído, inicialmente tratando o sobrevivente como um possível inimigo. Entretanto, ao longo da jornada, Hasta Tria demonstra uma visão menos fanática da Ordem e começa a questionar seus métodos, seus objetivos e a forma como os seres humanos são tratados por seus superiores. Ele acompanha o jogador em diferentes momentos e acaba estabelecendo uma relação incomum baseada em respeito e cooperação, apesar de continuarem pertencendo a lados opostos. Sua história está diretamente ligada ao Praetorium, ao funcionamento da Ordem e aos acontecimentos envolvendo IS-0117 e Anteverse 2. Posteriormente, sua posição dentro da Ordem e suas dúvidas sobre aquilo que acredita entram em conflito, tornando-o uma das figuras que melhor representam a divisão entre a doutrina da Ordem e a realidade dos Anteversos." },
+    { name:"The Blacksmith",        img:"Images/Personagens/Oferreiro.webp", icon:"⚒️", sector:"Manufacturing West / F.O.R.G.E.",             note:"⭐ Misterioso especialista em fabricação e manutenção encontrado em Manufacturing West. Conhecido simplesmente como The Blacksmith, sua verdadeira identidade e seu passado permanecem desconhecidos, e ele evita revelar informações sobre si mesmo. Opera a F.O.R.G.E., uma oficina especializada capaz de fabricar e aprimorar equipamentos extremamente avançados utilizando materiais encontrados na Facility e nos Anteversos. Mantém uma relação profissional com Sarah Frake e sua equipe de engenharia, sendo uma das figuras responsáveis por manter a infraestrutura de Manufacturing West funcionando durante o colapso. Sua oficina se torna um ponto importante para a progressão do jogador, permitindo a criação de equipamentos e melhorias fundamentais para atravessar as áreas mais perigosas da Cascade. Apesar de seu comportamento reservado, demonstra conhecimento excepcional sobre engenharia, fabricação e tecnologia da GATE, levantando dúvidas sobre sua verdadeira origem e sobre quanto ele realmente sabe a respeito da Facility." },
+    { name:"Warren Bunning",        img:"Images/Personagens/Warrenbunning.webp", icon:"🔫", sector:"Escritório / Cascade",              note:"🟡 Guarda de segurança da GATE Cascade Research Facility e um dos sobreviventes encontrados pelo jogador no Office Sector. Warren permanece na Facility durante o colapso e utiliza sua experiência como segurança para orientar o jogador sobre os perigos do complexo e o comportamento das ameaças que surgiram após a invasão da Ordem. Também atua como trader, fornecendo armas, munições e outros equipamentos em troca de recursos. Seus diálogos ajudam a mostrar a perspectiva dos funcionários de segurança diante do desastre, complementando as informações científicas fornecidas pelos pesquisadores e registrando o estado da Cascade após o início do incidente." },
+    { name:"Jimmy Sanders",         img:"Images/Personagens/Jimmysanders.webp", icon:"📻", sector:"Residência / Cascade",           note:"🟡 Funcionário da GATE que se muda para Sydney no final de 1992 e pouco depois consegue emprego na GATE Cascade Research Facility. Sua chegada ocorre poucos meses antes do incidente de 15 de março de 1993, fazendo dele um dos funcionários que entram na Cascade pouco antes do colapso. Seus registros e comunicações ajudam a preencher o cotidiano da Facility e o ambiente entre os funcionários antes da invasão da Ordem. Jimmy funciona principalmente como uma perspectiva comum dentro da GATE, mostrando acontecimentos e preocupações dos funcionários que não estavam diretamente envolvidos nos grandes projetos científicos da organização." },
+    { name:"Dr. Carson",             img:"Images/Personagens/Drcarson.webp", icon:"🍳", sector:"Segurança / Itinerante",           note:"🟡 Cientista e chef da GATE que sobrevive ao colapso da Cascade. Embora tenha participação pequena na narrativa principal, Carson mantém uma presença recorrente entre os sobreviventes e pode ser encontrado em diferentes áreas da Facility, especialmente próximo às cozinhas e bases. Seus registros e o Carson Family Cookbook revelam aspectos do cotidiano dos funcionários da GATE e mostram como a alimentação e a rotina continuaram sendo importantes mesmo após o desastre. Sua presença também funciona como um contraponto mais cotidiano à tensão dos acontecimentos, ajudando a mostrar que a Cascade era uma comunidade de pesquisadores e funcionários antes de se transformar em uma instalação tomada por criaturas e anomalias." },  ],
   timeline:[
-    { year:"1978",        ev:"Fundação GATE estabelecida secretamente para estudar anomalias geológicas no outback australiano." },
-    { year:"1984",        ev:"Construção da Facility subterrânea inicia usando infraestrutura de antigo garimpo de lítio desativado." },
-    { year:"1989",        ev:"Primeiro contato documentado com Anteverso. Projeto IS-0001 cria protocolo de contenção." },
-    { year:"1991",        ev:"Projetos se expandem rapidamente. Pressão por resultados leva a experimentos não autorizados." },
-    { year:"1993 — Dia 0",ev:"Incidente crítico. Múltiplas contenções falham simultaneamente. A Ordem é acionada. Os jogadores acordam como cientistas presos no início do colapso." },
-    { year:"1993 — Jogo", ev:"Você como cientista tenta sobreviver, entender o ocorrido e encontrar uma saída pela Albatross. Cada setor explica um pedaço da catástrofe." },
-  ]
+    { year:"De 1,2 Milhão de Anos Atrás a 406 CE.", img:"Images/História/IS-0172.webp",     ev:"IS-0172 é criado por meios desconhecidos há aproximadamente 1,2 milhão de anos. Por volta de 4000 a.C., acredita-se que o altar de Albatross tenha sido construído. Em 300 a.C., IS-0078 é descoberto na Pérsia, enquanto IS-0107 é descoberto em Djenné, Mali, em 200 a.C. Entre 101 e 200 a.C., escolas de arquearia na Pártia mantêm tradições que, séculos depois, seriam reivindicadas pelos Sagittarii da Ordem como parte de sua origem. Por volta de 7 a.C., a Ordem tem seu primeiro encontro conhecido, ou primeiro contato registrado, com IS-0059. Em 1 a.C., ocorre em Jerusalém a primeira aparição registrada de IS-0177. Entre 334 e 406 d.C., vive Santa Asella, período durante o qual é formada a seita Interfector." },    
+    { year:"De 406 CE a 1950s",  img:"Images/História/IS-0042.webp",      ev:"Após a morte de Saint Asella em 406 CE, a seita Interfector continua a preservar seus segredos. Séculos depois, no período posterior à Albigensian Crusade, no século XIII, são estabelecidos os treinamentos dos Sagittarii, tradição que a Ordem posteriormente relacionaria às antigas escolas de arquearia da Pártia. Entre 1556 e 1636, IS-0042 surge misteriosamente em diversas pinturas a óleo. Em 1826, IS-0003 é descoberto sobre o cadáver de uma vítima de linchamento não identificada em Boston. Em 1931, IS-0172 é recuperado em Nevşehir, na Turquia, após ter sido encontrado em um restaurante de kebab, onde era utilizado como peso de porta. Em 1933, descobre-se que IS-0107, originalmente encontrado em Djenné, Mali, cresce aproximadamente 0,1% ao ano. Em 1941, nasce Dr. Derek Manse, que décadas mais tarde se tornaria Diretor de Pesquisa da GATE Cascade Research Facility. Durante a década de 1950, uma mina de lítio é construída no interior da Austrália, a aproximadamente 200 metros de profundidade, estabelecendo a estrutura subterrânea que futuramente seria incorporada à GATE Cascade Research Facility." },    
+    { year:"De 1950s a 1990",   img:"Images/História/Gatecascaderesearchfacility.webp",     ev:"Na década de 1950, uma mina de lítio é construída no interior da Austrália, aproximadamente 200 metros abaixo da superfície. Em 1961, IS-0166 desaparece dentro do Muro de Berlim, com sua última localização conhecida em algum ponto da Tchecoslováquia. Em 1967, Dr. Annette Garrick funda a GATE, dando início à organização que passaria a estudar, conter e pesquisar fenômenos anômalos em escala mundial. No ano seguinte, em 1968, os Gatekeepers recuperam IS-0013 em Acquin, Haiti. Em 1969, o Hydroplant Sector da mina de lítio é concluído. Entre 1974 e 1979, um grupo de pesquisadores russos especializados em psicotrônica cria IS-0093. Em 1977, a GATE adquire a antiga mina de lítio e, após extensas reformas, transforma suas instalações na GATE Cascade Research Facility. No mesmo ano, T.R. Enderson é contratado diretamente por Annette Garrick e a NASA lança as sondas Voyager. Em 1979, as acomodações da antiga mina são reformadas e reabertas como o Residence Sector. No final da década de 1980, a GATE também adquire o controle da Intrados. Em 1982, Albert Cahn lança IS-0107 ao espaço para impedir que seu crescimento consuma o Sistema Solar, deixando seu último paradeiro conhecido em algum ponto além de Júpiter; por volta desse mesmo período, IS-0018 é recuperado da House of Windsor. Em 1983, a GATE recupera IS-0093, enquanto Varsha Patel se forma no James Franck Institute. Em 1984, várias instâncias de IS-0023 são recuperadas do Anteverse 42, mas posteriormente são devoradas pela instância encontrada no jogo. Em 1985, as coordenadas que levam até IS-0028 são perdidas, IS-0169 é recuperado de Exmoor, e a GATE cria G.A.S.S. e G.A.I.A. após o 'Torii Facility Decompression', conduzido pela Dra. Alice Mayfield. No mesmo ano, o Synchrotron de Manufacturing West sofre uma sobrecarga, criando uma minissingularidade e matando duas pessoas; também é registrado novamente o lançamento de IS-0107 ao espaço por Albert Cahn. Em 1986, IS-0017 é recuperado de uma fazenda na Swan's Island, Maine, e Varsha Patel ingressa na equipe de pesquisa da GATE na Haunch Facility. Em 1987, o primeiro experimento de perfuração é bem-sucedido em Flathill, estabelecendo uma breve conexão com o Anteverse 1. Nesse mesmo período, a Dra. Lenora Riggs descobre os Exors no Anteverse 2, IS-0014 é recuperado em Chardzhou, IS-0083 é encontrado no porão de um shopping abandonado em Anaheim, IS-0101 é interceptado e roubado pela Ordem, IS-0235 é identificado e Varsha Patel é transferida para a GATE Cascade Research Facility a pedido de Sarah Frake. Em 1988, IS-0111 é recuperado do Anteverse 3, Alice Hong ingressa na equipe de defesa da GATE em Rise e Elanor Newman lidera as primeiras perfurações no local da Cascade, realizadas nos Reactors. Em fevereiro de 1989, IS-0052 é recuperado do Anteverse 8, enquanto IS-0166 é redescoberto pela Ordem na Alemanha Oriental após a destruição do Muro de Berlim. Finalmente, em 1990, um funcionário desconhecido do Office Sector desenvolve um protótipo de software que posteriormente se tornaria conhecido como a internet, sendo testado pelos Drs. Abe Stern e Janet Ross; no mesmo ano, Alice Hong aceita uma designação temporária adicional na Cascade para supervisionar a segurança das pesquisas envolvendo IS-0102 e outros sujeitos." },
+    { year:"De 1990 a 1993",  img:"Images/História/1990.webp",      ev:"Em 1990, um funcionário desconhecido do Office Sector desenvolve um protótipo de software que posteriormente se tornaria conhecido como a internet, sendo testado pelos Drs. Abe Stern e Janet Ross. No mesmo ano, Alice Hong aceita uma designação temporária adicional na Cascade para supervisionar a segurança das pesquisas envolvendo IS-0102 e outros sujeitos. Em 1991, IS-0059 e The Night Realm fazem suas primeiras aparições conhecidas, IS-0052 é recuperado do Anteverse 2, IS-0053 se manifesta dentro da GATE Cascade Research Facility e IS-0155-A/B é recuperado do Anteverse 2. Em setembro, Dr. Tengku apresenta a Keystone seu relatório sobre o Anteverse 2. Em 1992, ocorre o último avistamento conhecido de IS-0235 antes de o sujeito ser classificado pela GATE como Endangered. Pouco depois, Jimmy Sanders se muda para Sydney e consegue um emprego na Cascade, enquanto, no final do ano, os experimentos com Electro-Pest são suspensos por ordem de Dr. Derek Manse. Em algum momento anterior a 1993, Dr. Albert Cahn falece, pelo menos dois anos antes dos acontecimentos do jogo. Em 1993, IS-0121 é recuperado do Anteverse 42, IS-0235 infecta IS-0083, IS-0139 é descoberto nas minas de Manufacturing West, IS-0299 é encontrado dentro da GATE Cascade Research Facility e IS-0422 é descoberto nos pântanos do Anteverse 168. Em 9 de março ou posteriormente, Lenora e Kesey são enviados para A2C. Na manhã de 15 de março, às 7:00, o jogador chega à GATE Cascade Research Facility após ser transferido da GATE Springer Facility. No mesmo dia, The Order inicia ataques coordenados contra instalações da GATE em todo o mundo, tomando a GATE Rise Bio-Laboratory e a GATE Voussoir Facility e atacando a GATE Crown Control Facility, onde os pesquisadores são mortos antes que a invasão seja repelida por instâncias de IS-0064. Na Cascade, o jogador passa pelo treinamento inicial e é encaminhado ao Residence Sector, mas o ataque da Ordem coloca a instalação em lockdown e o força a seguir para o Office Sector. Durante sua fuga, o jogador atravessa a Crown Control Facility em busca de uma Power Cell e desativa o campo de contenção que mantinha IS-0064 e IS-0407 presos, libertando-os dentro da GATE Cascade Research Facility. Ao tentar escapar por um túnel de superfície em Manufacturing West, o jogador descobre que a passagem foi destruída por Sappers por razões desconhecidas, encontra Hasta Tria pela primeira vez e busca uma rota de fuga pelo elevador de superfície do Security Sector. Mais tarde, o Synchrotron é destruído pelo jogador e por Sarah Frake através de outra minissingularidade, criando uma passagem entre Manufacturing West e Cascade Laboratories. Dr. Stern cria IS-0173-B, a variante ciberneticamente modificada de IS-0173, enquanto IS-0091 e IS-0091-B escapam da contenção após o ataque da Ordem a Cascade Laboratories e passam a perseguir o jogador pela instalação. O jogador encontra Dr. Albert Cahn preso no Containment Block Baird e reinicia o sistema de segurança para acessar o Containment Block Anning, libertando Cahn de sua cela de contenção de IS-0012; posteriormente é revelado que o suposto Dr. Cahn é, na realidade, IS-0012 disfarçado. Sujeitos infectados por IS-0102 escapam da contenção depois que o jogador acessa o Containment Block Helmholtz. Ao atravessar o Security Sector, o jogador encontra IS-0059 e entra no Anteverse 39, mas o elevador de superfície desaba por razões desconhecidas quando é utilizado, obrigando-o a seguir para o Hydroplant. Devido à invasão da Cascade pela Ordem, G.A.D.D., uma versão altamente modificada de G.A.S.S., é implantado prematuramente. Por fim, o jogador acessa o Intrados Waygate nos Reactors e é enganado por Dr. Cahn para libertar IS-0117 de sua contenção em Shadowgate. Ao atravessar o portal deixado pela criatura, o jogador chega ao Anteverse 2 e posteriormente ao Praetorium, onde encontra Hasta Tria novamente." },  ]
 };
 function renderLore(){
   const el=document.getElementById('lore-list');
   if(!el)return;
-  const sec=(title,col)=>{const d=document.createElement('div');d.style.cssText=`font-size:var(--fs-xs);color:${col};letter-spacing:3px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)`;d.textContent=`// ${title}`;el.appendChild(d);};
+  const sec=(title,col)=>{const d=document.createElement('div');d.className='lore-sec';d.style.color=col;d.style.borderColor=`${col}55`;d.textContent=`// ${title}`;el.appendChild(d);};
+  sec('LINHA DO TEMPO',C.purple);
+  const storyWrap=document.createElement('div');storyWrap.className='story-carousel';storyWrap.id='story-carousel';
+  el.appendChild(storyWrap);
+  renderStoryCarousel();
   sec('FAÇÕES',C.purple);
-  const fg=document.createElement('div');fg.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:20px';
-  loreData.factions.forEach(f=>{const c=document.createElement('div');c.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${f.color};padding:12px 14px`;c.innerHTML=`<div style="font-size:var(--fs-md);color:${f.color};margin-bottom:6px">${f.icon} ${f.name}</div><div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.6">${f.desc}</div>`;fg.appendChild(c);});
+  const fg=document.createElement('div');fg.className='faction-list';
+  loreData.factions.forEach(f=>{
+    const c=document.createElement('div');
+    c.className='faction-card';
+    c.style.borderLeft=`3px solid ${f.color}`;
+    c.innerHTML=`
+      <div class="faction-imgbox">
+        <img src="${f.img}" alt="${f.name}" onerror="this.style.display='none';">
+        <div class="faction-name-overlay" style="color:${f.color}">${f.name}</div>
+      </div>
+      <div class="faction-body">
+        <div class="faction-desc">${f.desc}</div>
+      </div>`;
+    fg.appendChild(c);
+  });
   el.appendChild(fg);
   sec('PERSONAGENS-CHAVE',C.purple);
-  const cg=document.createElement('div');cg.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:20px';
-  loreData.characters.forEach(ch=>{const c=document.createElement('div');c.style.cssText='background:var(--bgCard);border:1px solid var(--border);padding:10px 12px';c.innerHTML=`<div style="font-size:var(--fs-md);color:var(--greenLt);margin-bottom:4px">${ch.icon} ${ch.name}</div><div style="font-size:var(--fs-xs);color:var(--textMuted);margin-bottom:4px">📍 ${ch.sector}</div><div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.5">${ch.note}</div>`;cg.appendChild(c);});
-  el.appendChild(cg);
-  sec('LINHA DO TEMPO',C.purple);
-  loreData.timeline.forEach(t=>{const d=document.createElement('div');d.style.cssText='display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start';d.innerHTML=`<span style="font-size:var(--fs-xs);color:var(--purple);min-width:90px;flex-shrink:0;border:1px solid rgba(160,96,224,0.4);padding:2px 6px;text-align:center;background:rgba(160,96,224,0.1)">${t.year}</span><span style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.6">${t.ev}</span>`;el.appendChild(d);});
+  const charWrap=document.createElement('div');charWrap.className='char-carousel';
+  charWrap.innerHTML=`
+    <button class="char-arrow char-arrow-left" onclick="charMove(-1)" aria-label="Personagem anterior">‹</button>
+    <div class="char-track" id="char-track"></div>
+    <button class="char-arrow char-arrow-right" onclick="charMove(1)" aria-label="Próximo personagem">›</button>
+  `;
+  el.appendChild(charWrap);
+  renderCharCarousel();
+}
+
+let charIndex = 0;
+function renderCharCarousel(){
+  const track = document.getElementById('char-track');
+  if(!track) return;
+  track.innerHTML = '';
+  loreData.characters.forEach((ch,i)=>{
+    const card = document.createElement('div');
+    card.className = 'char-card';
+    card.dataset.idx = i;
+    const imgHtml = ch.img
+      ? `<img src="${ch.img}" alt="${ch.name}" class="char-face-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="char-face-fallback">${ch.icon}</span>`
+      : `<span class="char-face-fallback" style="display:flex">${ch.icon}</span>`;
+    card.innerHTML = `
+      <div class="char-face">${imgHtml}</div>
+      <div class="char-sheet">
+        <div class="char-name">${ch.name}</div>
+        <div class="char-sector">📍 ${ch.sector}</div>
+        <div class="char-note">${ch.note}</div>
+      </div>`;
+    card.addEventListener('click', () => { if (i !== charIndex) charMove(i - charIndex); });
+    track.appendChild(card);
+  });
+  updateCharPositions();
+}
+function updateCharPositions(){
+  const total = loreData.characters.length;
+  document.querySelectorAll('#char-track .char-card').forEach(card=>{
+    const i = parseInt(card.dataset.idx, 10);
+    let rel = i - charIndex;
+    if (rel > total/2) rel -= total;
+    if (rel < -total/2) rel += total;
+    card.classList.remove('pos-center','pos-left','pos-right','pos-far');
+    if (rel === 0) card.classList.add('pos-center');
+    else if (rel === -1) card.classList.add('pos-left');
+    else if (rel === 1) card.classList.add('pos-right');
+    else card.classList.add('pos-far');
+  });
+}
+function charMove(dir){
+  const total = loreData.characters.length;
+  charIndex = (charIndex + dir + total) % total;
+  updateCharPositions();
+}
+
+function renderStoryCarousel(){
+  const wrap=document.getElementById('story-carousel');
+  if(!wrap)return;
+  wrap.innerHTML='';
+  loreData.timeline.forEach((t,i)=>{
+    const frame=document.createElement('div');
+    frame.className='story-frame'+(i===0?' visible':'');
+    frame.id=`story-frame-${i}`;
+    const imgHtml = t.img
+      ? `<img src="${t.img}" alt="${t.year}" onerror="this.parentElement.innerHTML='<span class=\\'story-imgbox-emoji\\'>📜</span><span class=\\'story-year-badge\\'>${t.year}</span>'">`
+      : `<span class="story-imgbox-emoji">📜</span>`;
+    const isLast = i === loreData.timeline.length - 1;
+    frame.innerHTML = `
+      <div class="story-card">
+        <div class="story-imgbox">
+          ${imgHtml}
+          <span class="story-year-badge">${t.year}</span>
+        </div>
+        <div class="story-text">${t.ev}</div>
+      </div>
+      ${isLast
+        ? `<div class="story-end-marker">// FIM DA LINHA DO TEMPO CONHECIDA</div>`
+        : `<div class="story-next-wrap"><button class="story-next-btn" onclick="storyReveal(${i+1})" id="story-btn-${i}">▼</button></div>`
+      }
+    `;
+    wrap.appendChild(frame);
+  });
+}
+
+function storyReveal(i){
+  const btn = document.getElementById(`story-btn-${i-1}`);
+  if (btn) btn.parentElement.remove();
+  const next = document.getElementById(`story-frame-${i}`);
+  if (!next) return;
+  next.classList.add('visible');
+  if (next.scrollIntoView) next.scrollIntoView({ behavior:'smooth', block:'center' });
 }
 renderLore();
 
 // ══ JOBS & TRAITS DATA ══
+// jobsData revisado com base na wiki oficial (Jobs) — o jogo passou por um rework de profissões;
+// os 9 jobs abaixo são os atuais confirmados. traitPts = pontos de Trait concedidos pelo job (nunca custam).
 const jobsData=[
-  { name:"Assistente de Laboratório", eng:"Lab Assistant",         tier:"S", color:C.green,  traitPts:4, skills:"Engenharia 3, Primeiros Socorros 3, Corrida 2", solo:"S", coop:"S", desc:"Melhor opção geral. Maior número de pontos de Trait. Skills equilibradas para qualquer situação." },
-  { name:"Estagiário de Verão",       eng:"Summer Intern",         tier:"S", color:C.green,  traitPts:4, skills:"Criação 3, Corrida 3, Furtividade 2",           solo:"S", coop:"S", desc:"Empatado com Lab Assistant em pontos de Trait. Foco em crafting e mobilidade — excelente para solo." },
-  { name:"Botânico Fitogenético",     eng:"Phytogenetic Botanist", tier:"A", color:C.cyan,   traitPts:3, skills:"Agricultura 4, Culinária 3, Furtividade 2",      solo:"B", coop:"A", desc:"Farming passivo forte em co-op. Recursos renováveis facilitam o grupo inteiro." },
-  { name:"Oficial de Segurança",      eng:"Security Officer",      tier:"A", color:C.amber,  traitPts:3, skills:"Corpo a Corpo 4, Corrida 3, Primeiros Socorros 2",solo:"A", coop:"B", desc:"Build de combate corpo-a-corpo. Forte no early game, cai em relevância ao obter melhores armas." },
-  { name:"Biólogo Marinho",           eng:"Marine Biologist",      tier:"B", color:C.steel,  traitPts:3, skills:"Pesca 4, Natação 3, Culinária 2",                solo:"B", coop:"B", desc:"Especialista em pesca — acelera o troféu Captura Rara. Nicho mas funcional." },
-  { name:"Engenheiro Mecânico",       eng:"Mechanical Engineer",   tier:"B", color:C.steel,  traitPts:3, skills:"Engenharia 4, Criação 3, Força 2",               solo:"B", coop:"A", desc:"Crafting avançado mais rápido. Em co-op, acelera toda a base como suporte." },
-  { name:"Analista de Defesa",        eng:"Defense Analyst",       tier:"D", color:C.red,    traitPts:1, skills:"Precisão 4, Recarga 3, Furtividade 1",           solo:"D", coop:"D", desc:"⚠️ EVITAR: Menos pontos de Trait + força o Slow Learner (-30% XP) obrigatório." },
+  { name:"Estagiário de Verão", eng:"Summer Intern", icon:"☕", tier:"S", color:C.green, img:"Images/Jobs/summer-intern.png",
+    points:12, roles:"Folha em Branco",
+    skills:[],
+    xpBonus:null,
+    items:[],
+    forcedTrait:null,
+    desc:"Maior número de pontos do jogo e nenhum bônus de skill — a 'folha em branco' ideal pra quem quer montar o build de Traits perfeito." },
+  { name:"Assistente de Laboratório", eng:"Lab Assistant", icon:"🧪", tier:"S", color:C.green, img:"Images/Jobs/lab-assistant.png",
+    points:10, roles:"Furtividade",
+    skills:["+3 Corrida","+3 Furtividade","+2 Força"],
+    xpBonus:"+50% XP de Furtividade",
+    items:["🧤 Luvas de Laboratório"],
+    forcedTrait:null,
+    desc:"Segundo maior número de pontos do jogo, ainda leva bônus de Furtividade e Corrida — mobilidade sem abrir mão de pontos de Trait." },
+  { name:"Analista de Defesa", eng:"Defense Analyst", icon:"🛡️", tier:"D", color:C.red, img:"Images/Jobs/defense-analyst.png",
+    points:5, roles:"Combate Ofensivo",
+    skills:["+2 Fortitude","+2 Força","+1 Armas Contundentes","+2 Recarga","+2 Precisão"],
+    xpBonus:"+75% XP de Precisão, +75% XP de Recarga (na prática +40%, pois o Aprendizado Lento aplica -20% antes)",
+    items:["🧢 Boné de Segurança","🦺 Colete de Segurança Desgastado","🏏 Cassetete Básico"],
+    forcedTrait:"Aprendizado Lento — não concede pontos extras por ser forçado",
+    desc:"⚠️ EVITAR: menor número de pontos do jogo e ainda força o trait Aprendizado Lento sem dar pontos em troca — só a penalidade." },
+  { name:"Consultor Arcotécnico", eng:"Archotechnic Consultant", icon:"🔧", tier:"C", color:C.amber, img:"Images/Jobs/archotechnic-consultant.png",
+    points:7, roles:"Construtor",
+    skills:["+2 Construção","+1 Força","+3 Artesanato"],
+    xpBonus:"+50% XP de Construção",
+    items:["🧤 Luvas de Trabalho"],
+    forcedTrait:null,
+    desc:"Ótimo se o grupo já tem outra função e falta um construtor — mas é o Job com menos pontos de Trait entre os 'normais'." },
+  { name:"Bionomista Epimédico", eng:"Epimedical Bionomicist", icon:"🩺", tier:"A", color:C.cyan, img:"Images/Jobs/epimedical-bionomicist.png",
+    points:9, roles:"Médico",
+    skills:["+3 Primeiros Socorros","+1 Culinária","+1 Agricultura"],
+    xpBonus:"+50% XP de Primeiros Socorros",
+    items:["😷 Máscara Cirúrgica"],
+    forcedTrait:null,
+    desc:"Focado em Primeiros Socorros — bom se o grupo quer um 'médico' dedicado, mas os pontos de Trait ficam medianos." },
+  { name:"Botânico Fitogenético", eng:"Phytogenetic Botanist", icon:"🌱", tier:"A", color:C.cyan, img:"Images/Jobs/phytogenetic-botanist.png",
+    points:9, roles:"Jardineiro",
+    skills:["+3 Agricultura","+2 Culinária","+2 Força"],
+    xpBonus:"+50% XP de Agricultura",
+    items:["🧤 Luvas de Jardinagem"],
+    forcedTrait:null,
+    desc:"Bom em farming passivo, útil em co-op para abastecer o grupo — troca pontos de Trait por utilidade de time." },
+  { name:"Gastrologista Somático", eng:"Somatic Gastrologist", icon:"🍲", tier:"A", color:C.cyan, img:"Images/Jobs/somatic-gastrologist.png",
+    points:9, roles:"Chef",
+    skills:["+2 Armas Cortantes","+1 Fortitude","+4 Culinária"],
+    xpBonus:"+50% XP de Culinária",
+    items:[],
+    forcedTrait:null,
+    desc:"+4 Culinária de cara é o maior bônus inicial único do jogo — vale se você quer cozinhar cedo." },
+  { name:"Físico Parateórico", eng:"Paratheoretical Physicist", icon:"🎯", tier:"B", color:C.steel, img:"Images/Jobs/paratheoretical-physicist.png",
+    points:8, roles:"Arremesso / Utilidade",
+    skills:["+3 Arremesso","+3 Artesanato","+1 Furtividade","+1 Recarga","+1 Construção"],
+    xpBonus:"+50% XP de Arremesso, +50% XP de Artesanato",
+    items:[],
+    forcedTrait:null,
+    desc:"Bônus espalhado em várias skills de utilidade sem focar em nenhuma — flexível, mas raso." },
+  { name:"Pesquisador Trans-Cinemático", eng:"Trans-Kinematic Researcher", icon:"🦴", tier:"B", color:C.steel, img:"Images/Jobs/trans-kinematic-researcher.png",
+    points:8, roles:"Combate Defensivo",
+    skills:["+2 Armas Contundentes","+2 Fortitude","+2 Corrida","+2 Força"],
+    xpBonus:"+75% XP de Fortitude, +50% XP de Força",
+    items:[],
+    forcedTrait:null,
+    desc:"Bônus de Fortitude alto é interessante, mas os pontos de Trait ficam abaixo da média." },
 ];
+// traitsData revisado e completado com base na wiki oficial (Traits) — lista integral dos
+// 27 traits iniciais disponíveis na criação de personagem (16 positivos + 11 negativos).
+// custo negativo = gasta pontos · custo positivo = concede pontos.
+// nota: "Queixo de Vidro" (Glass Jaw) não consta mais na wiki oficial e foi removido daqui.
 const traitsData=[
-  { name:"Pochete",                        eng:"Fanny Pack",              cost:"-3", type:"POS", color:C.green,  tier:"S", desc:"Expande significativamente o inventário. Um dos traits mais valiosos — espaço é sempre escasso." },
-  { name:"Cérebro Enrugado",                eng:"Wrinkly Brain Meat",      cost:"-3", type:"POS", color:C.green,  tier:"S", desc:"+30% XP em todas as skills. Reduz massivamente o tempo de grind. Essencial para qualquer build." },
-  { name:"Autodefesa",                      eng:"Self Defense",            cost:"-2", type:"POS", color:C.green,  tier:"A", desc:"+25% dano corpo-a-corpo. Simples e eficaz — combate melee é frequente no early game." },
-  { name:"Competidor de Decatlo",           eng:"Decathlon Competitor",    cost:"-5", type:"POS", color:C.cyan,   tier:"A", desc:"+30% XP em Sprint, Força e Arremesso + 3 pontos iniciais em Sprint. Forte mas caro." },
-  { name:"Notívago",                        eng:"Night Owl",               cost:"-2", type:"POS", color:C.cyan,   tier:"B", desc:"Sem penalidade de sono à noite. Útil para jogadores que exploram ativamente no período noturno." },
-  { name:"Resistente ao Clima",             eng:"Weathered",               cost:"-2", type:"POS", color:C.cyan,   tier:"B", desc:"Resistência maior a temperaturas extremas. Útil em Voussoir, zonas frias e Reatores." },
-  { name:"Certificação de Primeiros Socorros", eng:"First Aid Certification", cost:"-2", type:"POS", color:C.cyan, tier:"B", desc:"+25% eficiência de itens de cura. Itens médicos restauram mais HP com menos consumo." },
-  { name:"Pele Grossa",                     eng:"Thick Skinned",           cost:"-3", type:"POS", color:C.cyan,   tier:"B", desc:"Redução de dano físico recebido. Funciona bem mas boa armadura substitui com o tempo." },
-  { name:"Bexiga de Aço",                   eng:"Bladder of Steel",        cost:"-1", type:"POS", color:C.steel,  tier:"C", desc:"Barra de continência drena muito mais devagar. Irônico para quem quer o troféu Acontecimentos." },
-  { name:"Chef Amador",                     eng:"Hobbyist Chef",           cost:"-2", type:"POS", color:C.steel,  tier:"C", desc:"+25% XP de Culinária. Útil para evoluir Cooking mais rápido e desbloquear sopas." },
-  { name:"Medo de Violência",               eng:"Fear of Violence",        cost:"+3", type:"NEG", color:C.amber,  tier:"C", desc:"Debuff temporário ao sofrer dano em combate. Gerenciável com prática de esquiva." },
-  { name:"Queixo de Vidro",                 eng:"Glass Jaw",               cost:"+2", type:"NEG", color:C.red,    tier:"D", desc:"HP máximo reduzido. Perigoso nos setores finais com alto dano de inimigos." },
-  { name:"Aprendizado Lento",               eng:"Slow Learner",            cost:"+4", type:"NEG", color:C.red,    tier:"F", desc:"⚠️ NUNCA: -30% XP em todas as skills permanentemente. Defense Analyst força este trait." },
+  // ── POSITIVOS (custam pontos) ──
+  { name:"Pochete",                            eng:"Fanny Pack",              cost:"-10", type:"POS", color:C.green, tier:"S", desc:"Nunca sai de casa sem ela. Ganha permanentemente +2 slots na hotbar. O trait mais caro do jogo, mas o espaço extra vale cada ponto." },
+  { name:"Cérebro Enrugado",                   eng:"Wrinkly Brainmeat",       cost:"-4",  type:"POS", color:C.green, tier:"S", desc:"Vias neurológicas mais maleáveis. +20% de XP em todas as skills — essencial para qualquer build (indisponível para Analista de Defesa)." },
+  { name:"Autodefesa",                         eng:"Self Defense",            cost:"-5",  type:"POS", color:C.green, tier:"A", desc:"Fez o curso de autodefesa da GATE. Causa +3 de dano com todas as armas corpo-a-corpo — simples e eficaz no early game." },
+  { name:"Competidor de Decatlo",               eng:"Decathlon Competitor",    cost:"-5",  type:"POS", color:C.green, tier:"A", desc:"Treinou para o Decatlo GATE. +30% XP de Corrida, Força e Arremesso, além de +3 Corrida já no início." },
+  { name:"Estômago de Chumbo",                 eng:"Lead Belly",              cost:"-8",  type:"POS", color:C.cyan,  tier:"B", desc:"Pode beber água contaminada sem passar mal. Ótima QoL em setores sem água limpa por perto, mas custa caro." },
+  { name:"Certificação de Primeiros Socorros", eng:"First Aid Certification", cost:"-3",  type:"POS", color:C.cyan,  tier:"B", desc:"Fez o curso de Primeiros Socorros da GATE. Começa com 5 ataduras e +3 em Primeiros Socorros." },
+  { name:"Resistente ao Clima",                eng:"Weathered",               cost:"-3",  type:"POS", color:C.cyan,  tier:"B", desc:"Prefere ficar ao ar livre quando não está no subsolo. +1 resistência a calor e +1 a frio — útil em Voussoir e Reatores." },
+  { name:"Pele Grossa",                        eng:"Thick Skinned",           cost:"-3",  type:"POS", color:C.cyan,  tier:"B", desc:"50% menos chance de sofrer sangramentos. Funciona bem, mas boa armadura substitui com o tempo." },
+  { name:"Discreto",                           eng:"Inconspicuous",           cost:"-4",  type:"POS", color:C.cyan,  tier:"B", desc:"Comportamento quieto e manso. Atrai atenção de inimigos duas vezes mais devagar, além de +2 Furtividade." },
+  { name:"Naturalmente Úmido",                 eng:"Naturally Moist",         cost:"-4",  type:"POS", color:C.steel, tier:"C", desc:"É naturalmente úmido e fica com sede 20% mais devagar que os outros." },
+  { name:"Jardineiro",                         eng:"Gardener",                cost:"-3",  type:"POS", color:C.steel, tier:"C", desc:"Ganha XP de Agricultura duas vezes mais rápido e já recebe receitas de canteiros básicos desde o início." },
+  { name:"Fisiculturista",                     eng:"Buff Brainiac",           cost:"-4",  type:"POS", color:C.steel, tier:"C", desc:"Consegue carregar 15% mais peso que os outros cientistas, além de +1 Força." },
+  { name:"Bexiga de Aço",                      eng:"Bladder of Steel",        cost:"-2",  type:"POS", color:C.steel, tier:"C", desc:"Consegue segurar por bastante tempo. Necessidades no banheiro reduzidas em 20% — irônico para quem quer o troféu Acontecimentos." },
+  { name:"Chef Amador",                        eng:"Hobbyist Chef",           cost:"-2",  type:"POS", color:C.steel, tier:"C", desc:"Adora cozinhar. Ganha XP de Culinária duas vezes mais rápido." },
+  { name:"Notívago",                           eng:"Night Owl",               cost:"-4",  type:"POS", color:C.steel, tier:"C", desc:"Trabalha até tarde da noite. Fica fatigado 50% mais devagar que o normal — útil para quem explora à noite." },
+  { name:"Comedor Leve",                       eng:"Light Eater",             cost:"-3",  type:"POS", color:C.steel, tier:"D", desc:"Precisa de 20% menos comida que os outros. Efeito discreto, mas ajuda a economizar mantimento." },
+  // ── NEGATIVOS (concedem pontos) ──
+  { name:"Bexiga Fraca",                       eng:"Weak Bladder",            cost:"+1", type:"NEG", color:C.amber, tier:"B", desc:"Não aguenta segurar por muito tempo. Necessidades no banheiro +15% e tempo sentado no vaso maior. Barato e fácil de conviver." },
+  { name:"Asmático",                           eng:"Asthmatic",               cost:"+2", type:"NEG", color:C.amber, tier:"B", desc:"Perde stamina 40% mais rápido que os outros. Gerenciável fora de combates longos." },
+  { name:"Aprendizado Lento",                  eng:"Slow Learner",            cost:"+2", type:"NEG", color:C.red,   tier:"F", desc:"⚠️ NUNCA: -20% XP em todas as skills, permanentemente, e bloqueia receitas compartilhadas. Forçado no Analista de Defesa sem compensação." },
+  { name:"Pele Seca",                          eng:"Dry Skin",                cost:"+3", type:"NEG", color:C.amber, tier:"C", desc:"Naturalmente seco, fica com sede 20% mais rápido que os outros." },
+  { name:"Apetite Voraz",                      eng:"Hearty Appetite",         cost:"+3", type:"NEG", color:C.amber, tier:"C", desc:"Metabolismo acelerado. Fica com fome 60% mais rápido que os outros." },
+  { name:"Cura Lenta",                         eng:"Slow Healer",             cost:"+3", type:"NEG", color:C.amber, tier:"C", desc:"Intervalo de cura 1,5s mais lento que o normal — atrapalha builds que dependem de regeneração." },
+  { name:"Chamativo",                          eng:"Painfully Obvious",       cost:"+3", type:"NEG", color:C.red,   tier:"D", desc:"Se destaca — para o seu azar. Atrai atenção de inimigos 45% mais rápido. Perigoso em setores cheios de hostis." },
+  { name:"Hemofilia",                          eng:"Hemophilia",              cost:"+3", type:"NEG", color:C.red,   tier:"D", desc:"Duas vezes mais chance de sangrar por um ferimento, e possivelmente de forma severa." },
+  { name:"Medo de Violência",                  eng:"Fear of Violence",        cost:"+4", type:"NEG", color:C.red,   tier:"D", desc:"Se recusa a evoluir skills de combate além do nível 5 (Precisão, Recarga, Armas Contundentes, Armas Cortantes, Arremesso)." },
+  { name:"Frágil",                             eng:"Feeble",                  cost:"+6", type:"NEG", color:C.red,   tier:"F", desc:"Indivíduo excepcionalmente frágil. -25% de vida máxima e quebra ossos com mais frequência em quedas e trauma contundente." },
+  { name:"Narcoléptico",                       eng:"Narcoleptic",             cost:"+6", type:"NEG", color:C.red,   tier:"F", desc:"Fica fatigado 75% mais rápido que os outros e nunca se sente realmente descansado — disruptivo em qualquer build." },
 ];
 function renderJobsTraits(){
   const je=document.getElementById('jobs-list');
-  const te=document.getElementById('traits-list');
-  if(!je||!te)return;
+  const tePos=document.getElementById('traits-positive');
+  const teNeg=document.getElementById('traits-negative');
+  if(!je||!tePos||!teNeg)return;
   jobsData.forEach(j=>{
-    const d=document.createElement('div');
-    d.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${j.color};padding:12px;margin-bottom:6px`;
-    d.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap"><span style="font-size:var(--fs-sm);padding:2px 8px;border:1px solid ${j.color}66;background:${j.color}18;color:${j.color};font-weight:bold;letter-spacing:1px">${j.tier}</span><span style="font-size:var(--fs-md);color:${j.color};font-weight:bold">${j.name}</span><span style="font-size:var(--fs-2xs);color:var(--textMuted)">Traits:${j.traitPts}pts</span><span style="font-size:var(--fs-2xs);color:var(--green)">Solo:${j.solo}</span><span style="font-size:var(--fs-2xs);color:var(--cyan)">Co-op:${j.coop}</span></div><div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.5;margin-bottom:4px">${j.desc}</div><div style="font-size:var(--fs-xs);color:var(--textMuted)">${j.skills}</div>`;
-    je.appendChild(d);
+    const skillChips = j.skills.length
+      ? j.skills.map(s=>`<span class="chip chip-skill">${s}</span>`).join('')
+      : `<span class="chip">Sem bônus inicial</span>`;
+    const itemChips = j.items.length
+      ? j.items.map(i=>`<span class="chip">${i}</span>`).join('')
+      : `<span class="chip">Nenhum item exclusivo</span>`;
+    const wrap=document.createElement('div');
+    wrap.className='job-card-wrap';
+    wrap.innerHTML=`
+      <div class="job-peek">
+        <img src="${j.img}" alt="${j.name}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'icon-fallback',textContent:'${j.icon}'}))">
+      </div>
+      <div class="job-card" style="border-left-color:${j.color}">
+        <div class="job-header-row">
+          <div class="job-title">
+            <h3>${j.name}</h3>
+            <span class="job-tier-badge" style="border-color:${j.color}66;background:${j.color}18;color:${j.color}">${j.tier}</span>
+          </div>
+        </div>
+        <div class="job-sub">${j.roles}${j.xpBonus?` · ${j.xpBonus}`:''}</div>
+        <span class="point-badge pts-gain">+${j.points} PTS TRAIT</span>
+        <div class="job-chipline"><span class="chip-label">⚡</span>${skillChips}</div>
+        <div class="job-chipline"><span class="chip-label">📦</span>${itemChips}</div>
+        ${j.forcedTrait ? `<div class="job-forced-trait">⚠️ ${j.forcedTrait}</div>` : ''}
+        <div class="job-desc">${j.desc}</div>
+      </div>`;
+    je.appendChild(wrap);
   });
   traitsData.forEach(t=>{
-    const d=document.createElement('div');
-    d.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${t.color};padding:10px 12px;margin-bottom:6px`;
-    d.innerHTML=`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px"><span style="font-size:var(--fs-xs);padding:1px 6px;border:1px solid ${t.color}55;background:${t.color}18;color:${t.color};letter-spacing:1px">${t.tier}</span><span style="font-size:var(--fs-sm);color:${t.color};font-weight:bold">${t.name}</span><span style="font-size:var(--fs-xs);color:${t.type==='POS'?C.green:C.red}">${t.cost}pts</span><span style="font-size:var(--fs-2xs);color:var(--textMuted)">[${t.type==='POS'?'POSITIVO':'NEGATIVO'}]</span></div><div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.5">${t.desc}</div>`;
-    te.appendChild(d);
+    const chip=document.createElement('div');
+    chip.className=`trait-chip ${t.type==='POS'?'trait-positive':'trait-negative'}`;
+    chip.innerHTML=`
+      <div class="trait-info">
+        <strong><span class="trait-tier-badge" style="color:${t.color}">[${t.tier}]</span> ${t.name}</strong>
+        <span>${t.desc}</span>
+      </div>
+      <div class="trait-cost">${t.cost} PTS</div>`;
+    (t.type==='POS'?tePos:teNeg).appendChild(chip);
   });
 }
 renderJobsTraits();
