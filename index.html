@@ -1142,45 +1142,71 @@
   .card-content { display: none; }
   .card-content.open { display: block; }
 
-  /* ── PORTAIS DOS MUNDOS PANEL ── */
+  /* ── PORTAIS DOS MUNDOS PANEL — grid 2 col. com círculo + toggle expansível ── */
   .portal-intro { background: rgba(160,96,224,0.06); border: 1px solid rgba(160,96,224,0.25); border-left: 3px solid var(--purple); padding: 16px; margin-bottom: 18px; }
   .portal-intro-title { font-size: var(--fs-xs); color: var(--purple); letter-spacing: 3px; margin-bottom: 8px; }
-  .portal-item { margin-bottom: 8px; }
-  .portal-btn {
-    width: 100%;
-    text-align: left;
-    padding: 13px 16px;
+  .portals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .portal-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--purple);
+    border-radius: 6px;
+    padding: 14px 10px;
+    text-align: center;
     cursor: pointer;
-    font-family: inherit;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--text);
-    transition: background 0.15s;
+    transition: border-color 0.15s;
+    font-family: 'Share Tech Mono', monospace;
   }
-  .portal-btn:hover { background: var(--bgSection); }
-  .portal-icon { font-size: var(--fs-3xl); flex-shrink: 0; }
-  .portal-name { font-size: var(--fs-md); color: var(--purple); letter-spacing: 0.5px; }
-  .portal-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 3px; }
+  .portal-card:hover { border-color: var(--purple); }
+  .portal-card.expanded { cursor: default; }
+  .portal-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    border: 2px solid var(--purple);
+    overflow: hidden;
+    background: #050810;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .portal-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .portal-circle .icon-fallback { font-size: 24px; }
+  .portal-name { font-size: 11.5px; font-weight: bold; color: #fff; letter-spacing: 0.3px; margin-bottom: 2px; line-height: 1.25; }
+  .portal-universe { font-size: 8.5px; color: var(--purple); letter-spacing: 1px; margin-bottom: 8px; }
+  .portal-toggle-btn { display: inline-block; font-size: 9px; color: var(--green); border: 1px solid rgba(0,224,96,0.35); padding: 3px 10px; border-radius: 3px; letter-spacing: 0.5px; }
+  .portal-body { display: none; margin-top: 12px; text-align: left; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; }
+  .portal-card.expanded .portal-body { display: block; }
+  .portal-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
   .portal-tag { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid; letter-spacing: 1px; }
-  .portal-body {
-    border: 1px solid rgba(160,96,224,0.2);
-    border-top: none;
-    padding: 14px 16px;
-    background: rgba(160,96,224,0.03);
-    display: none;
-    font-size: var(--fs-sm);
-    color: var(--textDim);
-    line-height: 1.8;
+  .portal-detail-label { font-size: 9px; letter-spacing: 1px; color: var(--textMuted); display: block; margin-bottom: 3px; }
+  .portal-how { font-size: 11.5px; line-height: 1.55; color: var(--textDim); margin-bottom: 10px; }
+  .portal-collect-box { background: rgba(224,48,32,0.08); border: 1px dashed rgba(224,48,32,0.35); padding: 6px 8px; border-radius: 3px; color: #ff8877; font-size: 10.5px; margin-bottom: 10px; line-height: 1.4; }
+  .portal-reward { padding: 7px 9px; background: rgba(0,224,96,0.06); border: 1px solid rgba(0,224,96,0.2); font-size: 10.5px; color: var(--green); margin-bottom: 8px; border-radius: 3px; }
+  .portal-note { font-size: 10px; color: var(--amber); font-style: italic; }
+  .portal-item-badge {
+    display: flex; align-items: center; gap: 6px;
+    justify-content: center;
+    margin: 6px 0 8px;
+    padding: 4px 8px;
+    background: rgba(224,48,32,0.08);
+    border: 1px solid rgba(224,48,32,0.3);
+    border-radius: 20px;
   }
-  .portal-body.open { display: block; }
-  .portal-how { margin-bottom: 8px; }
-  .portal-reward { padding: 7px 10px; background: rgba(0,224,96,0.05); border: 1px solid rgba(0,224,96,0.15); font-size: var(--fs-sm); color: var(--green); margin-top: 8px; }
-  .portal-note { font-size: var(--fs-xs); color: var(--amber); margin-top: 6px; font-style: italic; }
+  .portal-item-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid rgba(224,48,32,0.5);
+    overflow: hidden; flex-shrink: 0;
+    background: #050810;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .portal-item-circle img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .portal-item-badge-label { font-size: 9px; color: #ff8877; letter-spacing: 0.5px; line-height: 1.3; text-align: left; }
+  .portal-body .portal-item-badge { justify-content: flex-start; }
   .portal-source-box { background: var(--bgCard); border: 1px solid var(--borderGn); padding: 14px; margin-top: 16px; }
+  @media (max-width: 400px) {
+    .portals-grid { gap: 8px; }
+    .portal-circle { width: 48px; height: 48px; }
+    .portal-card { padding: 10px 7px; }
+  }
+
 
   /* ── SKILLS PANEL (inside tips) ── */
   .skills-section { margin-bottom: 20px; }
@@ -1770,7 +1796,7 @@
         A maioria dos troféus de portais é concedida <strong style="color:var(--green)">automaticamente ao sair pelo lado correto</strong>. Explore cada um completamente!
       </div>
     </div>
-    <div id="portals-list-container"></div>
+    <div id="portals-list-container" class="portals-grid"></div>
     <div class="portal-source-box">
       <div class="section-title">REFERÊNCIA EXTERNA — GUIA COMPLETO DE PORTAIS</div>
       <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.7;margin-bottom:8px">
@@ -3876,121 +3902,141 @@ tipsSources.forEach(src => {
 // ── PORTAIS DATA ──
 const portaisData = [
   {
-    icon:"🌿", name:"Far Garden (Anteverse 2-A)",
+    icon:"🌿", name:"Far Garden (Anteverse 2-A)", img:"https://abioticfactor.wiki.gg/images/Icon_Anteverse.png", universo:"ANTEVERSE 2",
     tags:[{l:"SETOR ESCRITÓRIO", c:"#20d0c0"},{l:"Troféu: Só Fica Mais Estranho", c:"#00e060"}],
     how:"Acessado no Setor Escritório. Ambiente de jardim alienígena. Saia pelo portal no final para o troféu automático.",
+    colecionavel:null,
     reward:"✓ Troféu: Só Fica Mais Estranho Daqui (It Only Gets Stranger From Here) — Bronze",
     note:"Parte da progressão principal — impossível perder se explorar completamente."
   },
   {
-    icon:"🏔️", name:"Flathill",
+    icon:"🏔️", name:"Flathill", img:"https://abioticfactor.wiki.gg/images/Icon_Flathill.png", universo:"ANTEVERSE 0",
     tags:[{l:"SILO 3 — ESCRITÓRIO", c:"#20d0c0"},{l:"Troféu: Os Compositores", c:"#00e060"},{l:"Sinfonista aqui", c:"#e0a020"}],
     how:"Acessado via portal no Silo 3 do Setor Escritório. Ambiente de colinas nevadas. Encontre a Célula de Energia final e mate o Sinfonista para os troféus. Explore completamente antes de sair.",
+    colecionavel:"Célula de Energia (final) — necessária pra progressão",
+    itemIcon:"https://abioticfactor.wiki.gg/images/Item_Icon_-_Power_Cell.png?e7ae9c", itemName:"Power Cell",
     reward:"✓ Troféu: Os Compositores — Bronze | ✓ Possível: Sorte Cega (Sinfonista) — Bronze",
     note:"Explore cada canto — a Célula de Energia e o Sinfonista podem estar em locais não óbvios."
   },
   {
-    icon:"🚂", name:"Train World",
+    icon:"🚂", name:"Train World", img:"https://abioticfactor.wiki.gg/images/Icon_Train.png", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MANUFACTURING WEST", c:"#e0a020"},{l:"Troféu: Todos a Bordo", c:"#00e060"}],
     how:"Acessado durante o Manufacturing West. Ambiente de ferrovia industrial. Saia pelo portal no final para o troféu.",
+    colecionavel:null,
     reward:"✓ Troféu: Todos a Bordo (All Aboard) — Bronze",
     note:"Parte da progressão do Manufacturing — siga os trilhos até o portal de saída."
   },
   {
-    icon:"🍄", name:"Mycofields",
+    icon:"🍄", name:"Mycofields", img:"https://abioticfactor.wiki.gg/images/Icon_Mycofields.png", universo:"ANTEVERSE 2",
     tags:[{l:"CASCADE LABS", c:"#a060e0"},{l:"⚠️ Mushroom Skull AQUI", c:"#e03020"},{l:"Troféu: Campo dos Sonhos", c:"#00e060"}],
     how:"Acessado no Laboratórios Cascata. Ambiente fúngico com Mushroom Peccaries. CRÍTICO: mate e colete o Peccary Skull aqui para o Capacete de Cogumelo. Saia pelo portal para o troféu.",
+    colecionavel:"⚠️ Mushroom Peccary Skull — só dropa aqui, necessário pro troféu Micélio sobre o Concílio",
+    itemIcon:"https://abioticfactor.wiki.gg/images/Item_Icon_-_Mushroom_Peccary_Skull.png?3d0aa3", itemName:"Mushroom Peccary Skull",
     reward:"✓ Troféu: Campo dos Sonhos (Field of Dreams) — Bronze | ⚠️ Item: Mushroom Peccary Skull",
     note:"NÃO saia dos Mycofields sem o Mushroom Peccary Skull — necessário para troféu Micélio!"
   },
   {
-    icon:"🌙", name:"Night Realm",
+    icon:"🌙", name:"Night Realm", img:"https://abioticfactor.wiki.gg/images/Icon_The_Night_Realm.png", universo:"SEM Nº CATALOGADO",
     tags:[{l:"CASCADE LABS", c:"#a060e0"},{l:"Troféu: Sonâmbulo", c:"#00e060"}],
     how:"Portal acessado no Laboratórios Cascata. Ambiente noturno com Nightspheres. Entre na sala da última Nightsphere para o troféu.",
+    colecionavel:null,
     reward:"✓ Troféu: Sonâmbulo (Sleepwalking) — Bronze",
     note:"Explore o Night Realm completamente — a sala da Nightsphere pode requerer chave ou puzzlê."
   },
   {
-    icon:"🏘️", name:"Vila Den da'ko Yeer",
+    icon:"🏘️", name:"Vila Den da'ko Yeer", img:"https://abioticfactor.wiki.gg/images/Icon_ante_c.png", universo:"ANTEVERSE 2",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: A Vila", c:"#00e060"},{l:"Anti-Fungal Gelatin", c:"#e0a020"}],
     how:"Portal dos Mundos Portais avançados. Ambiente de vila alienígena. Para abrir o portal de saída, você precisa desbloquear o Anti-Fungal Gelatin. Saia pelo portal que aparece após desbloqueá-lo.",
+    colecionavel:"Anti-Fungal Gelatin — necessário pra ativar o portal de saída",
+    itemIcon:"https://abioticfactor.wiki.gg/images/Itemicon_goo_exor.png?6b3746", itemName:"Anti-Fungal Gelatin",
     reward:"✓ Troféu: A Vila (The Village) — Bronze",
     note:"O Anti-Fungal Gelatin é necessário para ativar o portal de saída — explore a vila completamente."
   },
   {
-    icon:"🛋️", name:"Furniture Store (Helmholtz)",
+    icon:"🛋️", name:"Furniture Store (Helmholtz)", img:"https://abioticfactor.wiki.gg/images/Icon_Warehouse.png", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Sem Mais Espaço", c:"#00e060"}],
     how:"Loja de móveis dimensional. Ambiente surreal cheio de móveis empilhados. Saia pelo portal no final.",
+    colecionavel:null,
     reward:"✓ Troféu: Sem Mais Espaço em Helmholtz — Bronze",
     note:null
   },
   {
-    icon:"⛷️", name:"Voussoir (Mundo de Esqui)",
+    icon:"⛷️", name:"Voussoir (Mundo de Esqui)", img:"https://abioticfactor.wiki.gg/images/Icon_Voussoir.png", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Je Suis Perdu!", c:"#00e060"}],
     how:"Ambiente de estação de esqui. Navegue pelas pistas e estruturas até o portal de saída.",
+    colecionavel:null,
     reward:"✓ Troféu: Je Suis Perdu! — Bronze",
     note:null
   },
   {
-    icon:"🪞", name:"The World in the Mirror",
+    icon:"🪞", name:"The World in the Mirror", img:"https://abioticfactor.wiki.gg/images/Icon_The_World_in_the_Mirror.png", universo:"OPCIONAL MENOR",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Plano Como Panqueca", c:"#00e060"}],
     how:"Mundo espelhado e plano. Simplesmente toque a grama dentro deste mundo para ativar o troféu — não precisa sair.",
+    colecionavel:null,
     reward:"✓ Troféu: Plano Como Panqueca (Flat as a Pancake) — Bronze",
     note:"Um dos troféus mais simples — entre, toque o chão gramado, troféu ativa."
   },
   {
-    icon:"🏊", name:"The Pool Room",
+    icon:"🏊", name:"The Pool Room", img:"https://abioticfactor.wiki.gg/images/Icon_The_Pool_Room.png", universo:"OPCIONAL MENOR",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Sem Correr", c:"#00e060"},{l:"Cadeira Vermelha", c:"#e0a020"}],
     how:"Ambiente de piscina infinita. Para ativar o portal de saída, sente-se na Cadeira Vermelha encontrada no ambiente. Depois saia pelo portal.",
+    colecionavel:"Cadeira Vermelha — gatilho do portal de saída (não é item de inventário, interaja no local)",
     reward:"✓ Troféu: Sem Correr (No Running) — Bronze",
     note:"A Cadeira Vermelha é o gatilho para o portal de saída — não saia sem sentar nela."
   },
   {
-    icon:"👸", name:"Space Queen",
+    icon:"👸", name:"Space Queen", img:"https://abioticfactor.wiki.gg/images/Icon_spacequeen.png", universo:"OPCIONAL MAIOR",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Briga no Royal Range", c:"#00e060"}],
     how:"Ambiente de ficção científica com temática realeza espacial. Saia pelo portal no final.",
+    colecionavel:null,
     reward:"✓ Troféu: Briga no Royal Range — Bronze",
     note:null
   },
   {
-    icon:"🏝️", name:"Some Distant Shore",
+    icon:"🏝️", name:"Some Distant Shore", img:"https://abioticfactor.wiki.gg/images/Icon_Shore.png", universo:"OPCIONAL MENOR",
     tags:[{l:"PRIVADA-PORTAL — MECÂNICA ESPECIAL", c:"#e03020"},{l:"Troféu: Orla Distante", c:"#00e060"},{l:"RNG 5-50%", c:"#e0a020"}],
     how:"⚠️ MECÂNICA ESPECIAL — não é um portal fixo no mapa. Sente-se no Privada-Portal (vaso sanitário especial, encontrado no Setor Escritório — Data Farm) com 15% ou menos de continência (barra de necessidade no laranja/vermelho). Há 5% de chance de teletransporte (50% se ainda não tem o troféu). Repita até teletransportar. Basta chegar lá — não precisa completar o mundo.",
+    colecionavel:null,
     reward:"✓ Troféu: Orla Distante (We Don't Talk About That Place) — Bronze",
     note:"Beba café para encher rapidamente a barra de necessidade. Procure o Privada-Portal no Data Farm do Escritório — parece um banheiro comum mas tem partículas visuais ao redor."
   },
   {
-    icon:"🌑", name:"Shadowgate",
+    icon:"🌑", name:"Shadowgate", img:"https://abioticfactor.wiki.gg/images/Icon_Shadowgate.png", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Shadowgate", c:"#60a080"},{l:"PRATA", c:"#60a080"}],
     how:"Mundo portal de progressão obrigatória. Complete o Shadowgate seguindo os objetivos do mundo.",
+    colecionavel:null,
     reward:"✓ Troféu: Shadowgate — Prata",
     note:"Parte da progressão principal dos Mundos Portais."
   },
   {
-    icon:"💥", name:"The Encroachment (Anteverse 299)",
+    icon:"💥", name:"The Encroachment (Anteverse 299)", img:"https://abioticfactor.wiki.gg/images/Icon_Encroachment_Core.png", universo:"ANTEVERSE 299 (SUBSEÇÃO)",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Coraversão", c:"#60a080"},{l:"PRATA", c:"#60a080"}],
     how:"Ative o Núcleo dentro do The Encroachment. Siga os objetivos do mundo até o ponto de ativação do Núcleo.",
+    colecionavel:null,
     reward:"✓ Troféu: Coraversão (Coreverse) — Prata",
     note:null
   },
   {
-    icon:"⚔️", name:"Praetorium (The Inquisition)",
+    icon:"⚔️", name:"Praetorium (The Inquisition)", img:"https://abioticfactor.wiki.gg/images/Icon_Praetorium.png", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: A Inquisição", c:"#60a080"},{l:"PRATA", c:"#60a080"}],
     how:"Complete o mundo Praetorium seguindo a progressão da Inquisição.",
+    colecionavel:null,
     reward:"✓ Troféu: A Inquisição — Prata",
     note:null
   },
   {
-    icon:"🌺", name:"Botanical Garden",
+    icon:"🌺", name:"Botanical Garden", img:null, universo:"NÃO CATALOGADO NA WIKI",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Os Jardins", c:"#60a080"},{l:"PRATA", c:"#60a080"},{l:"Kylie aqui", c:"#20d0c0"}],
     how:"Complete o Botanical Garden world. Também é onde você leva Kylie Muir (sidequest Sonhos Elétricos) depois de extraí-la da Hydroplant.",
+    colecionavel:"Kylie Muir — etapa da sidequest Sonhos Elétricos (traga o Security Bot com ela equipada)",
     reward:"✓ Troféu: Os Jardins — Prata | ✓ Etapa da quest: Kylie Muir",
     note:"Se estiver fazendo a sidequest da Kylie, não esqueça de trazer o Robô de Segurança com ela aqui."
   },
   {
-    icon:"🙏", name:"Canaan",
+    icon:"🙏", name:"Canaan", img:"https://abioticfactor.wiki.gg/images/Icon_Canaan.png", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Peso Retirado dos Ombros", c:"#00e060"},{l:"Niketas — Boss", c:"#e03020"}],
     how:"Mundo portal com temática de culto. Encontre e derrote Niketas, o Priest líder do culto de Canaan.",
+    colecionavel:null,
     reward:"✓ Troféu: Peso Retirado dos Ombros (A Lode Off My Mind) — Bronze",
     note:"Explore o mundo completamente para encontrar Niketas — ele pode estar protegido por cultistas."
   },
@@ -4083,34 +4129,55 @@ const weaponsData = [
 // ── RENDER PORTAIS ──
 const portaisContainer = document.getElementById('portals-list-container');
 portaisData.forEach((p, i) => {
-  const item = document.createElement('div');
-  item.className = 'portal-item';
+  const card = document.createElement('div');
+  card.className = 'portal-card';
+  card.id = `pcard-${i}`;
+  card.onclick = () => togglePortal(i);
   const tagsHtml = p.tags.map(t =>
     `<span class="portal-tag" style="color:${t.c};border-color:${t.c}44;background:${t.c}14">${t.l}</span>`
   ).join('');
-  item.innerHTML = `
-    <button class="portal-btn" id="pbtn-${i}" onclick="togglePortal(${i})">
-      <span class="portal-icon">${p.icon}</span>
-      <div style="flex:1">
-        <div class="portal-name">${p.name}</div>
-        <div class="portal-tags">${tagsHtml}</div>
-      </div>
-      <span style="color:var(--textMuted);flex-shrink:0" id="parr-${i}">▼</span>
-    </button>
-    <div class="portal-body" id="pbody-${i}">
+  card.innerHTML = `
+    <div class="portal-circle">
+      ${p.img
+        ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'icon-fallback',textContent:'${p.icon}'}))">`
+        : `<span class="icon-fallback">${p.icon}</span>`}
+    </div>
+    <div class="portal-name">${p.name}</div>
+    <div class="portal-universe">${p.universo}</div>
+    ${p.itemIcon ? `
+    <div class="portal-item-badge">
+      <div class="portal-item-circle"><img src="${p.itemIcon}" alt="${p.itemName || ''}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+      <span class="portal-item-badge-label">${p.itemName || 'Item-chave'}</span>
+    </div>` : ''}
+    <span class="portal-toggle-btn" id="ptoggle-${i}">+ EXPANDIR</span>
+    <div class="portal-body" id="pbody-${i}" onclick="event.stopPropagation()">
+      <div class="portal-tags">${tagsHtml}</div>
+      <span class="portal-detail-label">COMO CHEGAR</span>
       <div class="portal-how">${p.how}</div>
-      ${p.note ? `<div class="portal-note">↳ ${p.note}</div>` : ''}
+      ${p.colecionavel ? `<div class="portal-collect-box">⚠️ COLECIONÁVEL / ITEM-CHAVE DA ÁREA<br>${p.colecionavel}</div>` : ''}
       <div class="portal-reward">${p.reward}</div>
+      ${p.note ? `<div class="portal-note">↳ ${p.note}</div>` : ''}
     </div>
   `;
-  portaisContainer.appendChild(item);
+  portaisContainer.appendChild(card);
 });
 
 function togglePortal(i) {
-  const body = document.getElementById(`pbody-${i}`);
-  const arr = document.getElementById(`parr-${i}`);
-  body.classList.toggle('open');
-  arr.textContent = body.classList.contains('open') ? '▲' : '▼';
+  const card = document.getElementById(`pcard-${i}`);
+  const willOpen = !card.classList.contains('expanded');
+  // Accordion: fecha qualquer outro card aberto antes de abrir este,
+  // evita empilhar vários corpos expandidos ao mesmo tempo na página.
+  portaisData.forEach((_, j) => {
+    if (j === i) return;
+    const other = document.getElementById(`pcard-${j}`);
+    if (other && other.classList.contains('expanded')) {
+      other.classList.remove('expanded');
+      document.getElementById(`ptoggle-${j}`).textContent = '+ EXPANDIR';
+    }
+  });
+  const btn = document.getElementById(`ptoggle-${i}`);
+  card.classList.toggle('expanded', willOpen);
+  btn.textContent = willOpen ? '− RECOLHER' : '+ EXPANDIR';
 }
 
 // ── RENDER SKILLS ──
