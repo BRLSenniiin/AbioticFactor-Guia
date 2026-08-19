@@ -444,6 +444,156 @@
   .grind-goal { font-size: var(--fs-sm); color: var(--amber); font-family: monospace; }
   .grind-tip { font-size: var(--fs-xs); color: var(--textDim); }
 
+  /* ── OBJETOS FABRICÁVEIS — CATÁLOGO DE CONSTRUÇÃO (fim da aba Craft) ──
+     Busca + tabs de categoria + grid de cards com imagem (fallback em
+     emoji via onerror) + modal "blueprint" com simulador de quantidade
+     de materiais. Reaproveita a paleta e os padrões visuais (hazard
+     stripe, scanlines CRT, LED piscando) já usados em Traders/Cura/
+     Armaduras/Armas, só que aplicado a um buscador com filtro. */
+  .deploy-wrap { max-width: 100%; }
+  .deploy-term-header {
+    display: flex; align-items: center; gap: 8px;
+    font-size: var(--fs-xs); color: var(--green); letter-spacing: 2px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .deploy-term-led {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 7px var(--green);
+    animation: deployBlink 1.4s infinite; flex-shrink: 0;
+  }
+  @keyframes deployBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .deploy-search-box { position: relative; margin-bottom: 10px; }
+  .deploy-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--textMuted); font-size: var(--fs-sm); pointer-events: none; }
+  .deploy-search-input {
+    width: 100%;
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    padding: 9px 12px 9px 34px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .deploy-search-input::placeholder { color: var(--textMuted); }
+  .deploy-search-input:focus { border-color: var(--green); }
+
+  .deploy-tabs-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 14px; scrollbar-width: thin; }
+  .deploy-tabs { display: inline-flex; gap: 6px; padding-bottom: 4px; }
+  .deploy-tab-btn {
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    color: var(--textMuted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .deploy-tab-btn:hover { color: var(--text); border-color: var(--green); }
+  .deploy-tab-btn.active { background: var(--greenDim); color: var(--greenLt); border-color: var(--green); }
+
+  .deploy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .deploy-card {
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 66px 1fr;
+    gap: 10px;
+    align-items: start;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .deploy-card:hover { border-color: var(--green); transform: translateY(-2px); }
+  .deploy-card-thumb {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 6px; height: 66px;
+  }
+  .deploy-card-thumb img { width: 40px; height: 40px; object-fit: contain; }
+  .deploy-card-thumb .deploy-fallback-icon { font-size: 26px; }
+  .deploy-power-badge { font-size: 8px; letter-spacing: 0.5px; padding: 1px 4px; text-align: center; width: 100%; text-transform: uppercase; }
+  .deploy-power-req  { background: var(--amberDim); color: var(--amberLt); border: 1px solid var(--amber); }
+  .deploy-power-gen  { background: var(--cyanDim);  color: var(--cyan);    border: 1px solid var(--cyan); }
+  .deploy-power-none { background: transparent; color: var(--textMuted); border: 1px solid var(--border); }
+
+  .deploy-card-top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 3px; }
+  .deploy-item-title { font-size: var(--fs-sm); font-weight: bold; color: var(--greenLt); line-height: 1.25; }
+  .deploy-slots-tag { font-size: 9px; letter-spacing: 0.5px; color: var(--green); background: var(--greenDim); border: 1px solid var(--green); padding: 1px 5px; white-space: nowrap; flex-shrink: 0; }
+  .deploy-item-desc { font-size: var(--fs-xs); color: var(--textDim); line-height: 1.4; margin-bottom: 6px; }
+  .deploy-item-unlock { font-size: 10px; color: var(--cyan); background: var(--cyanDim); padding: 3px 6px; margin-bottom: 6px; border-left: 2px solid var(--cyan); line-height: 1.4; }
+  .deploy-recipe-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .deploy-mat-chip { font-size: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: var(--textDim); padding: 1px 6px; }
+  .deploy-mat-chip b { color: var(--amber); }
+  .deploy-btn-blueprint {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.5px;
+    background: var(--greenDim); border: 1px solid var(--green); color: var(--greenLt);
+    padding: 5px 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .deploy-btn-blueprint:hover { background: var(--green); color: #001a08; }
+  .deploy-empty-msg { grid-column: 1/-1; text-align: center; color: var(--textMuted); padding: 30px; font-style: italic; font-size: var(--fs-sm); }
+
+  .deploy-source-note { font-size: var(--fs-xs); color: var(--textMuted); line-height: 1.7; margin-top: 14px; }
+
+  /* Modal Blueprint */
+  .deploy-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,4,2,0.88);
+    backdrop-filter: blur(4px); z-index: 999;
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .deploy-modal-overlay.active { opacity: 1; pointer-events: all; }
+  .deploy-modal {
+    background: var(--bgCard); border: 1px solid var(--green);
+    box-shadow: 0 0 30px rgba(0,224,96,0.2);
+    width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto;
+    padding: 18px; position: relative;
+  }
+  .deploy-modal-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--redDim); border: 1px solid var(--red); color: var(--red);
+    cursor: pointer; font-weight: bold;
+  }
+  .deploy-modal-header { border-bottom: 1px dashed var(--border); padding-bottom: 8px; margin-bottom: 10px; }
+  .deploy-modal-title { font-size: var(--fs-lg); color: var(--greenLt); font-weight: bold; }
+  .deploy-modal-cat { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; }
+  .deploy-hologram {
+    height: 120px; position: relative; overflow: hidden;
+    background: radial-gradient(circle, rgba(0,224,96,0.08) 0%, rgba(0,0,0,0.5) 100%);
+    border: 1px solid var(--borderGn);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .deploy-scanline {
+    position: absolute; width: 100%; height: 2px; background: var(--green);
+    opacity: 0.6; box-shadow: 0 0 8px var(--green); animation: deployScan 2.5s linear infinite;
+  }
+  @keyframes deployScan { 0% { top: 0%; } 100% { top: 100%; } }
+  .deploy-hologram-img { width: 76px; height: 76px; object-fit: contain; filter: drop-shadow(0 0 10px var(--green)); position: relative; z-index: 2; }
+  .deploy-hologram-fallback { font-size: 52px; position: relative; z-index: 2; filter: drop-shadow(0 0 10px var(--green)); }
+  .deploy-modal-section-title { font-size: var(--fs-xs); color: var(--green); letter-spacing: 1.5px; margin-bottom: 6px; font-weight: bold; }
+  .deploy-modal-location { background: var(--cyanDim); border: 1px solid var(--cyan); color: var(--text); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; }
+  .deploy-modal-note { background: var(--amberDim); border-left: 2px solid var(--amber); color: var(--amberLt); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; font-style: italic; }
+  .deploy-calc-box { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 8px 10px; margin-bottom: 12px; }
+  .deploy-calc-label { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; }
+  .deploy-calc-btns { display: flex; gap: 4px; }
+  .deploy-btn-qty { font-family: var(--font-mono); font-size: var(--fs-xs); background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 3px 9px; cursor: pointer; }
+  .deploy-btn-qty.active { background: var(--amber); border-color: var(--amber); color: #1a1200; font-weight: bold; }
+  .deploy-modal-materials { display: flex; flex-direction: column; gap: 5px; }
+  .deploy-modal-mat-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.02); border-left: 3px solid var(--cyan); padding: 6px 9px; font-size: var(--fs-sm); }
+  .deploy-modal-mat-qty { color: var(--amber); font-weight: bold; }
+  @media (max-width: 480px) {
+    .deploy-card { grid-template-columns: 56px 1fr; }
+    .deploy-card-thumb { height: 56px; }
+    .deploy-card-thumb img { width: 32px; height: 32px; }
+  }
+
   /* ── TROPHY LIST PANEL ── */
   .filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
   .filter-btn {
@@ -676,6 +826,327 @@
   .map-tip-row:last-child { border-bottom: none; }
   .map-tip-sym { color: var(--cyan); flex-shrink: 0; }
   .map-source-box { background: var(--bgCard); border: 1px solid var(--borderGn); padding: 14px; }
+
+  /* ── TRADERS PANEL — CARDS DE TERMINAL GATE COM MEDALHÃO GRANDE ──
+     Grade de cards no estilo "janela de terminal": faixa de risco
+     (hazard stripe) na cor do tipo de trader, cabeçalho com LED de
+     status piscando + scanlines CRT sutis por cima do card, e um
+     medalhão circular maior para a imagem do trader. A imagem
+     (PNG/WEBP) é maior que o medalhão e fica posicionada por baixo
+     com overflow visível — se tiver fundo transparente e o
+     rosto/busto desenhado perto do topo, ela "sai" pra cima da borda
+     do círculo, sobrepondo o cabeçalho. Sem imagem real, cai no
+     fallback (emoji grande dentro do próprio círculo, via onerror). */
+  .trader-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 48px 16px;
+    margin-top: 6px;
+  }
+  .trader-card {
+    background: var(--bgCard);
+    border: 2px solid var(--border);
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+  }
+  .trader-card::after {
+    /* scanlines CRT sutis por cima de todo o card, mesmo efeito usado no GATE Terminal de Entidades */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.22) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 1;
+  }
+  .trader-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
+  .trader-hazard-stripe {
+    height: 7px;
+    background: repeating-linear-gradient(-45deg, var(--stripe-color, var(--amber)), var(--stripe-color, var(--amber)) 9px, #0a0a0a 9px, #0a0a0a 18px);
+    position: relative; z-index: 2;
+  }
+  .trader-term-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 12px;
+    background: rgba(0,0,0,0.35);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: var(--fs-2xs);
+    letter-spacing: 1.5px;
+    color: var(--textMuted);
+    position: relative; z-index: 2;
+  }
+  .trader-led {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: traderBlink 1.4s infinite;
+  }
+  @keyframes traderBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+  .trader-avatar-badge {
+    width: 116px; height: 116px;
+    border-radius: 50%;
+    margin: -34px auto 10px;
+    position: relative;
+    display: flex; align-items: flex-end; justify-content: center;
+    overflow: visible;
+    background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.05), var(--bg) 70%);
+    border-width: 3px; border-style: solid;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.6), inset 0 0 14px rgba(0,0,0,0.55);
+    z-index: 3;
+  }
+  .trader-avatar-badge::before {
+    /* anel externo tracejado, tipo mira/scanner do GATE */
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    border: 1px dashed currentColor;
+    opacity: 0.35;
+  }
+  .trader-avatar-img {
+    position: absolute;
+    bottom: 2px; left: 50%;
+    transform: translateX(-50%);
+    width: 168px;
+    max-width: none;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 9px rgba(0,0,0,0.7));
+    pointer-events: none;
+  }
+  .trader-avatar-fallback {
+    width: 100%; height: 100%; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; background: var(--bg);
+  }
+  .trader-card-body { padding: 0 16px 18px; text-align: center; position: relative; z-index: 2; }
+  .trader-type-badge {
+    display: inline-block;
+    font-size: var(--fs-2xs); letter-spacing: 1.5px;
+    padding: 2px 9px; border: 1px solid; margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .trader-name { font-size: var(--fs-lg); font-weight: bold; margin-bottom: 2px; }
+  .trader-role { font-size: var(--fs-xs); color: var(--textMuted); letter-spacing: 0.5px; margin-bottom: 10px; text-transform: uppercase; }
+  .trader-vende {
+    font-size: var(--fs-sm); color: var(--text); line-height: 1.6; text-align: left;
+    background: rgba(255,255,255,0.02); border-left: 2px solid var(--border); padding: 6px 10px; margin-bottom: 10px;
+  }
+  .trader-sector { font-size: var(--fs-xs); color: var(--textDim); text-align: left; margin-bottom: 10px; line-height: 1.5; }
+  .trader-expand-btn {
+    width: 100%; font-family: inherit; font-size: var(--fs-2xs); letter-spacing: 1px;
+    background: none; border: 1px solid var(--border); color: var(--textMuted);
+    padding: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .trader-expand-btn:hover { border-color: var(--amber); color: var(--amberLt); }
+  .trader-card-detail {
+    text-align: left; font-size: var(--fs-sm); color: var(--textDim); line-height: 1.8;
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+  .trader-item-chip {
+    font-size: var(--fs-2xs); padding: 1px 7px; border: 1px solid; margin: 2px 3px 2px 0; display: inline-block;
+  }
+  .trader-voice-line {
+    font-style: italic;
+    font-size: var(--fs-sm);
+    color: var(--text);
+    line-height: 1.7;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid var(--border);
+    padding: 8px 10px;
+  }
+  @media (max-width: 480px) {
+    .trader-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 42px 10px; }
+    .trader-avatar-badge { width: 92px; height: 92px; margin: -28px auto 8px; }
+    .trader-avatar-img { width: 132px; }
+    .trader-term-header { padding: 4px 9px; }
+  }
+
+  /* ── SOUP LAB — LABORATÓRIO DE SOPAS (Culinária) ──
+     Clique nos ingredientes pra "jogar" na panela (até 3 slots, igual ao
+     jogo). Cozinhar compara o conjunto escolhido contra soupsData[].mix;
+     acerto mostra a sopa com barras de fome/sede, erro mostra Sopa Ruim —
+     a mesma lógica de descoberta de receita que existe no jogo de verdade. */
+  .soup-lab {
+    background: var(--bgCard); border: 1px solid var(--borderGn); border-left: 3px solid var(--cyan);
+    padding: 16px; margin-bottom: 18px;
+  }
+  .soup-lab-title { font-size: var(--fs-xs); color: var(--cyan); letter-spacing: 3px; margin-bottom: 4px; }
+  .soup-lab-desc { font-size: var(--fs-sm); color: var(--textDim); margin-bottom: 14px; }
+
+  .ingredient-picker {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    max-height: 160px; overflow-y: auto;
+    padding: 10px; background: var(--bg); border: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .ingredient-chip {
+    display: flex; align-items: center; gap: 5px;
+    font-family: inherit; font-size: var(--fs-2xs);
+    background: var(--bgCard); border: 1px solid var(--border); color: var(--textDim);
+    padding: 4px 9px; cursor: pointer; transition: all 0.15s;
+  }
+  .ingredient-chip:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(32,208,192,0.08); }
+  .ingredient-chip:disabled { opacity: 0.3; cursor: not-allowed; }
+  .ingredient-chip .ic-emoji { font-size: var(--fs-md); }
+  .ingredient-chip .ic-img { width: 16px; height: 16px; object-fit: contain; flex-shrink: 0; }
+
+  .soup-pot-wrap { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-bottom: 14px; }
+
+  .soup-pot {
+    position: relative;
+    width: 168px; height: 96px;
+    background: linear-gradient(180deg, #1a2420, #0a120e);
+    border: 3px solid var(--borderGn);
+    border-top: none;
+    border-radius: 0 0 60px 60px;
+    display: flex; align-items: flex-start; justify-content: center; gap: 10px;
+    padding-top: 14px;
+    flex-shrink: 0;
+  }
+  .soup-pot::before {
+    content: ''; position: absolute; top: -6px; left: -6px; right: -6px; height: 10px;
+    background: var(--borderGn); border-radius: 50%;
+  }
+  .pot-steam { position: absolute; top: -26px; left: 0; right: 0; height: 26px; pointer-events: none; }
+  .pot-steam span {
+    position: absolute; bottom: 0; width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    animation: steamRise 2.4s ease-in infinite;
+  }
+  .pot-steam span:nth-child(1) { left: 30%; animation-delay: 0s; }
+  .pot-steam span:nth-child(2) { left: 50%; animation-delay: 0.8s; }
+  .pot-steam span:nth-child(3) { left: 68%; animation-delay: 1.5s; }
+  @keyframes steamRise {
+    0%   { transform: translateY(0) scale(0.6);   opacity: 0; }
+    25%  { opacity: 0.6; }
+    100% { transform: translateY(-26px) scale(1.4); opacity: 0; }
+  }
+
+  .pot-slot {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px dashed var(--borderGn);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--fs-lg); color: var(--textMuted); cursor: default;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .pot-slot.filled { border-style: solid; border-color: var(--cyan); background: rgba(32,208,192,0.1); cursor: pointer; }
+  .pot-slot.filled:hover { border-color: var(--red); background: rgba(224,48,32,0.12); }
+  .pot-slot-img { width: 24px; height: 24px; object-fit: contain; }
+
+  .soup-pot-actions { display: flex; flex-direction: column; gap: 8px; }
+  .soup-lab-btn {
+    font-family: inherit; font-size: var(--fs-xs); letter-spacing: 1px;
+    padding: 8px 16px; border: 1px solid var(--border); background: var(--bg); color: var(--textDim);
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .soup-lab-btn.cook { border-color: var(--cyan); color: var(--cyan); }
+  .soup-lab-btn.cook:hover:not(:disabled) { background: rgba(32,208,192,0.15); }
+  .soup-lab-btn.cook:disabled { opacity: 0.3; cursor: not-allowed; }
+  .soup-lab-btn.clear:hover { border-color: var(--red); color: var(--red); }
+
+  .soup-result { min-height: 4px; }
+  .soup-result-card {
+    background: var(--bg); border: 1px solid var(--cyan); border-left: 3px solid var(--cyan);
+    padding: 14px 16px; animation: soupPop 0.3s ease;
+  }
+  .soup-result-fail {
+    background: var(--bg); border: 1px solid var(--red); border-left: 3px solid var(--red);
+    padding: 14px 16px; color: var(--red); font-size: var(--fs-sm); animation: soupPop 0.3s ease;
+  }
+  @keyframes soupPop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+  .soup-result-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .soup-result-bar-label { font-size: var(--fs-2xs); color: var(--textMuted); width: 54px; flex-shrink: 0; }
+  .soup-result-bar-track { flex: 1; height: 7px; background: var(--bgCard); border: 1px solid var(--border); }
+  .soup-result-bar-fill { height: 100%; }
+  .soup-result-bar-val { font-size: var(--fs-2xs); color: var(--textDim); width: 26px; text-align: right; flex-shrink: 0; }
+
+  @media (max-width: 480px) {
+    .soup-pot-wrap { flex-direction: column; align-items: center; }
+    .soup-pot { width: 100%; max-width: 220px; }
+  }
+
+  /* ── SOUP MENU CARDS — cardápio de sopas (abaixo do Laboratório) ──
+     Estrutura de card com "prato" (pedestal oval + ícone grande),
+     selo de categoria, barra de fome/sede, chips de efeito e caixa de
+     ingredientes — padrão trazido de uma amostra do usuário, mas
+     re-vestido com a paleta e fontes que o projeto já usa (sem importar
+     fontes/cores novas, pra não quebrar a identidade visual do site). */
+  .soup-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .food-card {
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .food-card:hover { transform: translateY(-3px); }
+  .food-card-tag {
+    font-size: var(--fs-2xs); font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .food-image-wrapper {
+    position: relative; height: 84px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .food-oval-platform {
+    position: absolute; bottom: 2px; width: 78%; height: 18px;
+    border-radius: 50%; border-bottom: 2px solid;
+  }
+  .food-icon-big {
+    font-size: 50px; z-index: 2;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.75));
+    transition: transform 0.25s ease;
+  }
+  .food-card:hover .food-icon-big { transform: scale(1.1) rotate(-3deg); }
+  .food-title {
+    font-size: var(--fs-md); font-weight: bold; color: var(--text);
+    text-align: center; margin-bottom: 2px; line-height: 1.25;
+  }
+  .food-title-en {
+    font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic;
+    text-align: center; margin-bottom: 8px;
+  }
+  .food-stats-row {
+    display: flex; justify-content: space-between;
+    background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+    padding: 5px 9px; border-radius: 4px; margin-bottom: 8px;
+    font-size: var(--fs-xs); font-weight: 700;
+  }
+  .food-stat-hunger { color: var(--amber); }
+  .food-stat-thirst { color: var(--cyan); }
+  .food-effects-box { margin-bottom: 8px; }
+  .food-section-label {
+    font-size: var(--fs-2xs); text-transform: uppercase; font-weight: 700;
+    color: var(--textMuted); margin-bottom: 4px; letter-spacing: 0.5px;
+  }
+  .food-effect-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: var(--fs-2xs); font-weight: 600; border: 1px solid;
+    margin-bottom: 4px;
+  }
+  .food-effect-desc { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; }
+  .food-ingredients-box {
+    font-size: var(--fs-xs); color: var(--textDim);
+    background: rgba(0,0,0,0.25); padding: 7px 9px; border-radius: 4px;
+    margin-top: auto; border-left: 3px solid;
+  }
+  @media (max-width: 480px) {
+    .soup-cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .food-icon-big { font-size: 42px; }
+  }
 
   /* ── STORY CAROUSEL (Linha do Tempo — História) ── */
   .story-carousel { display: flex; flex-direction: column; gap: 0; }
@@ -1225,59 +1696,196 @@
   /* ── HEAL SECTION (inside tips) ── */
   .heal-section { margin-bottom: 20px; }
   .heal-title { font-size: var(--fs-xs); color: var(--red); letter-spacing: 3px; margin-bottom: 12px; }
-  .heal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+
+  /* ── CARDS DE CURA — imagem do item, categoria, efeitos tratados e dica ──
+     Cada card tem: caixa de imagem do item (com fallback em emoji via
+     onerror, mesmo padrão de Traders/Itens), nome PT + nome original EN,
+     tag de categoria (Cura Direta / Ferimentos / Radiação e Doenças),
+     lista de chips do que o item remove, e uma caixa de dica prática
+     destacada — tudo com cor de acento por categoria, aplicada via
+     estilo inline pelos dados em `healData`. */
+  .heal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
   .heal-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    border-left: 2px solid rgba(224,48,32,0.4);
-    padding: 11px 13px;
+    border-top: 3px solid var(--green);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .heal-item-name { font-size: var(--fs-sm); color: var(--redLt); margin-bottom: 3px; }
-  .heal-item-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.5; }
+  .heal-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+  .heal-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.16) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  .heal-card-head { display: flex; align-items: center; gap: 10px; padding: 12px 13px 8px; position: relative; z-index: 1; }
+  .heal-item-imgbox {
+    width: 58px; height: 58px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .heal-item-img { width: 78%; height: 78%; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+  .heal-item-fallback { font-size: var(--fs-xl); }
+  .heal-item-titles { min-width: 0; }
+  .heal-item-name { font-size: var(--fs-sm); font-weight: bold; line-height: 1.25; }
+  .heal-item-eng { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; }
+  .heal-cat-tag {
+    display: inline-block; margin-top: 4px;
+    font-size: var(--fs-2xs); letter-spacing: 1px;
+    padding: 1px 6px; border: 1px solid;
+  }
+  .heal-card-body { padding: 0 13px 12px; position: relative; z-index: 1; }
+  .heal-item-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.55; margin-bottom: 8px; }
+  .heal-removes-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .heal-removes-chip { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid var(--border); color: var(--textMuted); background: rgba(255,255,255,0.02); }
+  .heal-tip {
+    font-size: var(--fs-xs); line-height: 1.6;
+    border-left: 2px solid;
+    padding: 6px 9px;
+  }
 
   /* ── ARMOR TIER (inside tips) ── */
   .armor-section { margin-bottom: 20px; }
   .armor-title { font-size: var(--fs-xs); color: var(--steel); letter-spacing: 3px; margin-bottom: 12px; }
-  .armor-tier-item { margin-bottom: 6px; }
-  .armor-tier-btn {
-    width: 100%;
-    text-align: left;
-    padding: 10px 14px;
+
+  /* ── TIER LIST DE ARMADURAS — cards com imagem sempre visível ──
+     Agrupados por tier (S/A/B/C), cada grupo tem um cabeçalho com faixa
+     de risco na cor do tier. Cada card mostra a imagem da armadura em
+     destaque (nunca escondida atrás de clique), stats rápidos (armadura/
+     peso/como obter) e os bônus de set em degraus de peças equipadas —
+     mesma linguagem visual usada em Traders/Cura/Entidades. */
+  .armor-tier-group { margin-bottom: 22px; }
+  .armor-tier-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .armor-tier-letter {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--fs-lg); font-weight: bold;
+    border: 2px solid; flex-shrink: 0;
+  }
+  .armor-tier-headline { font-size: var(--fs-sm); letter-spacing: 2px; }
+  .armor-tier-sub { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; margin-top: 1px; }
+
+  .armor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .armor-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    cursor: pointer;
-    font-family: inherit;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text);
-    transition: background 0.15s;
+    border-top: 3px solid var(--steel);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .armor-tier-btn:hover { background: var(--bgSection); }
-  .armor-tier-badge { font-size: var(--fs-xs); padding: 2px 8px; border: 1px solid; letter-spacing: 1px; flex-shrink: 0; min-width: 28px; text-align: center; }
-  .armor-tier-name { font-size: var(--fs-md); flex: 1; }
-  .armor-tier-tag { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid; letter-spacing: 1px; }
-  .armor-tier-arrow { color: var(--textMuted); font-size: var(--fs-md); flex-shrink: 0; }
-  .armor-tier-body { border: 1px solid var(--border); border-top: none; padding: 10px 14px; font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; display: none; }
-  .armor-tier-body.open { display: block; }
-  .armor-set-bonus { color: var(--green); margin-top: 6px; font-size: var(--fs-xs); }
+  .armor-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.5); }
+  .armor-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.16) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.28;
+  }
+  .armor-imgbox {
+    height: 168px;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), var(--bg) 75%);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  .armor-imgbox img { max-width: 78%; max-height: 82%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.7)); }
+  .armor-imgbox-fallback { font-size: var(--fs-6xl); opacity: 0.7; }
+  .armor-card-body { padding: 12px 14px 14px; position: relative; z-index: 1; }
+  .armor-name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .armor-name { font-size: var(--fs-md); font-weight: bold; line-height: 1.25; }
+  .armor-eng { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; margin-top: 1px; }
+  .armor-role-tag { font-size: var(--fs-2xs); letter-spacing: 1px; padding: 1px 7px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+  .armor-acquire { font-size: var(--fs-xs); color: var(--textMuted); margin-bottom: 8px; line-height: 1.5; }
+  .armor-stats-row { display: flex; gap: 12px; margin-bottom: 9px; font-size: var(--fs-xs); color: var(--textDim); }
+  .armor-stat-chip { display: flex; align-items: center; gap: 4px; }
+  .armor-bonus-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+  .armor-bonus-row { font-size: var(--fs-xs); line-height: 1.5; padding: 4px 8px; border-left: 2px solid; background: rgba(255,255,255,0.02); }
+  .armor-bonus-pieces { font-weight: bold; letter-spacing: 0.5px; }
+  .armor-note { font-size: var(--fs-xs); color: var(--textDim); font-style: italic; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 7px; margin-top: 2px; }
+  @media (max-width: 480px) {
+    .armor-grid { grid-template-columns: 1fr; }
+    .armor-imgbox { height: 140px; }
+  }
 
   /* ── WEAPONS SECTION (inside tips) ── */
   .weapons-section { margin-bottom: 20px; }
   .weapons-title { font-size: var(--fs-xs); color: var(--amber); letter-spacing: 3px; margin-bottom: 12px; }
-  .weapons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+
+  /* ── TIER LIST DE ARMAS — mesmo sistema usado em Armaduras ──
+     Cards agrupados por tier (S/A/B/C), imagem sempre visível no topo,
+     stats reais (dano/peso/munição), efeitos especiais em linhas e uma
+     nota estratégica — mesma linguagem visual de Armaduras/Cura/Traders. */
+  .weapon-tier-group { margin-bottom: 22px; }
+  .weapon-tier-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .weapon-tier-letter {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--fs-lg); font-weight: bold;
+    border: 2px solid; flex-shrink: 0;
+  }
+  .weapon-tier-headline { font-size: var(--fs-sm); letter-spacing: 2px; }
+  .weapon-tier-sub { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; margin-top: 1px; }
+
+  .weapons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .weapon-card {
     background: var(--bgCard);
     border: 1px solid var(--border);
-    border-left: 2px solid rgba(224,160,32,0.5);
-    padding: 12px 13px;
+    border-top: 3px solid var(--amber);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .weapon-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-  .weapon-icon { font-size: var(--fs-2xl); flex-shrink: 0; }
-  .weapon-name { font-size: var(--fs-md); color: var(--amberLt); }
-  .weapon-type-badge { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid rgba(224,160,32,0.4); background: rgba(224,160,32,0.1); color: var(--amber); letter-spacing: 1px; }
-  .weapon-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.5; }
-  .weapon-tip { font-size: var(--fs-xs); color: var(--green); margin-top: 4px; }
+  .weapon-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.5); }
+  .weapon-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.16) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.28;
+  }
+  .weapon-imgbox {
+    height: 168px;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), var(--bg) 75%);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  .weapon-imgbox img { max-width: 78%; max-height: 82%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.7)); }
+  .weapon-imgbox-fallback { font-size: var(--fs-6xl); opacity: 0.7; }
+  .weapon-card-body { padding: 12px 14px 14px; position: relative; z-index: 1; }
+  .weapon-name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+  .weapon-name { font-size: var(--fs-md); font-weight: bold; line-height: 1.25; }
+  .weapon-eng { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; margin-top: 1px; }
+  .weapon-role-tag { font-size: var(--fs-2xs); letter-spacing: 1px; padding: 1px 7px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+  .weapon-type-badge { display: inline-block; font-size: var(--fs-2xs); letter-spacing: 1px; padding: 1px 6px; border: 1px solid var(--border); color: var(--textMuted); margin-bottom: 7px; }
+  .weapon-acquire { font-size: var(--fs-xs); color: var(--textMuted); margin-bottom: 8px; line-height: 1.5; }
+  .weapon-stats-row { display: flex; gap: 12px; margin-bottom: 9px; font-size: var(--fs-xs); color: var(--textDim); flex-wrap: wrap; }
+  .weapon-stat-chip { display: flex; align-items: center; gap: 4px; }
+  .weapon-effects-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+  .weapon-effect-row { font-size: var(--fs-xs); line-height: 1.5; padding: 4px 8px; border-left: 2px solid; background: rgba(255,255,255,0.02); }
+  .weapon-tip { font-size: var(--fs-xs); color: var(--textDim); font-style: italic; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 7px; margin-top: 2px; }
+  @media (max-width: 480px) {
+    .weapon-imgbox { height: 140px; }
+  }
 
   /* ── ENTITIES: GATE TERMINAL CARDS ── */
   #panel-entities {
@@ -1885,6 +2493,73 @@
     <!-- FONTES -->
     <div class="map-source-box">
       <div class="section-title">FONTES</div>  </div>
+
+    <!-- ══ OBJETOS FABRICÁVEIS — GUIA DE CONSTRUÇÃO ══ -->
+    <div class="deploy-wrap" style="margin-top:26px">
+      <div class="deploy-term-header">
+        <span class="deploy-term-led"></span>// OBJETOS FABRICÁVEIS — CATÁLOGO DE CONSTRUÇÃO GATE
+      </div>
+      <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.7;margin:10px 0 14px">
+        Catálogo de bancadas, armazenamento, energia, defesa, transporte e utilidades que podem ser fabricadas e posicionadas na base. A maioria exige uma <strong style="color:var(--greenLt)">ferramenta de construção</strong> no inventário (Chave de Fenda, Furadeira) para ser montada depois de fabricada.
+      </div>
+
+      <!-- Busca -->
+      <div class="deploy-search-box">
+        <span class="deploy-search-icon">🔍</span>
+        <input type="text" id="deploy-search" class="deploy-search-input" placeholder="Buscar por objeto, material ou categoria...">
+      </div>
+
+      <!-- Tabs de categoria -->
+      <div class="deploy-tabs-wrap">
+        <div class="deploy-tabs" id="deploy-tabs">
+          <button class="deploy-tab-btn active" data-cat="todos">Todos</button>
+          <button class="deploy-tab-btn" data-cat="bancadas">🔧 Bancadas</button>
+          <button class="deploy-tab-btn" data-cat="armazenamento">📦 Armazenamento</button>
+          <button class="deploy-tab-btn" data-cat="energia">⚡ Energia &amp; Luz</button>
+          <button class="deploy-tab-btn" data-cat="defesa">🛡️ Defesa da Base</button>
+          <button class="deploy-tab-btn" data-cat="transporte">🚗 Transporte</button>
+          <button class="deploy-tab-btn" data-cat="utilidades">🚽 Utilidades</button>
+        </div>
+      </div>
+
+      <!-- Grid de cards -->
+      <div class="deploy-grid" id="deploy-grid"></div>
+
+      <div class="deploy-source-note">
+        Dados de receitas compilados a partir da <a href="https://abioticfactor.wiki.gg/wiki/Deployable_Objects" target="_blank" class="tips-source-link" style="display:inline">Wiki Oficial — Deployable Objects</a> e do <a href="https://techraptor.net/gaming/guides/abiotic-factor-crafting-and-unlocks-guide" target="_blank" class="tips-source-link" style="display:inline">TechRaptor — Crafting &amp; Unlocks Guide</a>. Catálogo curado com os objetos mais usados de cada categoria — não é a lista completa de mais de 190 itens fabricáveis do jogo.
+      </div>
+    </div>
+
+    <!-- Modal Blueprint -->
+    <div class="deploy-modal-overlay" id="deploy-modal">
+      <div class="deploy-modal">
+        <button class="deploy-modal-close" id="deploy-modal-close">✕</button>
+        <div class="deploy-modal-header">
+          <div class="deploy-modal-title" id="deploy-m-title">📐 Blueprint</div>
+          <span class="deploy-modal-cat" id="deploy-m-cat">ESQUEMÁTICO GATE</span>
+        </div>
+        <div class="deploy-hologram">
+          <div class="deploy-scanline"></div>
+          <img src="" id="deploy-m-img" class="deploy-hologram-img" alt="">
+          <span id="deploy-m-fallback" class="deploy-hologram-fallback" style="display:none"></span>
+        </div>
+        <div class="deploy-modal-section-title">📍 COMO OBTER A RECEITA</div>
+        <div class="deploy-modal-location" id="deploy-m-unlock"></div>
+        <div class="deploy-modal-section-title" id="deploy-m-notetitle" style="display:none">💡 NOTA</div>
+        <div class="deploy-modal-note" id="deploy-m-note" style="display:none"></div>
+        <div class="deploy-calc-box">
+          <span class="deploy-calc-label">SIMULAR QUANTIDADE:</span>
+          <div class="deploy-calc-btns" id="deploy-qty-btns">
+            <button class="deploy-btn-qty active" data-qty="1">1x</button>
+            <button class="deploy-btn-qty" data-qty="3">3x</button>
+            <button class="deploy-btn-qty" data-qty="5">5x</button>
+            <button class="deploy-btn-qty" data-qty="10">10x</button>
+          </div>
+        </div>
+        <div class="deploy-modal-section-title">📦 MATERIAIS NECESSÁRIOS</div>
+        <div class="deploy-modal-materials" id="deploy-m-materials"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ══ DICAS ══ -->
@@ -1936,7 +2611,7 @@
       <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.7;margin-bottom:10px">
         Abiotic Factor tem mais de 90 armas. Todas são viáveis — a escolha depende do setor e estilo de combate. Tenha sempre uma Estação de Carregamento para armas com carga. Complemente com granadas (Slushie Bombs, Electron Grenades).
       </div>
-      <div class="weapons-grid" id="weapons-grid"></div>
+      <div id="weapons-grid"></div>
       <div style="font-size:var(--fs-xs);color:var(--textMuted);margin-top:8px">
         &gt; Ranking completo: <a href="https://dotesports.com/abiotic-factor/news/best-weapons-in-abiotic-factor-ranked" target="_blank" class="tips-source-link" style="display:inline">Dot Esports · Best Weapons Ranked (EN)</a>
       </div>
@@ -1995,7 +2670,7 @@
         <strong style="color:var(--amber)">Dica crítica:</strong> Use um Bandage em Grayson quando o encontrar ferido — ele só se torna trader se você o curar.
       </div>
     </div>
-    <div id="traders-list"></div>
+    <div id="traders-list" class="trader-grid"></div>
     <div class="map-source-box" style="margin-top:14px">
       <div class="section-title">FONTES</div>
       <a href="https://abioticfactor.wiki.gg/wiki/Trading" target="_blank" class="tips-source-link">→ Wiki Oficial — Trading (abioticfactor.wiki.gg)</a>
@@ -2013,8 +2688,23 @@
         <strong style="color:var(--amber)">Atenção:</strong> Ingredientes errados = Bad Soup (debuffs fracos) ou Harmful Soup (pode matar). Siga as receitas exatas.
       </div>
     </div>
+    <div class="soup-lab">
+      <div class="soup-lab-title">// LABORATÓRIO DE SOPAS — MONTE E DESCUBRA</div>
+      <div class="soup-lab-desc">Clique nos ingredientes pra jogar na panela (até 3), depois cozinhe. Acertar a combinação exata revela a sopa; errar vira Sopa Ruim — igual no jogo de verdade.</div>
+      <div class="ingredient-picker" id="ingredient-picker"></div>
+      <div class="soup-pot-wrap">
+        <div class="soup-pot" id="soup-pot">
+          <div class="pot-steam"><span></span><span></span><span></span></div>
+        </div>
+        <div class="soup-pot-actions">
+          <button class="soup-lab-btn cook" id="cook-btn" onclick="cookSoup()" disabled>🍲 Cozinhar</button>
+          <button class="soup-lab-btn clear" onclick="clearPot()">🗑 Limpar</button>
+        </div>
+      </div>
+      <div class="soup-result" id="soup-result"></div>
+    </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px" id="soup-filter-row"></div>
-    <div id="soups-list"></div>
+    <div id="soups-list" class="soup-cards-grid"></div>
     <div class="map-source-box" style="margin-top:14px">
       <div class="section-title">FONTES</div>
       <a href="https://www.bisecthosting.com/blog/abiotic-factor-soup-recipes-ingredients-effects-buffs" target="_blank" class="tips-source-link">→ BisectHosting — All Soup Recipes, Effects & How to Cook (EN)</a>
@@ -3823,6 +4513,340 @@ grindData.forEach(g => {
   grindContainer.appendChild(div);
 });
 
+// ══ OBJETOS FABRICÁVEIS — DADOS ══
+// Receitas reais compiladas da Wiki Oficial (Deployable Objects) e do
+// TechRaptor Crafting & Unlocks Guide. Catálogo curado: os objetos mais
+// relevantes de cada categoria, não os 190+ fabricáveis do jogo inteiro.
+// power: "none" (sem energia) · "req" (consome energia) · "gen" (gera energia)
+const deployablesData = [
+  // ── BANCADAS ──
+  { id:"bench01", name:"Bancada de Criação", eng:"Crafting Bench", cat:"bancadas", icon:"🛠️", img:"Images/Craft/BancadaDeCriacao.png",
+    power:"none", desc:"A estação principal de fabricação. Cria uma zona segura ao redor que impede o respawn de inimigos (menos em Assault Events).",
+    unlock:"Receita disponível desde o início — é o primeiro item que você pode fabricar sem bancada nenhuma.",
+    recipe:[{n:"Fita Adesiva",q:4},{n:"Unidade de Fonte de Energia",q:1},{n:"Cano de Metal",q:2}],
+    note:"Mantenha sempre uma bateria conectada — sem energia, ela perde metade das funções (inclusive a zona segura)." },
+  { id:"bench02", name:"Estação de Reparo e Descarte", eng:"Repair & Salvage Station", cat:"bancadas", icon:"🔩", img:"Images/Craft/EstacaoDeReparo.png",
+    power:"req", desc:"Repara equipamentos danificados e desmonta itens para recuperar parte dos materiais usados na fabricação.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Fita Adesiva",q:6},{n:"Bobina",q:2},{n:"Bigorna",q:1},{n:"Cano de Metal",q:2},{n:"Cola Reforçada",q:2},{n:"Caneta",q:1}],
+    note:"Único jeito confiável de conseguir certos recursos no início do jogo — desmonte itens duplicados aqui." },
+  { id:"bench03", name:"Bancada do Chef", eng:"Chef's Counter", cat:"bancadas", icon:"🍳", img:"Images/Craft/BancadaDoChef.png",
+    power:"req", desc:"Estação avançada de culinária — necessária para receitas de sopa e pratos mais elaborados.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira",q:8},{n:"Unidade de Fonte de Energia",q:2},{n:"Cano de Metal",q:4},{n:"Sucata Metálica",q:4}],
+    note:"Combine com o Carson Family Cookbook (vendido pelo Dr. Carson) pra desbloquear receitas exclusivas de sopa." },
+  { id:"bench04", name:"Suporte de Item", eng:"Item Stand", cat:"bancadas", icon:"🗿", img:"Images/Craft/SuporteDeItem.png",
+    power:"none", desc:"Base decorativa para exibir uma arma ou item colecionável na sua base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira",q:1},{n:"Caixa de Parafusos",q:1}],
+    note:null },
+  { id:"bench05", name:"Suporte de Armadura", eng:"Armor Stand", cat:"bancadas", icon:"🎽", img:"Images/Craft/SuporteDeArmadura.png",
+    power:"none", desc:"Manequim para exibir um conjunto de armadura completo na base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Sucata Plástica",q:2},{n:"Grampeador",q:2},{n:"Sucata Metálica",q:2}],
+    note:null },
+
+  // ── ARMAZENAMENTO ──
+  { id:"stor01", name:"Caixote Pequeno", eng:"Storage Crate (Small)", cat:"armazenamento", icon:"📦", img:"Images/Craft/CaixotePequeno.png",
+    power:"none", desc:"18 slots de armazenamento. A opção mais eficiente em espaço-por-material do jogo.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira",q:2},{n:"Sucata Plástica",q:2}],
+    note:"Bom pra encher os cantos da base — mais barato que o Médio por slot fabricado." },
+  { id:"stor02", name:"Caixote Médio", eng:"Storage Crate (Medium)", cat:"armazenamento", icon:"📦", img:"Images/Craft/CaixoteMedio.png",
+    power:"none", desc:"30 slots de armazenamento — o equilíbrio entre custo de material e capacidade.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira Reforçada",q:2},{n:"Sucata Plástica",q:4}],
+    note:null },
+  { id:"stor03", name:"Caixote Grande", eng:"Storage Crate (Large)", cat:"armazenamento", icon:"📦", img:"Images/Craft/CaixoteGrande.png",
+    power:"none", desc:"42 slots de armazenamento — a maior capacidade entre os caixotes comuns.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo (exige Liga Magnética, item de mid-game).",
+    recipe:[{n:"Tábua de Madeira Reforçada",q:4},{n:"Placa de Carbono",q:1},{n:"Liga Magnética",q:1}],
+    note:null },
+  { id:"stor04", name:"Prateleira Pequena", eng:"Small Shelf", cat:"armazenamento", icon:"🗄️", img:"Images/Craft/PrateleiraPequena.png",
+    power:"none", desc:"Prateleira de parede simples, com poucos slots — boa pra organizar itens visíveis.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira",q:4},{n:"Caixa de Parafusos",q:1}],
+    note:null },
+  { id:"stor05", name:"Prateleira Média", eng:"Medium Shelf", cat:"armazenamento", icon:"🗄️", img:"Images/Craft/PrateleiraMedia.png",
+    power:"none", desc:"Versão intermediária da prateleira de parede, com mais capacidade.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira Reforçada",q:4},{n:"Caixa de Parafusos",q:2}],
+    note:null },
+  { id:"stor06", name:"Prateleira Grande", eng:"Large Shelf", cat:"armazenamento", icon:"🗄️", img:"Images/Craft/PrateleiraGrande.png",
+    power:"none", desc:"A maior prateleira de parede fabricável, ideal pra salas de armazenamento dedicadas.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira Reforçada",q:4},{n:"Carbono Refinado",q:1},{n:"Caixa de Parafusos",q:2}],
+    note:null },
+  { id:"stor07", name:"Caixote de Risco", eng:"Hazard Crate", cat:"armazenamento", icon:"☣️", img:"Images/Craft/CaixoteDeRisco.png",
+    power:"none", desc:"30 slots de armazenamento com bloqueio TOTAL de vazamento de radiação — ideal pra guardar itens radioativos.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Suporte de Revista",q:1},{n:"Tábua de Madeira Reforçada",q:4},{n:"Sucata Metálica",q:8},{n:"Saco de Cimento",q:4}],
+    note:"Guarde Comprimidos de Iodo, Seringas de Ácido Pentético e minérios radioativos aqui — zero vazamento pro resto da base." },
+
+  // ── ENERGIA & LUZ ──
+  { id:"pow01", name:"Bateria Improvisada", eng:"Battery (Makeshift)", cat:"energia", icon:"🔋", img:"Images/Craft/BateriaImprovisada.png",
+    power:"gen", desc:"Armazena energia gerada durante o dia para uso à noite, quando a Facility desliga a energia principal.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tijolo de Energia",q:1},{n:"Bobina",q:2},{n:"Sucata Metálica",q:2}],
+    note:"A primeira bateria craftável — troque pela versão de Carbono assim que possível, ela dura mais." },
+  { id:"pow02", name:"Bateria de Carbono", eng:"Battery (Carbon)", cat:"energia", icon:"🔋", img:"Images/Craft/BateriaDeCarbono.png",
+    power:"gen", desc:"Versão intermediária da bateria, com mais capacidade de armazenamento de energia.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tijolo de Memória",q:1},{n:"Carbono Refinado",q:2},{n:"Sucata Metálica",q:2}],
+    note:null },
+  { id:"pow03", name:"Bateria Industrial", eng:"Battery (Industrial)", cat:"energia", icon:"🔋", img:"Images/Craft/BateriaIndustrial.png",
+    power:"gen", desc:"A bateria de maior capacidade disponível — ideal pra bases com muitas bancadas e defesas ligadas ao mesmo tempo.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Célula de Energia",q:1},{n:"Vergalhão",q:2},{n:"Compressor de Ar",q:1},{n:"Sucata Metálica",q:2}],
+    note:null },
+  { id:"pow04", name:"Estação de Carregamento", eng:"Charging Station", cat:"energia", icon:"🔌", img:"Images/Craft/EstacaoDeCarregamento.png",
+    power:"gen", desc:"Recarrega baterias e dispositivos elétricos automaticamente quando conectada à rede de energia da base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Carregador de Bateria de Carro",q:1},{n:"Bobina",q:4},{n:"Cano de Metal",q:4}],
+    note:null },
+  { id:"pow05", name:"Extensão de Tomada", eng:"Plug Strip", cat:"energia", icon:"🔌", img:"Images/Craft/ExtensaoDeTomada.png",
+    power:"none", desc:"Distribui energia de uma tomada para vários dispositivos próximos — essencial pra organizar a fiação da base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Unidade de Fonte de Energia",q:1},{n:"Bobina",q:1},{n:"Sucata Metálica",q:2}],
+    note:null },
+  { id:"pow06", name:"Tocha de Parede", eng:"Wall Torch", cat:"energia", icon:"🕯️", img:"Images/Craft/TochaDeParede.png",
+    power:"none", desc:"Iluminação decorativa de parede que não precisa de eletricidade pra funcionar.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Cano de Metal",q:1},{n:"Sucata de Vidro",q:1},{n:"Sucata Tecnológica",q:1}],
+    note:"Boa alternativa de luz em cantos onde você não quer gastar energia da rede." },
+
+  // ── DEFESA DA BASE ──
+  { id:"def01", name:"Barricada de Madeira", eng:"Barricade (Wood Full)", cat:"defesa", icon:"🚧", img:"Images/Craft/BarricadaDeMadeira.png",
+    power:"none", desc:"Bloqueia passagens e portas contra inimigos — a defesa passiva mais barata do jogo.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Caixa de Parafusos",q:3},{n:"Tábua de Madeira Reforçada",q:3}],
+    note:null },
+  { id:"def02", name:"Barricada de Carbono", eng:"Barricade (Carbon)", cat:"defesa", icon:"🚧", img:"Images/Craft/BarricadaDeCarbono.png",
+    power:"none", desc:"Versão reforçada da barricada, com muito mais resistência a ataques.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Placa de Carbono",q:2},{n:"Tijolo de Energia",q:1}],
+    note:null },
+  { id:"def03", name:"Muro de Sacos de Areia", eng:"Bag Wall", cat:"defesa", icon:"🧱", img:"Images/Craft/MuroDeSacos.png",
+    power:"none", desc:"Muro modular (peça reta, curva, canto) pra fechar perímetros irregulares ao redor da base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo (varia por peça: reta/curva/canto).",
+    recipe:[{n:"Saco de Cimento",q:4}],
+    note:"As variantes de canto e curva pedem 1 saco a mais — combine as peças pra fechar qualquer formato de perímetro." },
+  { id:"def04", name:"Torreta a Laser", eng:"Laser Turret", cat:"defesa", icon:"🔫", img:"Images/Craft/TorretaLaser.png",
+    power:"req", desc:"Defesa automática que dispara em inimigos que entram no seu raio de detecção.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo (itens de mid/late-game).",
+    recipe:[{n:"Receptor de Fóton",q:1},{n:"Matriz de Projeção",q:4},{n:"Mapeador de Neutrino",q:1},{n:"CPU Reforçada",q:1}],
+    note:null },
+  { id:"def05", name:"Torreta de Disco", eng:"Disc Turret", cat:"defesa", icon:"🔫", img:"Images/Craft/TorretaDeDisco.png",
+    power:"req", desc:"Torreta automática que dispara discos serrilhados — usa o Triturador como base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Triturador",q:1},{n:"Placa de Carbono",q:3},{n:"Mangueira Reforçada",q:1},{n:"Caixa de Parafusos",q:8}],
+    note:null },
+  { id:"def06", name:"Bobina de Tesla", eng:"Tesla Coil", cat:"defesa", icon:"⚡", img:"Images/Craft/BobinaDeTesla.png",
+    power:"req", desc:"Defesa elétrica em área — choca todos os inimigos próximos periodicamente.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Cilindro",q:1},{n:"Caixa de Parafusos",q:8},{n:"Mangueira",q:2},{n:"Bobina",q:3}],
+    note:null },
+  { id:"def07", name:"Armadilha de Choque", eng:"Shock Trap", cat:"defesa", icon:"⚡", img:"Images/Craft/ArmadilhaDeChoque.png",
+    power:"none", desc:"Armadilha de piso que choca e atordoa inimigos que pisarem nela.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tijolo de Energia",q:1},{n:"Grampeador",q:1},{n:"Bobina",q:1}],
+    note:null },
+  { id:"def08", name:"Mina de Fio-Guia", eng:"Tripwire Mine", cat:"defesa", icon:"💥", img:"Images/Craft/MinaDeFioGuia.png",
+    power:"none", desc:"Mina de área acionada quando um inimigo cruza o fio-guia — boa pra corredores estreitos.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Saco de Terra",q:1},{n:"Caixa de Parafusos",q:1},{n:"Sucata Tecnológica",q:3},{n:"Grampeador",q:1}],
+    note:null },
+  { id:"def09", name:"Armadilha de Praga", eng:"Pest Trap", cat:"defesa", icon:"🪤", img:"Images/Craft/ArmadilhaDePraga.png",
+    power:"none", desc:"Captura uma Praga viva, que depois pode ser domesticada alimentando-a.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Sucata Metálica",q:4},{n:"Grampeador",q:1},{n:"Nachos",q:1},{n:"Fita Adesiva",q:2}],
+    note:"Necessária pro troféu Rato de Laboratório — capture um Lab Rat vivo antes de matar todos na região." },
+  { id:"def10", name:"Torre de Raio-X", eng:"X-Ray Tower", cat:"defesa", icon:"📡", img:"Images/Craft/TorreDeRaioX.png",
+    power:"req", desc:"Elimina automaticamente qualquer Leyak que entrar no seu raio de alcance.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Matriz de Projeção",q:1},{n:"Carbono Refinado",q:2},{n:"Queimador de Laboratório",q:1},{n:"Teclado",q:1}],
+    note:"Essencial em bases próximas de áreas com Leyak recorrente — elimina a ameaça sem intervenção manual." },
+
+  // ── TRANSPORTE & MOBILIDADE ──
+  { id:"trav01", name:"Carrinho de Plataforma", eng:"Platform Cart", cat:"transporte", icon:"🛒", img:"Images/Craft/CarrinhoDePlataforma.png",
+    power:"none", desc:"Carrinho com 18 slots de armazenamento — ótimo pra transportar carga entre setores.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Sucata Metálica",q:4},{n:"Sucata Plástica",q:4},{n:"Óleo",q:1},{n:"Cano de Metal",q:3}],
+    note:"A versão com Faróis (Headlights) exige +1 Célula de Energia, +2 Sucata de Vidro e +4 Sucata Tecnológica em cima dessa base." },
+  { id:"trav02", name:"Rampa Pequena", eng:"Ramp (Small)", cat:"transporte", icon:"📐", img:"Images/Craft/RampaPequena.png",
+    power:"none", desc:"Rampa de madeira pra vencer pequenos desníveis na construção da base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Caixa de Parafusos",q:2},{n:"Tábua de Madeira",q:4}],
+    note:null },
+  { id:"trav03", name:"Ponte de Madeira", eng:"Bridge (Wood)", cat:"transporte", icon:"🌉", img:"Images/Craft/PonteDeMadeira.png",
+    power:"none", desc:"Ponte fabricável pra atravessar vãos e desníveis maiores na base.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Caixa de Parafusos",q:1},{n:"Tábua de Madeira",q:4}],
+    note:null },
+  { id:"trav04", name:"Ponte de Carbono", eng:"Bridge (Carbon)", cat:"transporte", icon:"🌉", img:"Images/Craft/PonteDeCarbono.png",
+    power:"none", desc:"Versão reforçada da ponte, mais resistente e barata em material único.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Placa de Carbono",q:1}],
+    note:null },
+  { id:"trav05", name:"Teletransportador Pessoal", eng:"Personal Teleporter", cat:"transporte", icon:"🌀", img:"Images/Craft/TeletransportadorPessoal.png",
+    power:"none", desc:"Vincula-se a qualquer Bancada de Criação — teleporta você instantaneamente de volta a ela de qualquer lugar da Facility ou Mundo Portal.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Coração de Exor Bruto",q:1},{n:"Tijolo de Memória",q:1},{n:"Teclado",q:1},{n:"Telefone de Mesa",q:1}],
+    note:"A carga zera 100% a cada uso — tenha uma bateria carregada antes de contar com ele em emergência." },
+  { id:"trav06", name:"Plataforma de Salto", eng:"Jump Pad", cat:"transporte", icon:"🚀", img:"Images/Craft/PlataformaDeSalto.png",
+    power:"none", desc:"Impulsiona você pra cima ao pisar — e protege contra dano de queda logo depois do salto.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Ninho Gasoso",q:1},{n:"Mangueira Reforçada",q:1},{n:"Tijolo de Energia",q:1},{n:"Eletrônicos Militares",q:2}],
+    note:null },
+
+  // ── UTILIDADES ──
+  { id:"util01", name:"Vaso Sanitário Improvisado", eng:"Makeshift Toilet", cat:"utilidades", icon:"🚽", img:"Images/Craft/VasoImprovisado.png",
+    power:"none", desc:"Atende a necessidade de continência dos jogadores — versão básica, sem energia.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Balde (qualquer)",q:1},{n:"Vergalhão",q:4},{n:"Sucata de Pano",q:4}],
+    note:null },
+  { id:"util02", name:"Privada-Portal", eng:"Portal Toilet", cat:"utilidades", icon:"🚽", img:"Images/Craft/PrivadaPortal.png",
+    power:"none", desc:"Versão avançada do banheiro — mais rápida e com uma pequena chance de teletransportar você pra outro lugar.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo (itens de mid-game).",
+    recipe:[{n:"Coração de Exor Bruto",q:4},{n:"Célula de Energia",q:2},{n:"Bomba Rotativa",q:2},{n:"Bobina Reforçada",q:4}],
+    note:"Ligada ao troféu Orla Distante (Some Distant Shore) — use com a barra de continência baixa e um Laser Emitter apontado pra ela." },
+  { id:"util03", name:"Filtro de Água", eng:"Water Filter", cat:"utilidades", icon:"💧", img:"Images/Craft/FiltroDeAgua.png",
+    power:"none", desc:"Purifica água contaminada de barris/tambores pra consumo seguro.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Barril (qualquer)",q:1},{n:"Tijolo de Computação",q:1},{n:"Carbono Refinado",q:2},{n:"Ácido Clorídrico",q:4}],
+    note:null },
+  { id:"util04", name:"Canteiro de Plantio", eng:"Garden Plot", cat:"utilidades", icon:"🌱", img:"Images/Craft/CanteiroDePlantio.png",
+    power:"none", desc:"Base pra cultivar sementes. Existe em formatos Redondo/Quadrado (pequeno), Médio e Grande, com custo crescente de material.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo (formato pequeno).",
+    recipe:[{n:"Tábua de Madeira",q:1},{n:"Sucata Plástica",q:2},{n:"Mangueira",q:2},{n:"Saco de Terra",q:1}],
+    note:"O Grande pede Cano Hidráulico + Bomba Rotativa + Mangueira Reforçada em vez desses materiais básicos." },
+  { id:"util05", name:"Armadilha de Pesca", eng:"Fish Trap", cat:"utilidades", icon:"🎣", img:"Images/Craft/ArmadilhaDePesca.png",
+    power:"none", desc:"Pesca automaticamente e aos poucos, desde que abastecida com a isca certa e posicionada em água pescável.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Tábua de Madeira",q:4},{n:"Corda de Pano",q:4},{n:"Sucata Plástica",q:4},{n:"Telefone de Mesa",q:2}],
+    note:null },
+  { id:"util06", name:"Aquário Grande", eng:"Large Aquarium", cat:"utilidades", icon:"🐟", img:"Images/Craft/AquarioGrande.png",
+    power:"req", desc:"Armazena até 6 peixes vivos, mantendo-os perfeitamente preservados enquanto ligado à energia.",
+    unlock:"Receita descoberta ao reunir os materiais abaixo.",
+    recipe:[{n:"Vidro Quântico",q:4},{n:"Tijolo de Energia",q:1},{n:"Bomba Rotativa",q:2},{n:"Saco de Terra",q:4}],
+    note:null },
+];
+
+// ── OBJETOS FABRICÁVEIS — RENDER, BUSCA, FILTRO E MODAL ──
+const deployCatIcons = { bancadas:"🔧", armazenamento:"📦", energia:"⚡", defesa:"🛡️", transporte:"🚗", utilidades:"🚽" };
+let deployCurrentCat = "todos";
+let deploySearchTerm = "";
+let deploySelectedItem = null;
+let deployQtyMultiplier = 1;
+
+function renderDeployables() {
+  const grid = document.getElementById('deploy-grid');
+  const filtered = deployablesData.filter(item => {
+    const matchesCat = deployCurrentCat === "todos" || item.cat === deployCurrentCat;
+    const term = deploySearchTerm;
+    const matchesSearch = !term ||
+      item.name.toLowerCase().includes(term) ||
+      item.eng.toLowerCase().includes(term) ||
+      item.desc.toLowerCase().includes(term) ||
+      item.recipe.some(r => r.n.toLowerCase().includes(term));
+    return matchesCat && matchesSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="deploy-empty-msg">Nenhum objeto encontrado no banco de dados GATE.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => {
+    const recipeHtml = item.recipe.map(r => `<span class="deploy-mat-chip"><b>${r.q}x</b> ${r.n}</span>`).join('');
+    const powerClass = item.power === "req" ? "deploy-power-req" : (item.power === "gen" ? "deploy-power-gen" : "deploy-power-none");
+    const powerText = item.power === "req" ? "⚡ Consome" : (item.power === "gen" ? "⚡ Gera" : "Sem energia");
+    return `
+      <div class="deploy-card">
+        <div class="deploy-card-thumb">
+          <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span class="deploy-fallback-icon" style="display:none">${item.icon}</span>
+          <span class="deploy-power-badge ${powerClass}">${powerText}</span>
+        </div>
+        <div>
+          <div class="deploy-card-top-row">
+            <span class="deploy-item-title">${item.name}</span>
+          </div>
+          <div class="deploy-item-desc">${item.desc}</div>
+          <div class="deploy-recipe-row">${recipeHtml}</div>
+          <button class="deploy-btn-blueprint" onclick="openDeployBlueprint('${item.id}')">🔬 VER BLUEPRINT</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+window.openDeployBlueprint = function(id) {
+  deploySelectedItem = deployablesData.find(i => i.id === id);
+  if (!deploySelectedItem) return;
+  deployQtyMultiplier = 1;
+  document.querySelectorAll('.deploy-btn-qty').forEach(b => b.classList.remove('active'));
+  document.querySelector('.deploy-btn-qty[data-qty="1"]').classList.add('active');
+
+  const it = deploySelectedItem;
+  document.getElementById('deploy-m-title').textContent = `📐 ${it.name}`;
+  document.getElementById('deploy-m-cat').textContent = `${deployCatIcons[it.cat] || ''} ${it.cat.toUpperCase()} · ${it.eng}`;
+  const img = document.getElementById('deploy-m-img');
+  const fallback = document.getElementById('deploy-m-fallback');
+  img.style.display = 'block'; fallback.style.display = 'none';
+  img.src = it.img;
+  img.onerror = () => { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = it.icon; };
+  document.getElementById('deploy-m-unlock').textContent = it.unlock;
+
+  const noteEl = document.getElementById('deploy-m-note');
+  const noteTitleEl = document.getElementById('deploy-m-notetitle');
+  if (it.note) {
+    noteEl.textContent = it.note; noteEl.style.display = 'block'; noteTitleEl.style.display = 'block';
+  } else {
+    noteEl.style.display = 'none'; noteTitleEl.style.display = 'none';
+  }
+
+  updateDeployMaterials();
+  document.getElementById('deploy-modal').classList.add('active');
+};
+
+function updateDeployMaterials() {
+  if (!deploySelectedItem) return;
+  const container = document.getElementById('deploy-m-materials');
+  container.innerHTML = deploySelectedItem.recipe.map(r => `
+    <div class="deploy-modal-mat-item">
+      <span>📦 ${r.n}</span>
+      <span class="deploy-modal-mat-qty">${r.q * deployQtyMultiplier}x</span>
+    </div>`).join('');
+}
+
+document.querySelectorAll('.deploy-btn-qty').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.deploy-btn-qty').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    deployQtyMultiplier = parseInt(btn.getAttribute('data-qty'), 10);
+    updateDeployMaterials();
+  });
+});
+
+const deployModalEl = document.getElementById('deploy-modal');
+document.getElementById('deploy-modal-close').addEventListener('click', () => deployModalEl.classList.remove('active'));
+deployModalEl.addEventListener('click', (e) => { if (e.target === deployModalEl) deployModalEl.classList.remove('active'); });
+
+document.getElementById('deploy-search').addEventListener('input', (e) => {
+  deploySearchTerm = e.target.value.toLowerCase().trim();
+  renderDeployables();
+});
+
+document.getElementById('deploy-tabs').addEventListener('click', (e) => {
+  if (!e.target.classList.contains('deploy-tab-btn')) return;
+  document.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  deployCurrentCat = e.target.getAttribute('data-cat');
+  renderDeployables();
+});
+
+renderDeployables();
+
 // ── TIPS PANEL ──
 const tipsGrid = document.getElementById('tips-grid');
 tipsCats.forEach(cat => {
@@ -4062,68 +5086,199 @@ const skillsData = [
 ];
 
 // ── HEAL DATA ──
+const healCats = {
+  ferimento: { label:"FERIMENTOS",          c:C.redLt },
+  cura:      { label:"CURA DIRETA",         c:C.green },
+  radiacao:  { label:"RADIAÇÃO E DOENÇAS",  c:C.cyan  },
+};
 const healData = [
-  { name:"Bandagem", desc:"Interrompe sangramento. Para múltiplos ferimentos com sangramento, use uma bandagem por ferimento." },
-  { name:"Maleta de Cura", desc:"Dispositivo implantável recarregável que gera cura em área por tempo limitado. Funciona com bateria." },
-  { name:"Seringa de Cura", desc:"Restaura HP gradualmente ao longo do tempo após aplicação. Não é instantânea." },
-  { name:"Comprimidos de Iodo", desc:"Reduzem radiação recebida e removem parte da radiação acumulada. Essencial nos Reatores." },
-  { name:"Seringa de Ácido Pentético", desc:"Alternativa ao Iodo com o mesmo efeito anti-radiação. Receita desbloqueada com Primeiros Socorros nível 4." },
-  { name:"Bandagem Tecnológica", desc:"Versão aprimorada com Kevlar e Eletrônicos Militares. Para sangramentos graves com uma única unidade." },
-  { name:"Tala", desc:"Trata lesões nos membros: tornozelo/pulso torcido, fraturas de braço/perna, ambas as pernas quebradas." },
+  { cat:"ferimento", name:"Bandagem", eng:"Bandage", icon:"🩹", img:"Images/Itens/Bandagem.webp",
+    desc:"Estanca sangramento aplicando pressão no ferimento. Efeito imediato, mas cada unidade trata só um ferimento sangrando.",
+    removes:["🩸 Sangramento"],
+    tip:"Carregue várias no bolso — se levar vários golpes cortantes, você vai precisar de uma bandagem POR ferimento, não uma só." },
+  { cat:"cura", name:"Maleta de Cura", eng:"Healing Briefcase", icon:"💼", img:"Images/Itens/Maletadecura.webp",
+    desc:"Dispositivo implantável e recarregável que gera um campo de cura em área por tempo limitado. Precisa de bateria para funcionar.",
+    removes:[],
+    tip:"Ótima em combates de grupo: plante antes de engajar — todo mundo dentro do campo cura ao mesmo tempo." },
+  { cat:"cura", name:"Seringa de Cura", eng:"Healing Syringe", icon:"💉", img:"Images/Itens/Seringadecura.webp",
+    desc:"Restaura HP gradualmente ao longo do tempo após a aplicação. Não é instantânea — o efeito continua mesmo depois de aplicada.",
+    removes:[],
+    tip:"Aplique assim que perceber que vai levar dano contínuo, não espere ficar crítico — a cura gradual precisa de tempo pra compensar." },
+  { cat:"radiacao", name:"Comprimidos de Iodo", eng:"Iodine Tablets", icon:"💊", img:"Images/Itens/Comprimidosdeiodo.webp",
+    desc:"Reduzem a radiação recebida por um tempo e removem parte da radiação já acumulada. Essenciais antes de entrar nos Reatores.",
+    removes:["☢️ Radiação"],
+    tip:"Tome ANTES de entrar em áreas radioativas — o efeito de resistência é preventivo, não serve só pra limpar depois." },
+  { cat:"radiacao", name:"Seringa de Ácido Pentético", eng:"Pentetic Acid Syringe", icon:"💉", img:"Images/Itens/Seringadeácidopentético.webp",
+    desc:"Alternativa craftável ao Comprimido de Iodo, com o mesmo efeito anti-radiação. Receita desbloqueada no nível 4 de Primeiros Socorros.",
+    removes:["☢️ Radiação"],
+    tip:"Vale craftar em lote assim que desbloquear a receita — evita depender de achar Comprimidos de Iodo pelo cenário." },
+  { cat:"ferimento", name:"Bandagem Tecnológica", eng:"Tech Bandage", icon:"🩹", img:"Images/Itens/Bandagemtecnológica.webp",
+    desc:"Versão avançada da bandagem comum, feita com Kevlar e Eletrônicos Militares. Estanca sangramentos graves com uma única unidade.",
+    removes:["🩸 Sangramento Grave"],
+    tip:"Guarde para emergências reais — o custo de crafting é bem mais alto que a bandagem comum, não vale gastar à toa." },
+  { cat:"ferimento", name:"Tala", eng:"Splint", icon:"🦴", img:"Images/Itens/Tala.webp",
+    desc:"Trata lesões nos membros: tornozelo ou pulso torcido, fraturas de braço ou perna — incluindo as duas pernas quebradas ao mesmo tempo.",
+    removes:["🦵 Fratura / Torção"],
+    tip:"Fraturas reduzem sua mobilidade até serem tratadas — aplique a Tala assim que possível, mesmo fora de combate." },
+  { cat:"radiacao", name:"Remédio Gástrico", eng:"Gastro Medicine", icon:"🤢", img:"Images/Itens/Remédiogástrico.webp",
+    desc:"Medicamento improvisado que cura o enjoo estomacal causado por comida estragada ou água contaminada. Também reduz um pouco a radiação ao ser ingerido.",
+    removes:["🤢 Enjoo Estomacal"],
+    tip:"Craftável com Sucata Plástica + Ácido Clorídrico + Mel — vale manter alguns prontos se você cozinha bastante no início do jogo." },
+  { cat:"radiacao", name:"Chuveiro R.A.I.N.", eng:"R.A.I.N. Shower", icon:"🚿", img:"Images/Itens/Chuveirodescontaminação.webp",
+    desc:"Objeto instalável que, ligado à energia e com água, limpa instantaneamente toda sujeira, sangue e radiação de quem entra nele — sem limite de quanto remove.",
+    removes:["☢️ Radiação (total)"],
+    tip:"Construa um na base assim que possível: é a forma mais eficiente de zerar radiação acumulada, melhor que depender só de Iodo." },
+  { cat:"cura", name:"Frasco Restaurador", eng:"Restorative Flask", icon:"🧪", img:"Images/Itens/Frascorestaurador.webp",
+    desc:"Frasco arremessável que libera uma nuvem de esporos de cura ao impacto, curando quem estiver na área e estancando sangramentos na hora.",
+    removes:["🩸 Sangramento (na área)"],
+    tip:"Jogue no chão do grupo durante o combate — cura todo mundo próximo e resolve sangramentos, sem precisar parar pra usar bandagem." },
 ];
 
 // ── ARMOR TIER DATA ──
+const armorTiers = {
+  S: { label:"S — MELHOR CUSTO-BENEFÍCIO", c:C.platinum },
+  A: { label:"A — MUITO FORTE",            c:C.amber },
+  B: { label:"B — BOM, SITUACIONAL",       c:C.steel },
+  C: { label:"C — INICIAL / NICHO",        c:C.bronze },
+};
 const armorTierData = [
-  {
-    tier:"S", name:"Armadura da Ordem", color:"#00e060",
-    tag:"MELHOR GERAL",
-    desc:"O set mais balanceado do jogo. Obtido de inimigos da Ordem. Excelente defesa e bônus de set que aumentam resistência e redução de dano. Disponível a partir do Manufacturing.",
-    bonus:"Bônus de Set: Resistência aumentada, redução de dano recebido de humanos."
-  },
-  {
-    tier:"S", name:"Armadura Pretoriana", color:"#00e060",
-    tag:"MELHOR DEFESA",
-    desc:"Alta armadura por peça, obtido nos mundos portais avançados (Praetorium). Ideal para combate frontal em setores finais.",
-    bonus:"Bônus de Set: Altíssima defesa física, resistência a dano explosivo."
-  },
-  {
-    tier:"A", name:"Armadura F.O.R.G.E.", color:"#e0a020",
-    tag:"ANTI-BALA",
-    desc:"Craftável com materiais do Manufacturing. Excelente contra inimigos com armas de fogo. Bônus de set faz balas ricochetearem.",
-    bonus:"2 peças: Balas ricocheteiam às vezes. 4 peças (A Resistência): Balas ricocheteiam frequentemente."
-  },
-  {
-    tier:"A", name:"Armadura Sagittarii", color:"#e0a020",
-    tag:"PRECISÃO",
-    desc:"Ideal para build de precisão/besta. Bônus de set aumentam dano e estabilidade de armas de longa distância.",
-    bonus:"Bônus de Set: Dano aumentado com armas de precisão, mira mais estável."
-  },
-  {
-    tier:"B", name:"Set de Jaleco (Cientista)", color:"#60a080",
-    tag:"INÍCIO DE JOGO",
-    desc:"O clássico conjunto inicial. Baixa defesa mas facilmente acessível desde o começo. Use até encontrar materiais melhores.",
-    bonus:"Bônus de Set: Troféu Especialista em Moda se equipar 4 peças do mesmo set."
-  },
-  {
-    tier:"B", name:"Capacete de Cogumelo", color:"#60a080",
-    tag:"PERDÍVEL ⚠️",
-    desc:"Craftado com Mushroom Peccary Skull dos Mycofields. Necessário para o troféu Micélio sobre o Concílio. Equipe junto com outras peças.",
-    bonus:"Efeito único: resistência a veneno fúngico. Troféu ativa ao equipar."
-  },
+  { tier:"S", name:"Armadura Hex", eng:"Hex Armor Set", img:"Images/Armaduras/Hex.png",
+    acquire:"Craftável com Hexwood (madeira de árvores amaldiçoadas) + Sucata de Kevlar e Couro.",
+    armor:"18", weight:"6",
+    bonuses:[
+      { pieces:"2 peças — Hexed Skin", effect:"A seiva do Hexwood cura sangramento leve automaticamente." },
+      { pieces:"4 peças — Hexed Soul", effect:"As raízes do Hexwood curam sangramento leve E grave." },
+    ],
+    note:"Defesa mediana, mas economiza MUITA bandagem — provavelmente o melhor custo-benefício do jogo." },
+  { tier:"S", name:"Armadura de Segurança", eng:"Security Armor Set", img:"Images/Armaduras/Segurança.png",
+    acquire:"Cai de Caixas de Segurança GATE, dentro do Setor Segurança.",
+    armor:"19", weight:"20",
+    bonuses:[
+      { pieces:"2 peças — Defender", effect:"Bloquear com a arma custa metade do stamina normal." },
+      { pieces:"4 peças — Hold the Line", effect:"Bloquear não consome stamina nenhum." },
+    ],
+    note:"Ideal pra quem tanka: pesada, mas quem bloqueia bastante ganha praticamente stamina infinito." },
+  { tier:"S", name:"Armadura Reator", eng:"Reactor Armor Set", img:"Images/Armaduras/Reator.png",
+    acquire:"Craftada com materiais dos Reatores: Plutonic Carapace, Superliga Transurânica e Ouro Digital.",
+    armor:"26", weight:"8",
+    bonuses:[
+      { pieces:"2 peças — Gamma Converter", effect:"Itens radioativos ficam sem peso; carregar radiação aumenta a velocidade." },
+      { pieces:"4 peças — Gamma God", effect:"Mesmo bônus acima + regeneração de vida proporcional à radiação no corpo." },
+    ],
+    note:"Transforma radiação acumulada em vantagem — excelente pra quem já domina Iodo/Chuveiro R.A.I.N." },
+  { tier:"A", name:"Armadura Exor", eng:"Exor Armor Set", img:"Images/Armaduras/Exor.png",
+    acquire:"Craftada com partes de Exor (crânio/sino) + Transcendium, materiais de mundos avançados.",
+    armor:"22", weight:"5",
+    bonuses:[
+      { pieces:"2 peças — Exor Agility", effect:"Velocidade de movimento aumenta bastante; quedas não quebram mais as pernas." },
+      { pieces:"4 peças — Spirit of the Exor", effect:"Mesmo bônus acima + um espírito Exor entra na luta ao seu lado." },
+    ],
+    note:"A mais leve do jogo e a única que chama um aliado espectral pra brigar — ótima pra builds de mobilidade." },
+  { tier:"A", name:"Armadura Montanhista", eng:"Mountaineer Armor Set", img:"Images/Armaduras/Montanhista.png",
+    acquire:"Cai de Montanhistas, Rooks e combatentes corpo a corpo pelo cenário.",
+    armor:"24", weight:"25",
+    bonuses:[
+      { pieces:"3 peças — Mountaineer", effect:"A maioria das interações físicas (explosões, empurrões) para de te derrubar." },
+    ],
+    note:"Muito pesada, mas praticamente imune a knockback — combina bem com quem enfrenta tudo de frente." },
+  { tier:"A", name:"Armadura Hyperion", eng:"Hyperion Armor Set", img:"Images/Armaduras/Hyperion.png",
+    acquire:"Aprimorada no Banco de Aprimoramento a partir da Armadura Cascade + Pele de Yeti + Essência Congelada.",
+    armor:"26", weight:"7",
+    bonuses:[
+      { pieces:"2 peças — Motion Sensor", effect:"Detecta inimigos próximos que já estão em combate." },
+      { pieces:"4 peças — Threat Sensor", effect:"Detecta TODOS os inimigos próximos, em combate ou não." },
+    ],
+    note:"Praticamente um radar de inimigos vestível — evita emboscadas nos setores mais tardios." },
+  { tier:"B", name:"Armadura Legate", eng:"Legate Armor Set", img:"Images/Armaduras/Legate.png",
+    acquire:"Cai de Baús do Inquisidor, no Praetorium (mundo portal da Inquisição).",
+    armor:"22", weight:"10",
+    bonuses:[
+      { pieces:"3 peças — Rite of Command", effect:"Aliados próximos, incluindo você, ganham velocidade de movimento aumentada." },
+    ],
+    note:"O único set pensado pro grupo inteiro — brilha muito mais em co-op do que jogando sozinho." },
+  { tier:"B", name:"Armadura A.T.O.M.S.", eng:"A.T.O.M.S. Armor Set", img:"Images/Armaduras/Atoms.png",
+    acquire:"Aprimorada a partir da Armadura A.E.G.I.S. com Superliga Transurânica, Ouro Digital e Sucata Arcana.",
+    armor:"22", weight:"10",
+    bonuses:[
+      { pieces:"2 peças — Defiance", effect:"Balas às vezes ricocheteiam na armadura." },
+      { pieces:"4 peças — The Resistance", effect:"Balas ricocheteiam com frequência." },
+    ],
+    note:"Ótima contra inimigos armados, mas os materiais são raros — o capacete ainda dá imunidade a esporos." },
+  { tier:"C", name:"Armadura Sagittarii", eng:"Sagittarii Armor Set", img:"Images/Armaduras/Sagittarii.png",
+    acquire:"Coletada de Snipers, disponível depois de completar o Setor Segurança.",
+    armor:"16", weight:"10",
+    bonuses:[
+      { pieces:"3 peças — Assiduity", effect:"Armas com mira (scope) perdem todo o balanço ao mirar." },
+    ],
+    note:"Defesa baixa, mas se sua build usa besta ou rifle de precisão, a estabilidade de mira compensa." },
+  { tier:"C", name:"Armadura F.O.R.G.E.", eng:"F.O.R.G.E. Armor Set", img:"Images/Armaduras/Forge.png",
+    acquire:"Craftável com Máscara de Solda + Sucata de Couro + Vergalhão, direto do Manufacturing.",
+    armor:"10", weight:"10",
+    bonuses:[
+      { pieces:"2 peças — Defiance", effect:"Balas às vezes ricocheteiam na armadura." },
+      { pieces:"4 peças — The Resistance", effect:"Balas ricocheteiam com frequência." },
+    ],
+    note:"Defesa baixa pros padrões tardios, mas é a primeira armadura craftável contra inimigos armados." },
 ];
 
 // ── WEAPONS DATA ──
+const weaponTiers = {
+  S: { label:"S — DANO MÁXIMO",        c:C.platinum },
+  A: { label:"A — MUITO FORTE",         c:C.amber },
+  B: { label:"B — BOM, ACESSÍVEL",      c:C.steel },
+  C: { label:"C — INICIAL / NICHO",     c:C.bronze },
+};
 const weaponsData = [
-  { icon:"⚡", name:"Lançador Elétrico", type:"Energia", desc:"Dispara raio elétrico contínuo que paralisa inimigos. Não usa munição convencional — carregado via estação. Excelente para controle de grupo.", tip:"Ideal: carregue a estação portátil sempre." },
-  { icon:"🪃", name:"Triturador", type:"Munição Especial", desc:"Dispara discos serrilhados que ricocheteiam nas paredes e atingem múltiplos inimigos. Os discos podem ser coletados após o disparo.", tip:"Munição sustentável — recolha os discos após cada uso." },
-  { icon:"⚡", name:"Lança Relâmpago", type:"Corpo a Corpo", desc:"Versão aprimorada da Makeshift Spear com descarga elétrica a cada golpe. Excelente alcance e dano para melee.", tip:"Componentes: Vergalhão (Manufacturing) + Capacitor (Electro-Pests)." },
-  { icon:"🏹", name:"Besta de Magnetita", type:"Silencioso", desc:"Besta silenciosa — ideal para abordagens stealth. Não alerta inimigos próximos ao atirar.", tip:"Melhor arma para jogadores focados em Furtividade." },
-  { icon:"🔫", name:"Espingarda Antiga", type:"Curto Alcance", desc:"Escopeta dupla com alto knockback. Excelente na Hydroplant antes de conseguir o Desatomizador. Reload lento — mova-se sempre.", tip:"Mire no peito/cabeça para apertar o spread de pellets." },
-  { icon:"🔫", name:"Desatomizador", type:"Avançado", desc:"Arma de energia avançada disponível em setores tardios. Alto dano por disparo com efeito de desintegração em inimigos fracos.", tip:"Priorize obter após a Hydroplant — substitui a Shotgun." },
-  { icon:"🗡️", name:"Katana a Laser", type:"Furtivo / Corpo a Corpo", desc:"Katana de laser com efeito de sangramento. Silenciosa para uso stealth. Dropa de inimigos da Ordem em pontos de respawn.", tip:"Combina perfeitamente com builds de Furtividade." },
-  { icon:"🔨", name:"Marreta Explosiva", type:"Explosivo / Corpo a Corpo", desc:"Marreta pesada com cartuchos explosivos que causam dano em área. Devastadora em grupos mas animations lentas.", tip:"Use em grupos — o dano em área compensa a lentidão." },
-  { icon:"🏏", name:"Crowbar (Craftado)", type:"Corpo a Corpo", desc:"Versão craftada do Crowbar clássico. Alta durabilidade, ótimo para economizar recursos enquanto mata inimigos de baixo tier.", tip:"Melhor arma corpo-a-corpo para o early game até o Manufacturing." },
-  { icon:"🛡️", name:"Sabre de Luz Sólida", type:"Contra Escudos", desc:"Sabres especial eficaz contra inimigos com escudo — pode refletir projéteis e causa dano extra em escudos.", tip:"Carregue junto com outra arma — use especificamente contra blindados." },
+  { tier:"S", name:"Scrapshot", eng:"Scrapshot", img:"Images/Armas/Scrapshot.png", type:"Arma de Ciência — Curto Alcance",
+    acquire:"Craftável no Banco de Crafting com 1x Bobina, 1x Célula de Energia e 2x Vergalhão.",
+    dmg:"108 (12×9 perdigões)", weight:"8", ammo:"Munição Scrapshot",
+    effects:[ "Dispara 9 projéteis por tiro — dano altíssimo à queima-roupa." ],
+    tip:"A maior janela de dano por tiro do early/mid game — mas gasta munição rápido, sempre tenha reserva." },
+  { tier:"S", name:"Triturador", eng:"Grinder", img:"Images/Armas/Triturador.png", type:"Arma de Ciência — Longo Alcance",
+    acquire:"Craftável com 1x Compressor de Ar, 1x Bloco de Computação e 2x Mangueira Reforçada.",
+    dmg:"45", weight:"5", ammo:"Disco do Triturador (recuperável)",
+    effects:[ "Os discos ricocheteiam em paredes e podem ser recolhidos do chão/corpos após o disparo." ],
+    tip:"Munição praticamente infinita se você for atrás dos discos — ótimo custo-benefício a longo prazo." },
+  { tier:"S", name:"Granada de Fragmentação", eng:"Frag Grenade", img:"Images/Armas/GranadaFragmentação.png", type:"Arremessável",
+    acquire:"Chance de drop de Grunts e Capitães da Ordem.",
+    dmg:"400", weight:"0.2", ammo:"—",
+    effects:[ "Maior dano direto entre todas as armas do jogo, com dano em área." ],
+    tip:"Guarde para emergências ou alvos grandes — não craftável cedo, dependa de drops até conseguir a receita." },
+  { tier:"A", name:"Marreta Explosiva", eng:"Explosive Sledge", img:"Images/Armas/MarretaExplosiva.png", type:"Corpo a Corpo Pesado — Contundente",
+    acquire:"Craftável a partir de 1x Marreta + 4x Eletrônicos Militares + 4x Mangueira Reforçada + 2x Capacitor.",
+    dmg:"40 (+ explosão com Mina Laser como munição)", weight:"11", ammo:"Mina Laser (opcional)",
+    effects:[ "Funciona como marreta comum sem munição; com Mina Laser carregada, o golpe explode em área." ],
+    tip:"Arma pesada de arremesso lento — melhor contra grupos parados do que perseguindo um alvo rápido." },
+  { tier:"A", name:"Lança Relâmpago", eng:"Lightning Spear", img:"Images/Armas/LançaRelâmpago.png", type:"Corpo a Corpo — Cortante",
+    acquire:"Craftável com 1x Vergalhão + 1x Matriz de Projeção + 1x Tijolo de Energia + 1x Capacitor.",
+    dmg:"26", weight:"3", ammo:"—",
+    effects:[ "A descarga elétrica salta para inimigos próximos ao acertar — bom contra grupos." ],
+    tip:"Leve e sem gasto de munição — uma das melhores armas corpo a corpo pra carregar o jogo todo." },
+  { tier:"A", name:"Magnum Militar", eng:"Military Magnum", img:"Images/Armas/MagnumMilitar.png", type:"Arma Overworld — Longo Alcance",
+    acquire:"Chance de drop de Capitães da Ordem. Exige Braçadeiras Biométricas para usar.",
+    dmg:"100", weight:"7", ammo:"Munição .357 Magnum",
+    effects:[ "Maior dano por tiro entre as armas de fogo comuns do jogo." ],
+    tip:"Altíssimo dano, mas munição rara — reserve pra alvos grandes, não pra limpar mobs pequenos." },
+  { tier:"B", name:"Espingarda Antiga", eng:"Antique Shotgun", img:"Images/Armas/EspingardaAntiga.png", type:"Arma Overworld — Curto Alcance",
+    acquire:"Encontrada numa cela de contenção da área de Contenção dos Laboratórios.",
+    dmg:"30", weight:"6", ammo:"Chumbo Grosso 12mm",
+    effects:[ "Escopeta clássica de cano duplo — recarrega devagar." ],
+    tip:"Ótima transição de meio de jogo antes de conseguir armas de ciência craftáveis mais fortes." },
+  { tier:"B", name:"Pé de Cabra", eng:"Crowbar", img:"Images/Armas/Pédecabra.png", type:"Corpo a Corpo Pesado — Cortante",
+    acquire:"Encontrado em barris no Shipping, Centro de Mapeamento, Minas ou estação de trem.",
+    dmg:"35", weight:"5", ammo:"—",
+    effects:[ "Também funciona como ferramenta pra forçar portas e caixotes trancados." ],
+    tip:"Serve de arma E ferramenta ao mesmo tempo — vale sempre ter uma no inventário, mesmo tarde no jogo." },
+  { tier:"B", name:"Besta Improvisada", eng:"Makeshift Crossbow", img:"Images/Armas/BestaImprovisada.png", type:"Arma de Ciência — Longo Alcance",
+    acquire:"Craftável com 3x Bola de Elástico + 1x Perna de Mesa + 2x Sucata Plástica + 1x Grampeador.",
+    dmg:"26", weight:"3", ammo:"Virote Improvisado",
+    effects:[ "Disparo silencioso — não alerta inimigos próximos como armas de fogo." ],
+    tip:"A melhor opção pra quem quer jogar furtivo cedo no jogo, bem antes de armas silenciosas melhores." },
+  { tier:"C", name:"Chave Inglesa", eng:"Pipe Wrench", img:"Images/Armas/ChaveInglesa.png", type:"Corpo a Corpo — Contundente",
+    acquire:"Encontrada durante o tutorial, no Shipping, nas Minas, no Particle Lab Nível 2 e outras áreas.",
+    dmg:"12", weight:"2", ammo:"—",
+    effects:[ "Leve, barata de reparar (1x Sucata Metálica) e fácil de achar cedo." ],
+    tip:"Não é a mais forte, mas é a arma de transição perfeita assim que você sai do Cano/Faca iniciais." },
 ];
 
 // ── RENDER PORTAIS ──
@@ -4231,54 +5386,148 @@ if (document.fonts && document.fonts.ready) {
 // ── RENDER HEAL ──
 const healGrid = document.getElementById('heal-grid');
 healData.forEach(h => {
+  const cat = healCats[h.cat];
+  const removesHtml = h.removes.length
+    ? `<div class="heal-removes-row">${h.removes.map(r => `<span class="heal-removes-chip">${r}</span>`).join('')}</div>`
+    : '';
   const card = document.createElement('div');
   card.className = 'heal-card';
-  card.innerHTML = `<div class="heal-item-name">💊 ${h.name}</div><div class="heal-item-desc">${h.desc}</div>`;
+  card.style.borderTopColor = cat.c;
+  card.innerHTML = `
+    <div class="heal-card-head">
+      <div class="heal-item-imgbox" style="border-color:${cat.c}">
+        <img class="heal-item-img" src="${h.img}" alt="${h.name}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="heal-item-fallback" style="display:none">${h.icon}</span>
+      </div>
+      <div class="heal-item-titles">
+        <div class="heal-item-name" style="color:${cat.c}">${h.name}</div>
+        <div class="heal-item-eng">${h.eng}</div>
+        <span class="heal-cat-tag" style="border-color:${cat.c}55;background:${cat.c}18;color:${cat.c}">${cat.label}</span>
+      </div>
+    </div>
+    <div class="heal-card-body">
+      <div class="heal-item-desc">${h.desc}</div>
+      ${removesHtml}
+      <div class="heal-tip" style="border-left-color:${cat.c};background:${cat.c}0f;color:${cat.c}">💡 ${h.tip}</div>
+    </div>
+  `;
   healGrid.appendChild(card);
 });
 
-// ── RENDER ARMOR TIER ──
+// ── RENDER ARMOR TIER LIST ──
 const armorContainer = document.getElementById('armor-tier-container');
-armorTierData.forEach((a, i) => {
-  const item = document.createElement('div');
-  item.className = 'armor-tier-item';
-  item.innerHTML = `
-    <button class="armor-tier-btn" id="abtn-${i}" onclick="toggleArmor(${i})">
-      <span class="armor-tier-badge" style="color:${a.color};border-color:${a.color}66;background:${a.color}18">${a.tier}</span>
-      <span class="armor-tier-name" style="color:${a.color}">${a.name}</span>
-      <span class="armor-tier-tag" style="color:${a.color};border-color:${a.color}44;background:${a.color}14">${a.tag}</span>
-      <span class="armor-tier-arrow" id="aarr-${i}">▼</span>
-    </button>
-    <div class="armor-tier-body" id="abody-${i}">
-      ${a.desc}
-      <div class="armor-set-bonus">▸ ${a.bonus}</div>
+["S","A","B","C"].forEach(t => {
+  const items = armorTierData.filter(a => a.tier === t);
+  if (!items.length) return;
+  const info = armorTiers[t];
+
+  const grid = document.createElement('div');
+  grid.className = 'armor-grid';
+  items.forEach(a => {
+    const bonusHtml = a.bonuses.map(b => `
+      <div class="armor-bonus-row" style="border-left-color:${info.c}">
+        <span class="armor-bonus-pieces" style="color:${info.c}">${b.pieces}:</span> ${b.effect}
+      </div>`).join('');
+    const card = document.createElement('div');
+    card.className = 'armor-card';
+    card.style.borderTopColor = info.c;
+    card.innerHTML = `
+      <div class="armor-imgbox">
+        <img src="${a.img}" alt="${a.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="armor-imgbox-fallback" style="display:none">🛡️</span>
+      </div>
+      <div class="armor-card-body">
+        <div class="armor-name-row">
+          <div>
+            <div class="armor-name" style="color:${info.c}">${a.name}</div>
+            <div class="armor-eng">${a.eng}</div>
+          </div>
+          <span class="armor-role-tag" style="border-color:${info.c}66;color:${info.c};background:${info.c}14">TIER ${a.tier}</span>
+        </div>
+        <div class="armor-acquire">📍 ${a.acquire}</div>
+        <div class="armor-stats-row">
+          <span class="armor-stat-chip">🛡️ Armadura ${a.armor}</span>
+          <span class="armor-stat-chip">⚖️ Peso ${a.weight}</span>
+        </div>
+        <div class="armor-bonus-list">${bonusHtml}</div>
+        <div class="armor-note">${a.note}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const group = document.createElement('div');
+  group.className = 'armor-tier-group';
+  group.innerHTML = `
+    <div class="armor-tier-header">
+      <div class="armor-tier-letter" style="border-color:${info.c};color:${info.c}">${t}</div>
+      <div>
+        <div class="armor-tier-headline" style="color:${info.c}">${info.label}</div>
+        <div class="armor-tier-sub">${items.length} ${items.length > 1 ? 'sets' : 'set'} nesta faixa</div>
+      </div>
     </div>
   `;
-  armorContainer.appendChild(item);
+  group.appendChild(grid);
+  armorContainer.appendChild(group);
 });
 
-function toggleArmor(i) {
-  const body = document.getElementById(`abody-${i}`);
-  const arr = document.getElementById(`aarr-${i}`);
-  body.classList.toggle('open');
-  arr.textContent = body.classList.contains('open') ? '▲' : '▼';
-}
-
-// ── RENDER WEAPONS ──
+// ── RENDER WEAPONS TIER LIST ──
 const weaponsGrid = document.getElementById('weapons-grid');
-weaponsData.forEach(w => {
-  const card = document.createElement('div');
-  card.className = 'weapon-card';
-  card.innerHTML = `
-    <div class="weapon-top">
-      <span class="weapon-icon">${w.icon}</span>
-      <span class="weapon-name">${w.name}</span>
-      <span class="weapon-type-badge">${w.type}</span>
+["S","A","B","C"].forEach(t => {
+  const items = weaponsData.filter(w => w.tier === t);
+  if (!items.length) return;
+  const info = weaponTiers[t];
+
+  const grid = document.createElement('div');
+  grid.className = 'weapons-grid';
+  items.forEach(w => {
+    const effectsHtml = w.effects.map(e => `
+      <div class="weapon-effect-row" style="border-left-color:${info.c}">${e}</div>`).join('');
+    const ammoChip = w.ammo && w.ammo !== "—" ? `<span class="weapon-stat-chip">🔋 ${w.ammo}</span>` : '';
+    const card = document.createElement('div');
+    card.className = 'weapon-card';
+    card.style.borderTopColor = info.c;
+    card.innerHTML = `
+      <div class="weapon-imgbox">
+        <img src="${w.img}" alt="${w.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="weapon-imgbox-fallback" style="display:none">⚔️</span>
+      </div>
+      <div class="weapon-card-body">
+        <div class="weapon-name-row">
+          <div>
+            <div class="weapon-name" style="color:${info.c}">${w.name}</div>
+            <div class="weapon-eng">${w.eng}</div>
+          </div>
+          <span class="weapon-role-tag" style="border-color:${info.c}66;color:${info.c};background:${info.c}14">TIER ${w.tier}</span>
+        </div>
+        <span class="weapon-type-badge">${w.type}</span>
+        <div class="weapon-acquire">📍 ${w.acquire}</div>
+        <div class="weapon-stats-row">
+          <span class="weapon-stat-chip">💥 Dano ${w.dmg}</span>
+          <span class="weapon-stat-chip">⚖️ Peso ${w.weight}</span>
+          ${ammoChip}
+        </div>
+        <div class="weapon-effects-list">${effectsHtml}</div>
+        <div class="weapon-tip">${w.tip}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const group = document.createElement('div');
+  group.className = 'weapon-tier-group';
+  group.innerHTML = `
+    <div class="weapon-tier-header">
+      <div class="weapon-tier-letter" style="border-color:${info.c};color:${info.c}">${t}</div>
+      <div>
+        <div class="weapon-tier-headline" style="color:${info.c}">${info.label}</div>
+        <div class="weapon-tier-sub">${items.length} ${items.length > 1 ? 'armas' : 'arma'} nesta faixa</div>
+      </div>
     </div>
-    <div class="weapon-desc">${w.desc}</div>
-    <div class="weapon-tip">▸ ${w.tip}</div>
   `;
-  weaponsGrid.appendChild(card);
+  group.appendChild(grid);
+  weaponsGrid.appendChild(group);
 });
 
 // ── TROPHY MASTER DATA (ordenado do que merece mais atenção ao menor) ──
@@ -4515,71 +5764,99 @@ function goHome() {
 
 // ══ TRADERS DATA ══
 const tradersData = [
-  { name:"Warren Bunning",   icon:"🔫", type:"FIXO",            typeColor:C.green,  sector:"🏢 Escritório — Plaza perto da Cafeteria",                                   unlock:"Disponível desde o início.",                                                                                                       tip:"Visite frequentemente — inventário atualiza com a progressão. Principal fonte de Gun Repair Kits.",                        items:["Light Gun Repair Kit","Kit de Reparo de Arma Intermediário","Ammo variada","Night Essence → Magnetic Alloy","GATE Keys"] },
-  { name:"O Ferreiro",   icon:"⚒️", type:"FIXO",            typeColor:C.green,  sector:"🏭 Manufacturing West — área principal",                                      unlock:"Encontrado explorando o Manufacturing West.",                                                                                       tip:"Tem componentes do Síncrotron — essencial para acessar Laboratórios Cascata. Farme Peccary/Exor para materiais de troca.",        items:["Reinforced Hose","Optic Lens","CPU de Robô de Segurança","Fire Proximity Suit","Cement Bag","Componentes raros"] },
-  { name:"Grayson",          icon:"🩹", type:"ITINERANTE",      typeColor:C.amber,  sector:"🏭 Primeiro encontro: ferido perto do forklift no caminho para Manufacturing", unlock:"⚠️ CRÍTICO: Use um Bandage nele quando ferido. Sem isso ele NÃO se torna trader.",                                            tip:"Primeira fonte renovável de ammo. Visita sua base em dias alternados.",                                                     items:["Ammo diversa","Kit de Reparo de Arma Intermediário","Itens militares variados"] },
-  { name:"Marion",           icon:"🎬", type:"ITINERANTE",      typeColor:C.amber,  sector:"🌀 Flathill (video store) → vaga pela Facility",                              unlock:"Complete Flathill.",                                                                                                                tip:"Único vendedor de Espingarda Antigas e Gravity Dampeners após os originais. Visita Cacophonous Crate scarecrows.",            items:["Espingarda Antiga","Gravity Dampener","Cacophonous Crate Keys","Itens de portais"] },
-  { name:"Dr. Carson",       icon:"🍳", type:"ITINERANTE",      typeColor:C.amber,  sector:"🔒 Desbloqueada no Setor Segurança. Visita cozinhas e sua base.",              unlock:"Visite o Setor Segurança. Pode precisar de Bancada do Chef na base.",                                                           tip:"Única fonte do Carson Family Cookbook — item placeable que dá buff de área de XP em Cooking.",                             items:["Carson Family Cookbook","Receitas especiais","Ingredientes raros"] },
-  { name:"Dr. Thule",        icon:"🔬", type:"PÓS-JOGO",        typeColor:C.purple, sector:"🏢 Escritório — Cafeteria (após Albatross)",                                  unlock:"Complete o Albatross Portal World.",                                                                                                tip:"Aparece apenas após o fim da história. Vende itens exclusivos de pós-jogo.",                                               items:["Itens de pós-jogo","Upgrades avançados","Componentes raros"] },
-  { name:"Quantum Exchanger", icon:"⚡",type:"MÁQUINA FIXA",    typeColor:C.cyan,   sector:"📍 Escritório + Flathill (só após Reatores) + Corn Syrup (Anti-Fungal Gelatin)",unlock:"Flathill: após os Reatores. Corn Syrup: requer Anti-Fungal Gelatin de Village Den.",                                          tip:"Drop os itens na calha de entrada. Ótimo para trocar recursos abundantes por escassos de setor específico.",               items:["Recursos de troca por localização","Purified Corn (Corn Syrup)","Recursos exclusivos de Flathill"] },
+  { name:"Warren Bunning",   icon:"🔫", role:"Oficial de Segurança",     img:"Images/Traders/Warren.webp",           type:"FIXO",            typeColor:C.green,  sector:"🏢 Escritório — Plaza perto da Cafeteria",                                   unlock:"Disponível desde o início.",                                                                                                       tip:"Visite frequentemente — inventário atualiza com a progressão. Principal fonte de Gun Repair Kits.",                        vende:"GATE Security Keys, Ligas Magnéticas e Kits de Reparo — em troca de Essências, Sementes raras e itens de portal.", items:["Light Gun Repair Kit","Kit de Reparo de Arma Intermediário","Ammo variada","Night Essence → Magnetic Alloy","GATE Keys"], fala:"Munição, chaves de segurança e kits de reparo de arma — é o que tenho de sobra por aqui. Traga essências raras e eu vejo o que consigo liberar." },
+  { name:"O Ferreiro",   icon:"⚒️", role:"Engenheiro do F.O.R.G.E.",      img:"Images/Traders/Ferreiro.webp",         type:"FIXO",            typeColor:C.green,  sector:"🏭 Manufacturing West — área principal",                                      unlock:"Encontrado explorando o Manufacturing West.",                                                                                       tip:"Tem componentes do Síncrotron — essencial para acessar Laboratórios Cascata. Farme Peccary/Exor para materiais de troca.",        vende:"As três peças do Síncrotron (Optic Lens, Diode, Fibre Optic Cable) por componentes industriais e sucata.", items:["Reinforced Hose","Optic Lens","CPU de Robô de Segurança","Fire Proximity Suit","Cement Bag","Componentes raros"], fala:"Preciso de sucata e componentes industriais. Em troca, libero peças pro seu Síncrotron e equipamento resistente ao calor." },
+  { name:"Grayson",          icon:"🩹", role:"Ex-Militar Ferido",         img:"Images/Traders/Grayson.webp",          type:"ITINERANTE",      typeColor:C.amber,  sector:"🏭 Primeiro encontro: ferido perto do forklift no caminho para Manufacturing", unlock:"⚠️ CRÍTICO: Use um Bandage nele quando ferido. Sem isso ele NÃO se torna trader.",                                            tip:"Primeira fonte renovável de ammo. Visita sua base em dias alternados.",                                                     vende:"Munição diversa e Kits de Reparo de Arma — a primeira fonte renovável de ammo do jogo.", items:["Ammo diversa","Kit de Reparo de Arma Intermediário","Itens militares variados"], fala:"Você me ajudou, agora eu ajudo você. Sempre que eu passar por aqui, trago munição e o que sobrar do meu equipamento militar." },
+  { name:"Marion",           icon:"🎬", role:"Dona da Locadora",          img:"Images/Traders/Marion.webp",           type:"ITINERANTE",      typeColor:C.amber,  sector:"🌀 Flathill (video store) → vaga pela Facility",                              unlock:"Complete Flathill.",                                                                                                                tip:"Único vendedor de Espingarda Antigas e Gravity Dampeners após os originais. Visita Cacophonous Crate scarecrows.",            vende:"Espingarda Antiga, Gravity Dampener e chaves de Cacophonous Crate.", items:["Espingarda Antiga","Gravity Dampener","Cacophonous Crate Keys","Itens de portais"], fala:"Tenho relíquias que ninguém mais vende — armas de outra época, equipamentos de gravidade e as chaves pros meus caixotes barulhentos." },
+  { name:"Dr. Carson",       icon:"🍳", role:"Chef Itinerante",           img:"Images/Traders/Carson.webp",           type:"ITINERANTE",      typeColor:C.amber,  sector:"🔒 Desbloqueada no Setor Segurança. Visita cozinhas e sua base.",              unlock:"Visite o Setor Segurança. Pode precisar de Bancada do Chef na base.",                                                           tip:"Única fonte do Carson Family Cookbook — item placeable que dá buff de área de XP em Cooking.",                             vende:"O Carson Family Cookbook e receitas/ingredientes especiais de cozinha.", items:["Carson Family Cookbook","Receitas especiais","Ingredientes raros"], fala:"Nada como uma boa receita pra manter o moral lá em cima. Trago temperos difíceis de achar e um livro de família que vale a pena guardar." },
+  { name:"Dr. Thule",        icon:"🔬", role:"Cientista de Pós-Jogo",     img:"Images/Traders/Thule.webp",            type:"PÓS-JOGO",        typeColor:C.purple, sector:"🏢 Escritório — Cafeteria (após Albatross)",                                  unlock:"Complete o Albatross Portal World.",                                                                                                tip:"Aparece apenas após o fim da história. Vende itens exclusivos de pós-jogo.",                                               vende:"Itens e upgrades exclusivos, liberados só após o Albatross Portal World.", items:["Itens de pós-jogo","Upgrades avançados","Componentes raros"], fala:"Só converso com quem já viu o outro lado do portal. Tenho upgrades e componentes que não deveriam existir deste lado da realidade." },
+  { name:"Quantum Exchanger", icon:"⚡",role:"Máquina de Troca Automática",img:"Images/Traders/QuantumExchanger.webp",type:"MÁQUINA FIXA",    typeColor:C.cyan,   sector:"📍 Escritório + Flathill (só após Reatores) + Corn Syrup (Anti-Fungal Gelatin)",unlock:"Flathill: após os Reatores. Corn Syrup: requer Anti-Fungal Gelatin de Village Den.",                                          tip:"Drop os itens na calha de entrada. Ótimo para trocar recursos abundantes por escassos de setor específico.",               vende:"Troca automática de recursos abundantes por escassos, por localização — sem diálogo.", items:["Recursos de troca por localização","Purified Corn (Corn Syrup)","Recursos exclusivos de Flathill"], fala:"[TERMINAL AUTOMÁTICO — SEM VOZ] Deposite o excesso na calha. O sistema calcula e devolve o que é escasso nesta localização." },
 ];
+
+// Constrói o card de um trader no estilo terminal GATE: hazard-stripe +
+// cabeçalho com LED de status, e medalhão circular grande sobreposto
+// (avatar-badge) + imagem PNG maior que o círculo, com overflow visível —
+// se o PNG existir e tiver fundo transparente com o busto/rosto desenhado
+// perto do topo, ele "sai" pra cima da borda do círculo, sobre o cabeçalho.
+// Se o arquivo em Images/Traders/ não existir, onerror troca pro emoji
+// grande dentro do próprio círculo (fallback sempre visível, nunca quebra o layout).
+// No detalhe expandido, em vez de listar os itens literalmente, usa o
+// campo `fala` — uma linha curta na voz do próprio trader descrevendo o
+// TIPO de coisa que ele negocia (o array `items` continua nos dados,
+// só não é mais renderizado como chips).
+function traderCardHtml(t, idx) {
+  return `
+    <div class="trader-card" style="border-color:${t.typeColor}55">
+      <div class="trader-hazard-stripe" style="--stripe-color:${t.typeColor}"></div>
+      <div class="trader-term-header">
+        <span><span class="trader-led" style="background:${t.typeColor};box-shadow:0 0 7px ${t.typeColor}"></span>UNIT-${String(idx+1).padStart(2,'0')}</span>
+        <span style="color:${t.typeColor}">${t.type}</span>
+      </div>
+      <div class="trader-avatar-badge" style="border-color:${t.typeColor};color:${t.typeColor}">
+        <img class="trader-avatar-img" src="${t.img}" alt="${t.name}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="trader-avatar-fallback" style="display:none">${t.icon}</div>
+      </div>
+      <div class="trader-card-body">
+        <span class="trader-type-badge" style="border-color:${t.typeColor}55;background:${t.typeColor}18;color:${t.typeColor}">${t.type}</span>
+        <div class="trader-name" style="color:${t.typeColor}">${t.name}</div>
+        <div class="trader-role">${t.role}</div>
+        <div class="trader-vende" style="border-left-color:${t.typeColor}">• ${t.vende}</div>
+        <div class="trader-sector">📍 ${t.sector.replace(/^[^ ]+ /, '')}</div>
+        <button class="trader-expand-btn" onclick="toggleTraderCard(${idx})">▼ Ver detalhes</button>
+        <div class="trader-card-detail" id="trader-detail-${idx}" hidden>
+          <div style="margin-bottom:6px"><span style="color:${t.unlock.startsWith('⚠️')?C.red:C.green};font-size:var(--fs-xs);letter-spacing:1px">DESBLOQUEIO:</span> ${t.unlock}</div>
+          <div style="margin-bottom:10px"><span style="color:${C.amber};font-size:var(--fs-xs);letter-spacing:1px">DICA:</span> ${t.tip}</div>
+          <div style="font-size:var(--fs-xs);color:var(--green);letter-spacing:2px;margin-bottom:5px">// O QUE ELE(A) NEGOCIA</div>
+          <div class="trader-voice-line" style="border-left-color:${t.typeColor}">💬 “${t.fala}”</div>
+        </div>
+      </div>
+    </div>`;
+}
 
 function renderTraders() {
   const el = document.getElementById('traders-list');
   if (!el) return;
-  tradersData.forEach(t => {
-    const itemsHtml = t.items.map(it => `<span style="font-size:var(--fs-xs);padding:1px 7px;border:1px solid ${t.typeColor}33;background:${t.typeColor}0d;color:${t.typeColor};margin:2px 2px 2px 0;display:inline-block">${it}</span>`).join('');
-    const div = document.createElement('div');
-    div.style.cssText = `background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${t.typeColor};margin-bottom:8px;overflow:hidden`;
-    div.innerHTML = `
-      <div style="padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px" onclick="var b=this.nextElementSibling;b.style.display=b.style.display==='block'?'none':'block';this.querySelector('.tarr').textContent=b.style.display==='block'?'▲':'▼'">
-        <span style="font-size:var(--fs-4xl);flex-shrink:0">${t.icon}</span>
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
-            <span style="font-size:var(--fs-lg);color:${t.typeColor};font-weight:bold">${t.name}</span>
-            <span style="font-size:var(--fs-2xs);padding:1px 7px;border:1px solid ${t.typeColor}55;background:${t.typeColor}18;color:${t.typeColor};letter-spacing:1px">${t.type}</span>
-          </div>
-          <div style="font-size:var(--fs-sm);color:var(--textDim)">${t.sector}</div>
-        </div>
-        <span class="tarr" style="color:var(--textMuted);flex-shrink:0">▼</span>
-      </div>
-      <div style="display:none;padding:12px 14px;border-top:1px solid var(--border);font-size:var(--fs-sm);color:var(--textDim);line-height:1.8">
-        <div style="margin-bottom:6px"><span style="color:${t.unlock.startsWith('⚠️')?C.red:C.green};font-size:var(--fs-xs);letter-spacing:1px">DESBLOQUEIO:</span> ${t.unlock}</div>
-        <div style="margin-bottom:10px"><span style="color:${C.amber};font-size:var(--fs-xs);letter-spacing:1px">DICA:</span> ${t.tip}</div>
-        <div style="font-size:var(--fs-xs);color:var(--green);letter-spacing:2px;margin-bottom:5px">// ITENS</div>
-        <div>${itemsHtml}</div>
-      </div>`;
-    el.appendChild(div);
-  });
+  el.innerHTML = tradersData.map((t, idx) => traderCardHtml(t, idx)).join('');
 }
+
+function toggleTraderCard(idx) {
+  const detail = document.getElementById(`trader-detail-${idx}`);
+  const btn = detail.previousElementSibling;
+  const isOpen = !detail.hidden;
+  detail.hidden = isOpen;
+  btn.textContent = isOpen ? '▼ Ver detalhes' : '▲ Fechar';
+}
+
 renderTraders();
 
 // ══ SOUPS DATA ══
 const soupsData = [
-  { name:"Bland Pea Soup",         icon:"🫛", cat:"SKILL XP",    catColor:C.cyan,   ingredients:"1× Canned Peas + 1× Salt",                                          hunger:20, thirst:20, effect:"Lightfooted",               effectDesc:"XP de Sprint aumentado" },
-  { name:"Sustenance Soup",        icon:"🎖️", cat:"SKILL XP",    catColor:C.cyan,   ingredients:"1× Military M.R.E.",                                                hunger:20, thirst:20, effect:"Quick Reflexes",             effectDesc:"XP de Recarga aumentado" },
-  { name:"Ensopado Balanceado",          icon:"🧠", cat:"SKILL XP",    catColor:C.cyan,   ingredients:"1× Raw Carbuncle + 1× Carbuncle Mushroom + 1× Salt",                hunger:13, thirst:17, effect:"Big Brain",                  effectDesc:"XP de Crafting e Construção aumentado" },
-  { name:"A&L Mega Stew",          icon:"💪", cat:"SKILL XP",    catColor:C.cyan,   ingredients:"1× Exor Arm + 1× Raw Alien Drumstick + 1× Coração de Exor Cru",          hunger:37, thirst:16, effect:"Mega-Ante",                  effectDesc:"XP de Força fortemente aumentado" },
-  { name:"Meaty Stew",             icon:"🥩", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Peccary Chop + 1× Raw Alien Drumstick + 1× Raw Pest Rump",       hunger:40, thirst:22, effect:"Heightened Senses",          effectDesc:"Percepção aumentada — detecta inimigos mais longe" },
-  { name:"Pest Goulash",           icon:"🐛", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Raw Pest + 1× Raw Pest Rump + 1× Salt",                          hunger:30, thirst:10, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
-  { name:"Potato and Sausage Stew",icon:"🥔", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Raw Peccary Sausages + 1× Potato",                               hunger:30, thirst:18, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
-  { name:"Hearty Stew",            icon:"❤️", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Coração de Exor Cru + 1× Carbuncle Mushroom + 1× Super Tomato",       hunger:23, thirst:23, effect:"Bodacious + Souper Satisfied",effectDesc:"Duplo buff: fome lenta + bônus de combate" },
-  { name:"Simple Tomato Soup",     icon:"🍅", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Super Tomato + 1× Salt",                                         hunger:15, thirst:35, effect:"Souper Satisfied",           effectDesc:"Alta hidratação, fome drena devagar" },
-  { name:"Pumpkin Soup",           icon:"🎃", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Pumpkin + 1× Milk Sac + 1× Salt",                                hunger:21, thirst:25, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
-  { name:"Creamy Corn Soup",       icon:"🌽", cat:"SOBREVIVÊNCIA",catColor:C.green,  ingredients:"1× Purified Corn + 1× Milk Sac + 1× Salt",                          hunger:32, thirst:27, effect:"Souper Satisfied",           effectDesc:"Alta fome e fome drena devagar" },
-  { name:"Radish Chowder",         icon:"🐟", cat:"RESISTÊNCIA",  catColor:C.amber,  ingredients:"1× Raw Radfish Filet + 1× Potato + 1× Canned Peas",                 hunger:23, thirst:22, effect:"Rad Resistant + Souper Satisfied",effectDesc:"⭐ Reduz dano de radiação — essencial nos Reatores" },
-  { name:"Glacial Gazpacho",       icon:"🧊", cat:"RESISTÊNCIA",  catColor:C.amber,  ingredients:"1× Raw Frigid Queenfish Filet + 1× Pumpkin + 1× Greyeb",            hunger:30, thirst:25, effect:"Brain Freeze",               effectDesc:"Resistência ao frio — útil em Voussoir e zonas árticas" },
-  { name:"Greyeb Chowder",         icon:"👁️", cat:"RESISTÊNCIA",  catColor:C.amber,  ingredients:"1× Greyeb + 1× Milk Sac + 1× Potato",                              hunger:12, thirst:42, effect:"Desire of the Flesh",        effectDesc:"Efeito especial de entidade — alta hidratação" },
-  { name:"Portal Fish Stew",       icon:"🌀", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Portal Fish Filet + 1× Potato + 1× Tomato",                  hunger:21, thirst:24, effect:"Super Satisfied",            effectDesc:"Versão melhorada de Souper Satisfied" },
-  { name:"Lunar Bisque",           icon:"🌙", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Moon Fish Filet + 1× Coração de Exor Cru + 1× Carbuncle Mushroom", hunger:23, thirst:17, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
-  { name:"Anteverse Gumbo",        icon:"🎣", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Antefish Filet + 1× Raw Peccary Sausages + 1× Potato",        hunger:25, thirst:17, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
-  { name:"Harmonious Rice",        icon:"🎼", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Chordfish Fillet + 1× Milk Sac + 1× Xanterium Rice",          hunger:25, thirst:31, effect:"Souper Satisfied",           effectDesc:"Alta fome e hidratação combinadas" },
-  { name:"Inky Egg Drop Soup",     icon:"🦑", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Inkfish Filet + 1× Egg + 1× Carbuncle Mushroom",              hunger:23, thirst:22, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
-  { name:"Reservoir Reserve",      icon:"🌊", cat:"PEIXE",        catColor:C.purple, ingredients:"1× Raw Darkwater Fish Filet + 1× Murkweed + 1× Greyeb",              hunger:21, thirst:25, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
-  { name:"Sweet Porridge",         icon:"🍯", cat:"ESPECIAL",     catColor:C.steel,  ingredients:"1× Melted Ice Cream + 1× Anteverse Wheat",                          hunger:20, thirst:20, effect:"Sweet Tooth",                effectDesc:"Efeito especial de doce" },
-  { name:"Sugary Slop",            icon:"🍩", cat:"ESPECIAL",     catColor:C.steel,  ingredients:"1× Doznuts + 1× Jowlers + 1× Skip",                                 hunger:20, thirst:20, effect:"Sugar High",                 effectDesc:"Boost temporário de energia/stamina" },
-  { name:"Veggie Stew",            icon:"🥦", cat:"ESPECIAL",     catColor:C.steel,  ingredients:"1× Potato + 1× Anteverse Wheat + 1× Super Tomato",                  hunger:20, thirst:20, effect:"Living Off the Land",        effectDesc:"Buff de agricultura e coleta de recursos" },
-  { name:"Witching Hour Brew",     icon:"🌑", cat:"ESPECIAL",     catColor:C.steel,  ingredients:"1× Raw Penumbra Filet + 1× Glow Eye + 1× Carbuncle",                 hunger:20, thirst:20, effect:"Efeito noturno especial",    effectDesc:"Buff exclusivo para exploração noturna" },
+  { name:"Sopa de Ervilha Insossa",     nameEn:"Bland Pea Soup",       icon:"🫛", cat:"XP E HABILIDADES",    catColor:C.cyan,   ingredients:"1× Canned Peas + 1× Salt",                                          mix:["canned_peas","salt"],                                         hunger:12, thirst:21, effect:"Lightfooted",               effectDesc:"XP de Sprint aumentado" },
+  { name:"Sopa de Sustento",            nameEn:"Sustenance Soup",      icon:"🎖️", cat:"XP E HABILIDADES",    catColor:C.cyan,   ingredients:"1× Military M.R.E.",                                                mix:["military_mre"],                                               hunger:18, thirst:16, effect:"Quick Reflexes",             effectDesc:"XP de Recarga aumentado" },
+  { name:"Ensopado Balanceado",         nameEn:"Balanced Stew",        icon:"🧠", cat:"XP E HABILIDADES",    catColor:C.cyan,   ingredients:"1× Raw Carbuncle + 1× Carbuncle Mushroom + 1× Salt",                mix:["raw_carbuncle","carbuncle_mushroom","salt"],                  hunger:13, thirst:17, effect:"Big Brain",                  effectDesc:"XP de Crafting e Construção aumentado" },
+  { name:"A&L Mega-Ensopado",           nameEn:"A&L Mega-Stew",        icon:"💪", cat:"COMBATE",    catColor:C.red,   ingredients:"1× Exor Arm + 1× Raw Alien Drumstick + 1× Coração de Exor Cru",     mix:["exor_arm","raw_alien_drumstick","raw_exor_heart"],            hunger:37, thirst:16, effect:"Mega-Ante",                  effectDesc:"XP de Força fortemente aumentado" },
+  { name:"Ensopado de Carne",           nameEn:"Meaty Stew",           icon:"🥩", cat:"XP E HABILIDADES",catColor:C.cyan,  ingredients:"1× Peccary Chop + 1× Raw Alien Drumstick + 1× Raw Pest Rump",       mix:["peccary_chop","raw_alien_drumstick","raw_pest_rump"],         hunger:26, thirst:16, effect:"Heightened Senses",          effectDesc:"Percepção aumentada — detecta inimigos mais longe" },
+  { name:"Goulash de Praga",            nameEn:"Pest Goulash",         icon:"🐛", cat:"NECESSIDADES BÁSICAS",catColor:C.green,  ingredients:"1× Raw Pest + 1× Raw Pest Rump + 1× Salt",                          mix:["raw_pest","raw_pest_rump","salt"],                            hunger:14, thirst:16, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
+  { name:"Ensopado de Batata e Salsicha",nameEn:"Potato and Sausage Stew",icon:"🥔", cat:"NECESSIDADES BÁSICAS",catColor:C.green, ingredients:"1× Raw Peccary Sausages + 1× Potato",                              mix:["raw_peccary_sausages","potato"],                              hunger:20, thirst:17, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
+  { name:"Ensopado Substancioso",       nameEn:"Hearty Stew",          icon:"❤️", cat:"COLETA E ATIVIDADES",catColor:C.bronze,  ingredients:"1× Coração de Exor Cru + 1× Carbuncle Mushroom + 1× Super Tomato", mix:["raw_exor_heart","carbuncle_mushroom","super_tomato"],         hunger:23, thirst:23, effect:"Bodacious",                  effectDesc:"Bônus de combate (efeito Bodacious)" },
+  { name:"Sopa de Tomate Simples",      nameEn:"Simple Tomato Soup",   icon:"🍅", cat:"NECESSIDADES BÁSICAS",catColor:C.green,  ingredients:"1× Tomato + 1× Salt",                                               mix:["tomato","salt"],                                              hunger:12, thirst:22, effect:"Souper Satisfied",           effectDesc:"Alta hidratação, fome drena devagar" },
+  { name:"Sopa de Super Tomate",        nameEn:"Super Tomato Soup",    icon:"🍅", cat:"NECESSIDADES BÁSICAS",catColor:C.green,  ingredients:"1× Super Tomato + 1× Salt",                                         mix:["super_tomato","salt"],                                        hunger:15, thirst:22, effect:"Souper Satisfied",           effectDesc:"Alta hidratação, fome drena devagar" },
+  { name:"Sopa de Abóbora",             nameEn:"Pumpkin Soup",         icon:"🎃", cat:"NECESSIDADES BÁSICAS",catColor:C.green,  ingredients:"1× Pumpkin + 1× Milk Sac + 1× Salt",                                mix:["pumpkin","milk_sac","salt"],                                  hunger:21, thirst:25, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
+  { name:"Sopa Cremosa de Milho",       nameEn:"Creamy Corn Soup",     icon:"🌽", cat:"NECESSIDADES BÁSICAS",catColor:C.green,  ingredients:"1× Purified Corn + 1× Milk Sac + 1× Salt",                          mix:["purified_corn","milk_sac","salt"],                            hunger:32, thirst:27, effect:"Souper Satisfied",           effectDesc:"Alta fome e fome drena devagar" },
+  { name:"Caldeirada de Radfish",       nameEn:"Radfish Chowder",      icon:"🐟", cat:"RESISTÊNCIAS AMBIENTAIS",  catColor:C.amber,  ingredients:"1× Raw Radfish Filet + 1× Potato + 1× Canned Peas",                 mix:["raw_radfish_filet","potato","canned_peas"],                   hunger:23, thirst:22, effect:"Rad Resistant + Souper Satisfied",effectDesc:"⭐ Reduz dano de radiação — essencial nos Reatores" },
+  { name:"Gazpacho Glacial",            nameEn:"Glacial Gazpacho",     icon:"🧊", cat:"RESISTÊNCIAS AMBIENTAIS",  catColor:C.amber,  ingredients:"1× Raw Frigid Queenfish Filet + 1× Pumpkin + 1× Greyeb",            mix:["raw_frigid_queenfish_filet","pumpkin","greyeb"],              hunger:30, thirst:25, effect:"Brain Freeze",               effectDesc:"Resistência ao frio — útil em Voussoir e zonas árticas" },
+  { name:"Caldeirada de Greyeb",        nameEn:"Greyeb Chowder",       icon:"👁️", cat:"CRIATURAS E COMPORTAMENTO DO MUNDO",  catColor:C.purple,  ingredients:"1× Greyeb + 1× Milk Sac + 1× Potato",                              mix:["greyeb","milk_sac","potato"],                                 hunger:12, thirst:42, effect:"Desire of the Flesh",        effectDesc:"Efeito especial de entidade — alta hidratação" },
+  { name:"Ensopado de Peixe-Portal",    nameEn:"Portal Fish Stew",     icon:"🌀", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Portal Fish Filet + 1× Potato + 1× Tomato",                  mix:["raw_portal_fish_filet","potato","tomato"],                    hunger:21, thirst:24, effect:"Souper Satisfied",           effectDesc:"Barra de fome drena mais devagar" },
+  { name:"Bisque Lunar",                nameEn:"Lunar Bisque",         icon:"🌙", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Moon Fish Filet + 1× Coração de Exor Cru + 1× Carbuncle Mushroom", mix:["raw_moon_fish_filet","raw_exor_heart","carbuncle_mushroom"],  hunger:23, thirst:17, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
+  { name:"Gumbo Anteverso",             nameEn:"Anteverse Gumbo",      icon:"🎣", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Antefish Filet + 1× Raw Peccary Sausages + 1× Potato",       mix:["raw_antefish_filet","raw_peccary_sausages","potato"],         hunger:25, thirst:17, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
+  { name:"Arroz Harmonioso",            nameEn:"Harmonious Rice",      icon:"🎼", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Chordfish Fillet + 1× Milk Sac + 1× Xanterium Rice",         mix:["raw_chordfish_filet","milk_sac","xanterium_rice"],            hunger:25, thirst:31, effect:"Souper Satisfied",           effectDesc:"Alta fome e hidratação combinadas" },
+  { name:"Sopa de Ovo com Tinta",       nameEn:"Inky Egg Drop Soup",   icon:"🦑", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Inkfish Filet + 1× Egg + 1× Carbuncle Mushroom",             mix:["raw_inkfish_filet","egg","carbuncle_mushroom"],               hunger:23, thirst:22, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
+  { name:"Reserva do Reservatório",     nameEn:"Reservoir Reserve",    icon:"🌊", cat:"NECESSIDADES BÁSICAS",        catColor:C.green, ingredients:"1× Raw Darkwater Fish Filet + 1× Murkweed + 1× Greyeb",             mix:["raw_darkwater_fish_filet","murkweed","greyeb"],               hunger:21, thirst:25, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
+  { name:"Mingau Doce",                 nameEn:"Sweet Porridge",       icon:"🍯", cat:"EFEITOS ESPECIAIS/ÚNICOS",     catColor:C.platinum,  ingredients:"1× Melted Ice Cream + 1× Anteverse Wheat",                          mix:["melted_ice_cream","anteverse_wheat"],                         hunger:10, thirst:24, effect:"Sweet Tooth",                effectDesc:"Efeito especial de doce" },
+  { name:"Rango Açucarado",             nameEn:"Sugary Slop",          icon:"🍩", cat:"DEBUFFS/EFEITOS NEGATIVOS",     catColor:C.amberLt,  ingredients:"1× Doznuts + 1× Jowlers + 1× Skip",                                 mix:["doznuts","jowlers","skip"],                                   hunger:18, thirst:17, effect:"Sugar High",                 effectDesc:"Boost temporário de energia/stamina" },
+  { name:"Ensopado de Vegetais",        nameEn:"Veggie Stew",          icon:"🥦", cat:"XP E HABILIDADES",     catColor:C.cyan,  ingredients:"1× Potato + 1× Anteverse Wheat + 1× Super Tomato",                  mix:["potato","anteverse_wheat","super_tomato"],                    hunger:17, thirst:24, effect:"Living Off the Land",        effectDesc:"Buff de agricultura e coleta de recursos" },
+  { name:"Poção da Hora das Bruxas",    nameEn:"Witching Hour Brew",   icon:"🌑", cat:"NECESSIDADES BÁSICAS",     catColor:C.green,  ingredients:"1× Raw Penumbra Filet + 1× Glow Eye + 1× Carbuncle Mushroom",       mix:["raw_penumbra_filet","glow_eye","carbuncle_mushroom"],         hunger:42, thirst:17, effect:"Souper Satisfied",           effectDesc:"Fome drena mais devagar" },
 ];
 
 const soupCats = [...new Set(soupsData.map(s => s.cat))];
@@ -4601,24 +5878,176 @@ function renderSoups() {
   listEl.innerHTML='';
   filtered.forEach(s=>{
     const div=document.createElement('div');
-    div.style.cssText=`background:var(--bgCard);border:1px solid var(--border);border-left:3px solid ${s.catColor};margin-bottom:6px;padding:12px 14px`;
+    div.className='food-card';
+    div.style.borderColor='var(--border)';
+    div.onmouseenter=()=>{div.style.borderColor=s.catColor;};
+    div.onmouseleave=()=>{div.style.borderColor='var(--border)';};
     div.innerHTML=`
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
-        <span style="font-size:var(--fs-2xl)">${s.icon}</span>
-        <span style="font-size:var(--fs-md);color:${s.catColor};font-weight:bold">${s.name}</span>
-        <span style="font-size:var(--fs-2xs);padding:1px 6px;border:1px solid ${s.catColor}44;background:${s.catColor}14;color:${s.catColor};letter-spacing:1px">${s.cat}</span>
+      <div class="food-card-tag" style="color:${s.catColor}">🍲 ${s.cat}</div>
+      <div class="food-image-wrapper">
+        <div class="food-oval-platform" style="background:radial-gradient(ellipse at center, ${s.catColor}55 0%, transparent 75%); border-bottom-color:${s.catColor}"></div>
+        <span class="food-icon-big">${s.icon}</span>
       </div>
-      <div style="font-size:var(--fs-sm);color:var(--textDim);margin-bottom:5px"><span style="color:var(--green)">INGREDIENTES:</span> ${s.ingredients}</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:4px">
-        <span style="font-size:var(--fs-xs);color:var(--amber)">🍖 Fome +${s.hunger}</span>
-        <span style="font-size:var(--fs-xs);color:var(--cyan)">💧 Sede +${s.thirst}</span>
-        <span style="font-size:var(--fs-xs);color:${s.catColor}">✨ ${s.effect}</span>
+      <h3 class="food-title">${s.name}</h3>
+      <div class="food-title-en">${s.nameEn}</div>
+      <div class="food-stats-row">
+        <span class="food-stat-hunger">🍖 +${s.hunger} FOME</span>
+        <span class="food-stat-thirst">💧 +${s.thirst} SEDE</span>
       </div>
-      <div style="font-size:var(--fs-xs);color:var(--textMuted);font-style:italic">${s.effectDesc}</div>`;
+      <div class="food-effects-box">
+        <div class="food-section-label">EFEITO</div>
+        <span class="food-effect-tag" style="color:${s.catColor};border-color:${s.catColor}44;background:${s.catColor}14">✨ ${s.effect}</span>
+        <div class="food-effect-desc">${s.effectDesc}</div>
+      </div>
+      <div class="food-ingredients-box" style="border-left-color:${s.catColor}">
+        <div class="food-section-label">INGREDIENTES</div>
+        ${s.ingredients}
+      </div>`;
     listEl.appendChild(div);
   });
 }
 renderSoups();
+
+// ══ SOUP LAB — LABORATÓRIO DE SOPAS ══
+// Catálogo de ingredientes clicáveis. As chaves batem exatamente com o
+// campo mix[] de cada soupsData[i], que já foi extraído do texto real de
+// 'ingredients' de cada receita — nenhum dado novo foi inventado aqui.
+const soupIngredientCatalog = [
+  { key:"canned_peas",              label:"Ervilhas em Lata",                    icon:"🫛", img:null },
+  { key:"salt",                     label:"Sal",                                 icon:"🧂", img:null },
+  { key:"military_mre",             label:"Ração Militar (M.R.E.)",              icon:"🎖️", img:null },
+  { key:"raw_carbuncle",            label:"Carbúnculo Cru",                      icon:"🦀", img:null },
+  { key:"carbuncle_mushroom",       label:"Cogumelo de Carbúnculo",              icon:"🍄", img:null },
+  { key:"exor_arm",                 label:"Braço de Exor",                       icon:"🦾", img:null },
+  { key:"raw_alien_drumstick",      label:"Coxa de Alien Crua",                  icon:"🍗", img:null },
+  { key:"raw_exor_heart",           label:"Coração de Exor Cru",                 icon:"❤️", img:null },
+  { key:"peccary_chop",             label:"Costela de Pecari",                   icon:"🥩", img:null },
+  { key:"raw_pest_rump",            label:"Anca de Praga Crua",                  icon:"🐛", img:null },
+  { key:"raw_pest",                 label:"Praga Crua",                          icon:"🪳", img:null },
+  { key:"raw_peccary_sausages",     label:"Linguiça de Pecari Crua",             icon:"🌭", img:null },
+  { key:"potato",                   label:"Batata",                              icon:"🥔", img:null },
+  { key:"super_tomato",             label:"Super Tomate",                        icon:"🍅", img:null },
+  { key:"milk_sac",                 label:"Bolsa de Leite",                      icon:"🥛", img:null },
+  { key:"pumpkin",                  label:"Abóbora",                             icon:"🎃", img:null },
+  { key:"purified_corn",            label:"Milho Purificado",                    icon:"🌽", img:null },
+  { key:"raw_radfish_filet",        label:"Filé de Radfish Cru",                 icon:"🐟", img:null },
+  { key:"raw_frigid_queenfish_filet",label:"Filé de Queenfish Glacial Cru",      icon:"🧊", img:null },
+  { key:"greyeb",                   label:"Greyeb",                              icon:"👁️", img:null },
+  { key:"raw_portal_fish_filet",    label:"Filé de Peixe-Portal Cru",            icon:"🌀", img:null },
+  { key:"tomato",                   label:"Tomate",                              icon:"🍎", img:null },
+  { key:"raw_moon_fish_filet",      label:"Filé de Peixe-Lunar Cru",             icon:"🌙", img:null },
+  { key:"raw_antefish_filet",       label:"Filé de Antefish Cru",                icon:"🎣", img:null },
+  { key:"raw_chordfish_filet",      label:"Filé de Chordfish Cru",               icon:"🎻", img:null },
+  { key:"xanterium_rice",           label:"Arroz de Xanterium",                  icon:"🍚", img:null },
+  { key:"raw_inkfish_filet",        label:"Filé de Inkfish Cru",                 icon:"🦑", img:null },
+  { key:"egg",                      label:"Ovo",                                 icon:"🥚", img:null },
+  { key:"raw_darkwater_fish_filet", label:"Filé de Peixe das Águas Escuras Cru", icon:"🌊", img:null },
+  { key:"murkweed",                 label:"Murkweed",                            icon:"🌿", img:null },
+  { key:"melted_ice_cream",         label:"Sorvete Derretido",                   icon:"🍦", img:null },
+  { key:"anteverse_wheat",          label:"Trigo Anteverso",                     icon:"🌾", img:null },
+  { key:"doznuts",                  label:"Doznuts",                             icon:"🍩", img:null },
+  { key:"jowlers",                  label:"Jowlers",                             icon:"🍬", img:null },
+  { key:"skip",                     label:"Skip",                                icon:"🍫", img:null },
+  { key:"raw_penumbra_filet",       label:"Filé de Penumbra Cru",                icon:"🌑", img:null },
+  { key:"glow_eye",                 label:"Olho Brilhante",                      icon:"👀", img:null },
+];
+const soupIngredientMap = Object.fromEntries(soupIngredientCatalog.map(i => [i.key, i]));
+
+let potSlots = [];
+
+function renderIngredientPicker() {
+  const el = document.getElementById('ingredient-picker');
+  if (!el) return;
+  el.innerHTML = soupIngredientCatalog.map(ing => `
+    <button class="ingredient-chip" onclick="addToPot('${ing.key}')" ${potSlots.length >= 3 ? 'disabled' : ''}>
+      ${ing.img ? `<img src="${ing.img}" class="ic-img" alt="${ing.label}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';">` : ''}
+      <span class="ic-emoji" ${ing.img ? 'style="display:none"' : ''}>${ing.icon}</span>${ing.label}
+    </button>
+  `).join('');
+}
+
+function renderPot() {
+  const el = document.getElementById('soup-pot');
+  if (!el) return;
+  el.innerHTML = '<div class="pot-steam"><span></span><span></span><span></span></div>' +
+    [0, 1, 2].map(i => {
+      const key = potSlots[i];
+      if (!key) return `<div class="pot-slot">+</div>`;
+      const ing = soupIngredientMap[key];
+      const inner = ing.img
+        ? `<img src="${ing.img}" class="pot-slot-img" alt="${ing.label}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="pot-slot-fallback" style="display:none">${ing.icon}</span>`
+        : `<span class="pot-slot-fallback">${ing.icon}</span>`;
+      return `<div class="pot-slot filled" onclick="removeFromPot(${i})" title="Remover ${ing.label}">${inner}</div>`;
+    }).join('');
+  document.getElementById('cook-btn').disabled = potSlots.length === 0;
+}
+
+function addToPot(key) {
+  if (potSlots.length >= 3) return;
+  potSlots.push(key);
+  renderIngredientPicker();
+  renderPot();
+}
+
+function removeFromPot(idx) {
+  potSlots.splice(idx, 1);
+  renderIngredientPicker();
+  renderPot();
+  document.getElementById('soup-result').innerHTML = '';
+}
+
+function clearPot() {
+  potSlots = [];
+  renderIngredientPicker();
+  renderPot();
+  document.getElementById('soup-result').innerHTML = '';
+}
+
+function sameMix(a, b) {
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort(), sb = [...b].sort();
+  return sa.every((v, i) => v === sb[i]);
+}
+
+function cookSoup() {
+  const resultEl = document.getElementById('soup-result');
+  const match = soupsData.find(s => sameMix(s.mix, potSlots));
+  if (!match) {
+    resultEl.innerHTML = `
+      <div class="soup-result-fail">
+        ✕ SOPA RUIM — essa combinação não corresponde a nenhuma receita conhecida.<br>
+        <span style="color:var(--textMuted);font-size:var(--fs-2xs)">No jogo real isso vira Bad Soup (debuff fraco). Tente outra combinação.</span>
+      </div>`;
+    return;
+  }
+  const maxH = Math.max(...soupsData.map(s => s.hunger));
+  const maxT = Math.max(...soupsData.map(s => s.thirst));
+  resultEl.innerHTML = `
+    <div class="soup-result-card" style="border-color:${match.catColor};border-left-color:${match.catColor}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:var(--fs-3xl)">${match.icon}</span>
+        <div>
+          <div style="font-size:var(--fs-lg);color:${match.catColor};font-weight:bold">✔ ${match.name}</div>
+          <div style="font-size:var(--fs-2xs);color:var(--textMuted);letter-spacing:1px">${match.cat}</div>
+        </div>
+      </div>
+      <div class="soup-result-bar-row">
+        <span class="soup-result-bar-label">🍖 Fome</span>
+        <div class="soup-result-bar-track"><div class="soup-result-bar-fill" style="width:${(match.hunger/maxH*100).toFixed(0)}%;background:var(--amber)"></div></div>
+        <span class="soup-result-bar-val">${match.hunger}</span>
+      </div>
+      <div class="soup-result-bar-row">
+        <span class="soup-result-bar-label">💧 Sede</span>
+        <div class="soup-result-bar-track"><div class="soup-result-bar-fill" style="width:${(match.thirst/maxT*100).toFixed(0)}%;background:var(--cyan)"></div></div>
+        <span class="soup-result-bar-val">${match.thirst}</span>
+      </div>
+      <div style="font-size:var(--fs-sm);color:${match.catColor};margin-top:8px">✨ ${match.effect}</div>
+      <div style="font-size:var(--fs-xs);color:var(--textMuted);font-style:italic;margin-top:2px">${match.effectDesc}</div>
+    </div>`;
+}
+
+renderIngredientPicker();
+renderPot();
 
 // ══ ENTITIES DATA ══
 const entitiesData = [
