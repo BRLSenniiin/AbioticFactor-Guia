@@ -588,6 +588,59 @@
   .deploy-modal-materials { display: flex; flex-direction: column; gap: 5px; }
   .deploy-modal-mat-item { display: flex; justify-content: space-between; background: rgba(255,255,255,0.02); border-left: 3px solid var(--cyan); padding: 6px 9px; font-size: var(--fs-sm); }
   .deploy-modal-mat-qty { color: var(--amber); font-weight: bold; }
+
+  /* ══ QUÍMICA E DESTILAÇÕES — escopado sob #panel-chemistry ══ */
+  #panel-chemistry .chem-intro-box { position: relative; background: rgba(0,224,96,0.05); border: 1px solid var(--border); border-left: 3px solid var(--green); padding: 14px 14px 14px 18px; margin-bottom: 16px; }
+  #panel-chemistry .chem-intro-led { position: absolute; top: 14px; left: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+  #panel-chemistry .chem-intro-title { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 1.5px; color: var(--greenLt); font-weight: bold; margin-bottom: 8px; }
+  #panel-chemistry .chem-intro-text { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; }
+
+  #panel-chemistry .chem-flow-wrap { display: flex; align-items: stretch; gap: 8px; margin-bottom: 14px; }
+  #panel-chemistry .chem-flow-step { flex: 1; background: var(--bg); border: 1px solid var(--border); padding: 12px; text-align: center; }
+  #panel-chemistry .chem-flow-num { display: inline-block; width: 20px; height: 20px; line-height: 20px; border-radius: 50%; background: var(--cyan); color: #001a1a; font-weight: bold; font-size: var(--fs-2xs); margin-bottom: 6px; }
+  #panel-chemistry .chem-flow-icon { font-size: 26px; margin-bottom: 4px; }
+  #panel-chemistry .chem-flow-title { font-size: var(--fs-xs); letter-spacing: 1px; color: var(--cyan); font-weight: bold; margin-bottom: 6px; }
+  #panel-chemistry .chem-flow-desc { font-size: var(--fs-2xs); color: var(--textMuted); line-height: 1.6; }
+  #panel-chemistry .chem-flow-arrow { display: flex; align-items: center; font-size: 22px; color: var(--textMuted); flex-shrink: 0; }
+  @media (max-width: 560px) {
+    #panel-chemistry .chem-flow-wrap { flex-direction: column; }
+    #panel-chemistry .chem-flow-arrow { transform: rotate(90deg); justify-content: center; padding: 2px 0; }
+  }
+
+  #panel-chemistry .chem-warning-box { background: rgba(224,48,32,0.08); border-left: 3px solid #e03020; color: var(--textDim); padding: 10px 12px; font-size: var(--fs-sm); line-height: 1.6; margin-bottom: 20px; }
+
+  #panel-chemistry .chem-section-header { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 1px; color: var(--greenLt); font-weight: bold; margin-bottom: 6px; }
+  #panel-chemistry .chem-section-led { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 4px; box-shadow: 0 0 5px var(--green); }
+  #panel-chemistry .chem-dist-note { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; margin-bottom: 10px; }
+
+  #panel-chemistry .chem-dist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 6px; }
+  #panel-chemistry .chem-dist-card { cursor: pointer; background: var(--bg); border: 1px solid var(--border); border-top: 3px solid var(--dc, var(--green)); padding: 9px 10px; transition: transform 0.12s, box-shadow 0.12s; }
+  #panel-chemistry .chem-dist-card:hover { transform: translateY(-2px); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+  #panel-chemistry .chem-dist-card.selected { background: color-mix(in srgb, var(--dc, var(--green)) 14%, var(--bg)); border-color: var(--dc, var(--green)); }
+  #panel-chemistry .chem-dist-icon { font-size: 18px; }
+  #panel-chemistry .chem-dist-name { font-size: var(--fs-xs); font-weight: bold; color: var(--dc, var(--greenLt)); margin: 4px 0 1px; line-height: 1.25; }
+  #panel-chemistry .chem-dist-eng { font-size: var(--fs-2xs); color: var(--textMuted); margin-bottom: 5px; }
+  #panel-chemistry .chem-dist-sources { font-size: var(--fs-2xs); color: var(--textDim); line-height: 1.5; }
+  #panel-chemistry .chem-dist-sources b { color: var(--text); }
+
+  #panel-chemistry .chem-filter-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(224,160,32,0.1); border: 1px solid var(--amber); padding: 7px 12px; font-size: var(--fs-xs); color: var(--amberLt); margin: 10px 0 16px; }
+  #panel-chemistry .chem-filter-clear { font-family: var(--font-mono); font-size: var(--fs-2xs); background: none; border: 1px solid var(--amber); color: var(--amberLt); padding: 3px 8px; cursor: pointer; white-space: nowrap; }
+
+  #panel-chemistry .chem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin: 14px 0; }
+  #panel-chemistry .chem-card { cursor: pointer; background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--cc, var(--cyan)); padding: 10px 12px; transition: transform 0.12s, box-shadow 0.12s; }
+  #panel-chemistry .chem-card:hover { transform: translateY(-2px); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+  #panel-chemistry .chem-card-cat { font-size: var(--fs-2xs); letter-spacing: 1px; color: var(--cc, var(--cyan)); margin-bottom: 3px; }
+  #panel-chemistry .chem-card-name { font-size: var(--fs-sm); font-weight: bold; color: var(--text); line-height: 1.3; }
+  #panel-chemistry .chem-card-recipe { display: flex; flex-wrap: wrap; gap: 3px; margin: 7px 0; }
+  #panel-chemistry .chem-recipe-chip { font-size: var(--fs-2xs); padding: 1px 6px; border: 1px solid var(--bc, var(--border)); color: var(--bc, var(--textDim)); background: color-mix(in srgb, var(--bc, var(--border)) 12%, transparent); white-space: nowrap; }
+  #panel-chemistry .chem-recipe-chip.highlight { box-shadow: 0 0 0 1px var(--amber); }
+  #panel-chemistry .chem-card-effect { font-size: var(--fs-2xs); color: var(--textMuted); line-height: 1.5; }
+
+  #panel-chemistry .chem-modal-mixtime { font-size: var(--fs-2xs); color: var(--textMuted); margin: -4px 0 10px; }
+  #panel-chemistry .chem-modal-recipe { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  #panel-chemistry .chem-modal-recipe .chem-recipe-chip { font-size: var(--fs-xs); padding: 4px 9px; }
+  #panel-chemistry .chem-modal-effect { background: rgba(255,255,255,0.02); border-left: 2px solid var(--cyan); padding: 8px 10px; font-size: var(--fs-sm); color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+
   @media (max-width: 480px) {
     .deploy-card { grid-template-columns: 56px 1fr; }
     .deploy-card-thumb { height: 56px; }
@@ -957,6 +1010,63 @@
     padding: 8px; letter-spacing: 0.5px; flex-shrink: 0;
   }
 
+  /* ── MAPA — sistema de pins: seletor de mapa, busca, filtros, progresso,
+     zoom com botões e pins pessoais. Reaproveita .deploy-tabs-wrap /
+     .deploy-tab-btn / .deploy-search-box já usados no Craft e na Química,
+     pra manter a mesma identidade visual sem duplicar CSS. ── */
+  .gatepal-progress-wrap { margin-bottom: 10px; }
+  .gatepal-progress-label { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; margin-bottom: 4px; }
+  .gatepal-progress-track { height: 7px; background: var(--bgCard); border: 1px solid var(--border); overflow: hidden; }
+  .gatepal-progress-fill { height: 100%; background: var(--green); transition: width 0.3s; }
+
+  .gatepal-status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
+  .gatepal-hide-btn, .gatepal-addpin-btn {
+    font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.5px; padding: 6px 10px;
+    background: var(--bgCard); border: 1px solid var(--border); color: var(--textMuted);
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .gatepal-hide-btn:hover, .gatepal-addpin-btn:hover { color: var(--text); border-color: var(--green); }
+  .gatepal-hide-btn.active { background: var(--amberDim); border-color: var(--amber); color: var(--amberLt); }
+  .gatepal-addpin-btn.active { background: var(--cyanDim); border-color: var(--cyan); color: var(--cyan); }
+
+  .gatepal-addpin-notice {
+    display: none; background: var(--cyanDim); border: 1px solid var(--cyan); color: var(--text);
+    padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 10px;
+  }
+  .gatepal-addpin-notice.show { display: block; }
+
+  .gatepal-viewport { overflow: auto; max-height: 62vh; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; }
+  .gatepal-screen { transform-origin: 0 0; }
+
+  .gatepal-zoom-controls {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 8px 0; padding: 6px; background: var(--bgCard); border: 1px solid var(--border);
+  }
+  .gatepal-zoom-controls button {
+    width: 30px; height: 30px; background: transparent; border: 1px solid var(--border);
+    color: var(--greenLt); font-size: var(--fs-md); cursor: pointer; line-height: 1; font-family: var(--font-mono);
+  }
+  .gatepal-zoom-controls button:hover { border-color: var(--green); background: var(--greenDim); }
+  .gatepal-zoom-controls span { font-size: var(--fs-xs); color: var(--textDim); min-width: 42px; text-align: center; }
+
+  .gatepal-hotspots.pins-hidden { display: none; }
+  .gatepal-hotspot.hidden-by-filter { display: none !important; }
+  .gatepal-hotspot.is-personal { border-style: dashed; opacity: 0.78; width: 14px; height: 14px; font-size: 8px; }
+
+  .gatepal-poi-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; margin-bottom: 10px; }
+  .gatepal-poi-check {
+    display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--text);
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 8px 10px;
+    margin-bottom: 10px; cursor: pointer;
+  }
+  .gatepal-poi-check input { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
+  .gatepal-poi-del-btn {
+    width: 100%; margin-top: 4px; background: var(--redDim); border: 1px solid var(--red);
+    color: var(--redLt); padding: 8px; font-size: var(--fs-xs); cursor: pointer; letter-spacing: 0.5px;
+    font-family: var(--font-mono);
+  }
+  .gatepal-poi-del-btn:hover { background: var(--red); color: #fff; }
+
   @keyframes mapCardFlash {
     0%, 100% { box-shadow: none; }
     30% { box-shadow: 0 0 0 2px var(--green), 0 0 20px rgba(0,224,96,0.4); }
@@ -966,6 +1076,10 @@
   @media (max-width: 480px) {
     .gatepal-hotspot { width: 18px; height: 18px; font-size: 9px; }
     .gatepal-hotspot.is-portal { width: 14px; height: 14px; font-size: 8px; }
+    .gatepal-hotspot.is-personal { width: 12px; height: 12px; font-size: 7px; }
+    .gatepal-viewport { max-height: 48vh; }
+    .gatepal-zoom-controls button { width: 34px; height: 34px; }
+    .gatepal-hide-btn, .gatepal-addpin-btn { font-size: 9px; padding: 5px 8px; }
   }
 
 
@@ -2254,6 +2368,140 @@
   }
   #panel-entities .specimen-tip { font-size: var(--fs-sm); color: var(--gt-cyan); font-family: 'Share Tech Mono', monospace; }
 
+  /* ══ PETS — HUD de mecânicas ══ */
+  .pets-hud-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 6px; }
+  .pets-hud-chip { background: var(--bgCard); border: 1px solid var(--borderGn); border-top: 2px solid var(--green); padding: 10px 12px; }
+  .pets-hud-label { font-size: var(--fs-2xs); letter-spacing: 1px; color: var(--textMuted); margin-bottom: 4px; }
+  .pets-hud-value { font-size: var(--fs-sm); font-weight: bold; color: var(--greenLt); line-height: 1.3; }
+  .pets-hud-sub { font-size: var(--fs-2xs); color: var(--textDim); margin-top: 4px; line-height: 1.4; }
+  #panel-pets .pets-list { display: flex; flex-wrap: wrap; gap: 20px; }
+
+  /* ══ PETS — réplica escopada do sistema de card GATE Terminal (Entidades) ══ */
+  #panel-pets .gate-terminal {
+    font-family: 'Share Tech Mono', monospace;
+    width: 390px;
+    max-width: 100%;
+    background: var(--gt-bg-card);
+    border: 2px solid var(--gt-cyan);
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+  }
+  #panel-pets .gate-terminal::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  #panel-pets .hazard-stripe {
+    height: 8px;
+    background: repeating-linear-gradient(-45deg, var(--gt-amber), var(--gt-amber) 10px, #111 10px, #111 20px);
+  }
+  #panel-pets .terminal-header {
+    background: var(--gt-bg-head);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gt-cyan);
+    font-size: var(--fs-2xs);
+    color: var(--gt-text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  #panel-pets .status-led {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--green);
+    animation: gtBlink 1.2s infinite;
+    margin-right: 5px;
+  }
+  #panel-pets .holo-chamber {
+    width: 100%;
+    height: 200px;
+    background:
+      radial-gradient(circle, rgba(0, 243, 255, 0.12) 0%, rgba(5, 7, 10, 0.9) 80%),
+      linear-gradient(0deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 20px 20px, 20px 20px;
+    border-bottom: 1px dashed var(--gt-cyan);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  #panel-pets .target-reticle {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: var(--fs-2xs);
+    color: rgba(0, 243, 255, 0.5);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    padding: 2px 6px;
+    font-family: 'Share Tech Mono', monospace;
+    max-width: 60%;
+    text-align: right;
+  }
+  #panel-pets .monster-png {
+    position: absolute;
+    bottom: -10px;
+    max-height: 240px;
+    max-width: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.3)) drop-shadow(0 10px 10px rgba(0,0,0,0.9));
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 2;
+  }
+  #panel-pets .monster-fallback-icon {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    font-size: var(--fs-6xl);
+    z-index: 2;
+    filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.4));
+  }
+  #panel-pets .gate-terminal:hover .monster-png {
+    transform: scale(1.06) translateY(-6px);
+    filter: drop-shadow(0 0 18px rgba(0, 243, 255, 0.6)) drop-shadow(0 12px 12px rgba(0,0,0,0.9));
+  }
+  #panel-pets .terminal-body { padding: 18px; z-index: 3; position: relative; font-family: 'Share Tech Mono', monospace; }
+  #panel-pets .specimen-code { display: block; font-size: var(--fs-2xs); color: var(--gt-amber); letter-spacing: 1px; }
+  #panel-pets .specimen-title { font-size: var(--fs-3xl); color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.4); text-transform: uppercase; margin: 2px 0 0; }
+  #panel-pets .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-2xs);
+    color: var(--gt-text-muted);
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    padding-bottom: 6px;
+  }
+  #panel-pets .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  #panel-pets .diag-box { background: rgba(0, 243, 255, 0.03); border: 1px solid rgba(0, 243, 255, 0.2); padding: 8px; }
+  #panel-pets .diag-box.weakness { border-color: rgba(0, 224, 96, 0.4); }
+  #panel-pets .diag-box.immunity { border-color: rgba(255, 183, 0, 0.4); }
+  #panel-pets .diag-title { font-size: var(--fs-2xs); font-weight: bold; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+  #panel-pets .diag-box.weakness .diag-title { color: var(--green); }
+  #panel-pets .diag-box.immunity .diag-title { color: var(--gt-amber); }
+  #panel-pets .diag-list { list-style: none; font-size: var(--fs-2xs); color: var(--gt-text-list); }
+  #panel-pets .diag-list li::before { content: "> "; color: rgba(0, 243, 255, 0.5); }
+  #panel-pets .loot-box { background: var(--gt-loot-bg); border: 1px solid var(--gt-loot-border); padding: 10px; margin-bottom: 10px; }
+  #panel-pets .loot-title { font-size: var(--fs-2xs); color: var(--gt-amber); text-transform: uppercase; margin-bottom: 6px; }
+  #panel-pets .loot-items { display: flex; gap: 6px; flex-wrap: wrap; }
+  #panel-pets .risk-line { font-size: var(--fs-2xs); color: var(--redLt); background: rgba(224,48,32,0.08); border-left: 2px solid var(--red); padding: 6px 9px; margin-bottom: 10px; line-height: 1.5; }
+  #panel-pets .specimen-tip { font-size: var(--fs-sm); color: var(--gt-cyan); font-family: 'Share Tech Mono', monospace; }
+  @media (max-width: 500px) {
+    #panel-pets .gate-terminal { width: 100%; }
+    #panel-pets .diag-grid { grid-template-columns: 1fr; }
+  }
+
   /* ── FOOTER ── */
   .footer { text-align: center; margin-top: 48px; font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 2px; border-top: 1px solid var(--border); padding-top: 16px; line-height: 2; }
 
@@ -2303,11 +2551,13 @@
     <button class="tab-btn" onclick="switchTab('maps',this)"><img src="Images/Icons/Mapas.png" class="tab-icon" alt=""> Mapas</button>
     <button class="tab-btn" onclick="switchTab('portals',this)"><img src="Images/Icons/Portais.png" class="tab-icon" alt=""> Portais</button>
     <button class="tab-btn" onclick="switchTab('build',this)"><img src="Images/Icons/Craft.png" class="tab-icon" alt=""> Craft</button>
+    <button class="tab-btn" onclick="switchTab('chemistry',this)"><img src="Images/Icons/Química.png" class="tab-icon" alt=""> Química</button>
     <button class="tab-btn" onclick="switchTab('tips',this)"><img src="Images/Icons/Dicas.png" class="tab-icon" alt=""> Dicas</button>
     <button class="tab-btn" onclick="switchTab('trophylist',this)"><img src="Images/Icons/Troféus.png" class="tab-icon" alt=""> Troféus</button>
     <button class="tab-btn" onclick="switchTab('traders',this)"><img src="Images/Icons/Traders.png" class="tab-icon" alt=""> Traders</button>
     <button class="tab-btn" onclick="switchTab('soups',this)"><img src="Images/Icons/Culinária.png" class="tab-icon" alt=""> Culinária</button>
     <button class="tab-btn" onclick="switchTab('entities',this)"><img src="Images/Icons/Entidades.png" class="tab-icon" alt=""> Entidades</button>
+    <button class="tab-btn" onclick="switchTab('pets',this)"><img src="Images/Icons/Pets.webp" class="tab-icon" alt=""> Pets</button>
     <button class="tab-btn" onclick="switchTab('weather',this)"><img src="Images/Icons/Clima.png" class="tab-icon" alt=""> Clima</button>
     <button class="tab-btn" onclick="switchTab('lore',this)"><img src="Images/Icons/História.png" class="tab-icon" alt=""> História</button>
     <button class="tab-btn" onclick="switchTab('jobstraits',this)"><img src="Images/Icons/Trabalhos e Traços.png" class="tab-icon" alt=""> Trabalhos &amp; Traços</button>
@@ -2599,8 +2849,26 @@
       <div class="gatepal-frame-corner bl"></div>
       <div class="gatepal-frame-corner br"></div>
       <div class="gatepal-header-sys">// DISPOSITIVO GATEPAL — SISTEMA DE NAVEGAÇÃO</div>
-      <div class="gatepal-header-title">Mapa Geral da Facility</div>
-      <div class="gatepal-header-sub">Toque num marcador pra ver o setor ou portal · toque na imagem pra ampliar.</div>
+      <div class="gatepal-header-title" id="gatepalMapTitle">Mapa Geral da Facility</div>
+      <div class="gatepal-header-sub">Toque num pin pra ver detalhes · toque na imagem pra ampliar · use os filtros pra focar no que importa agora.</div>
+
+      <!-- Seletor de mapa — hoje só existe o Mapa Geral, mas o sistema já
+           está pronto pra receber mapas por setor (basta adicionar em
+           gatepalMaps, no JS). -->
+      <div class="deploy-tabs-wrap"><div class="deploy-tabs" id="gatepalMapTabs"></div></div>
+
+      <div class="deploy-search-box">
+        <span class="deploy-search-icon">🔍</span>
+        <input type="text" id="gatepalSearch" class="deploy-search-input" placeholder="Buscar pin por nome...">
+      </div>
+
+      <div class="deploy-tabs-wrap"><div class="deploy-tabs" id="gatepalCatFilters"></div></div>
+
+      <div class="gatepal-status-row">
+        <div class="deploy-tabs-wrap" style="margin-bottom:0"><div class="deploy-tabs" id="gatepalStatusFilters"></div></div>
+        <button class="gatepal-hide-btn" id="gatepalHideBtn">👁 Esconder Pins</button>
+        <button class="gatepal-addpin-btn" id="gatepalAddPinBtn">📌 Pin Pessoal</button>
+      </div>
 
       <div class="gatepal-toolbar">
         <button class="gatepal-calibrate-btn" id="gatepalCalibrateBtn">🎯 Modo Calibração</button>
@@ -2609,13 +2877,28 @@
       </div>
 
       <div class="gatepal-notice" id="gatepalNotice"></div>
+      <div class="gatepal-addpin-notice" id="gatepalAddPinNotice">📌 Modo de pin pessoal ativo — toque em qualquer ponto do mapa pra criar um marcador com seu próprio texto. Toque no botão de novo pra sair do modo.</div>
 
-      <div class="gatepal-screen" id="gatepalScreen">
-        <img src="Images/MUNDO/GATEPAL.webp" alt="Mapa Geral GATEPAL" class="gatepal-img" id="gatepalImg"
-             onerror="this.style.display='none'; document.getElementById('gatepalImgFallback').style.display='flex'">
-        <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
-        <div class="gatepal-hotspots" id="gatepalHotspots"></div>
-        <div class="gatepal-crosshair" id="gatepalCrosshair" style="display:none"></div>
+      <div class="gatepal-progress-wrap">
+        <div class="gatepal-progress-label" id="gatepalProgressLabel"></div>
+        <div class="gatepal-progress-track"><div class="gatepal-progress-fill" id="gatepalProgressFill" style="width:0%"></div></div>
+      </div>
+
+      <div class="gatepal-viewport" id="gatepalViewport">
+        <div class="gatepal-screen" id="gatepalScreen">
+          <img src="Images/MUNDO/GATEPAL.webp" alt="Mapa Geral GATEPAL" class="gatepal-img" id="gatepalImg"
+               onerror="this.style.display='none'; document.getElementById('gatepalImgFallback').style.display='flex'">
+          <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
+          <div class="gatepal-hotspots" id="gatepalHotspots"></div>
+          <div class="gatepal-crosshair" id="gatepalCrosshair" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="gatepal-zoom-controls">
+        <button id="gpZoomOut" title="Diminuir zoom" type="button">－</button>
+        <span id="gpZoomLevel">100%</span>
+        <button id="gpZoomIn" title="Aumentar zoom" type="button">＋</button>
+        <button id="gpZoomReset" title="Redefinir zoom" type="button">↺</button>
       </div>
 
       <div class="gatepal-coord-readout" id="gatepalCoordReadout"></div>
@@ -2654,22 +2937,28 @@
       <div class="gatepal-lightbox-hint">toque na imagem pra ampliar/reduzir · toque fora ou no ✕ pra fechar</div>
     </div>
 
-    <!-- Popover de portal (aberto ao clicar num marcador de portal no mapa geral) —
-         reaproveita as classes visuais do deploy-modal (hologram/scanline) só com
-         overlay e ids próprios, pra não colidir com o modal de craft. -->
-    <div class="gatepal-popover-overlay" id="gatepalPortalPopover">
+    <!-- Popup único de pin — usado por TODAS as categorias (setor, portal,
+         comida, arma, npc, reciclagem, pessoal). Reaproveita as classes
+         visuais do deploy-modal (hologram/scanline) já usadas no Craft e
+         na Química, pra não duplicar CSS. -->
+    <div class="gatepal-popover-overlay" id="gatepalPoiPopover">
       <div class="deploy-modal">
-        <button class="deploy-modal-close" id="gatepalPortalPopoverClose">✕</button>
+        <button class="deploy-modal-close" id="gpPoiClose">✕</button>
         <div class="deploy-modal-header">
-          <div class="deploy-modal-title" id="gpPortalTitle"></div>
-          <span class="deploy-modal-cat" id="gpPortalUniverso"></span>
+          <div class="deploy-modal-title" id="gpPoiTitle"></div>
+          <span class="deploy-modal-cat" id="gpPoiCat"></span>
         </div>
-        <div class="deploy-hologram">
+        <div class="deploy-hologram" id="gpPoiHologram">
           <div class="deploy-scanline"></div>
-          <img src="" id="gpPortalImg" class="deploy-hologram-img" alt="">
-          <span id="gpPortalFallback" class="deploy-hologram-fallback" style="display:none"></span>
+          <img src="" id="gpPoiImg" class="deploy-hologram-img" alt="">
+          <span id="gpPoiFallback" class="deploy-hologram-fallback" style="display:none"></span>
         </div>
-        <button class="gatepal-popover-jump-btn" id="gpPortalJumpBtn">→ VER DETALHES NA ABA PORTAIS</button>
+        <div class="gatepal-poi-desc" id="gpPoiDesc"></div>
+        <label class="gatepal-poi-check" id="gpPoiCheckWrap">
+          <input type="checkbox" id="gpPoiCheckbox"><span>Já encontrei / conclui isso</span>
+        </label>
+        <button class="gatepal-popover-jump-btn" id="gpPoiJumpBtn" style="display:none">→ SAIBA MAIS</button>
+        <button class="gatepal-poi-del-btn" id="gpPoiDelBtn" style="display:none">🗑 Remover este pin pessoal</button>
       </div>
     </div>
   </div>
@@ -2801,6 +3090,94 @@
         </div>
         <div class="deploy-modal-section-title">📦 MATERIAIS NECESSÁRIOS</div>
         <div class="deploy-modal-materials" id="deploy-m-materials"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUÍMICA E DESTILAÇÕES ══ -->
+  <div class="panel" id="panel-chemistry">
+    <div class="chem-intro-box">
+      <div class="chem-intro-led"></div>
+      <div class="chem-intro-title">SISTEMA DE QUÍMICA — DESTILAÇÕES E CONCOCÇÕES</div>
+      <div class="chem-intro-text">
+        Sistema de crafting em 2 estágios adicionado na atualização <strong style="color:var(--greenLt)">Cosmic Companions</strong>. Desbloqueado ao chegar nos <strong style="color:var(--cyan)">Laboratórios Cascata</strong>, com a skill de Química ativa. Materiais orgânicos e anômalos viram <strong style="color:var(--amberLt)">Destilações</strong> na Bancada de Destilação — e essas Destilações viram <strong style="color:var(--greenLt)">Revestimentos, Frascos e Tinturas</strong> na Bancada de Química.
+      </div>
+    </div>
+
+    <!-- FLUXO DAS 2 BANCADAS -->
+    <div class="chem-flow-wrap">
+      <div class="chem-flow-step">
+        <div class="chem-flow-num">1</div>
+        <div class="chem-flow-icon">🧪</div>
+        <div class="chem-flow-title">BANCADA DE DESTILAÇÃO</div>
+        <div class="chem-flow-desc">Coloque 1 item orgânico/anômalo no frasco de entrada (esquerda). Ative a bancada. Após alguns segundos, uma Destilação sai no frasco de saída (direita). O resultado depende 100% do item usado — experimente.</div>
+      </div>
+      <div class="chem-flow-arrow">→</div>
+      <div class="chem-flow-step">
+        <div class="chem-flow-num">2</div>
+        <div class="chem-flow-icon">⚗️</div>
+        <div class="chem-flow-title">BANCADA DE QUÍMICA</div>
+        <div class="chem-flow-desc">Tem 3 entradas — cada uma aceita até <strong style="color:var(--amberLt)">8 doses</strong> da mesma Destilação. Encha as 3 com a proporção certa e vire a válvula. Precisa de pelo menos 3 tipos de Destilação diferentes já descobertos pra desbloquear esta etapa.</div>
+      </div>
+    </div>
+
+    <div class="chem-warning-box">
+      ⚠️ <strong>ERRAR A RECEITA TEM CONSEQUÊNCIA:</strong> misturar 3 Destilações na proporção errada, ou 2 Destilações + 1 Lodo Nocivo, gera um <strong style="color:var(--redLt)">Frasco Instável</strong> — e ainda causa uma pequena explosão na bancada com empurrão (knockback) em quem estiver perto. Confira a receita antes de virar a válvula: a bancada não devolve as Destilações depois de ativada.
+    </div>
+
+    <!-- DESTILAÇÕES -->
+    <div class="chem-section-header">
+      <span class="chem-section-led"></span>// ETAPA 1 — AS 16 DESTILAÇÕES (clique pra filtrar o que usa cada uma)
+    </div>
+    <div class="chem-dist-note">Toque numa Destilação para ver só os Revestimentos/Frascos/Tinturas que a usam. Toque de novo (ou em "Limpar filtro") pra voltar a ver tudo.</div>
+    <div class="chem-dist-grid" id="chem-dist-grid"></div>
+
+    <!-- FILTRO ATIVO -->
+    <div class="chem-filter-bar" id="chem-filter-bar" style="display:none">
+      <span id="chem-filter-label"></span>
+      <button class="chem-filter-clear" id="chem-filter-clear">✕ Limpar filtro</button>
+    </div>
+
+    <!-- CONCOCÇÕES (Bancada de Química) -->
+    <div class="chem-section-header" style="margin-top:22px">
+      <span class="chem-section-led"></span>// ETAPA 2 — REVESTIMENTOS, FRASCOS E TINTURAS
+    </div>
+
+    <div class="deploy-search-box">
+      <span class="deploy-search-icon">🔍</span>
+      <input type="text" id="chem-search" class="deploy-search-input" placeholder="Buscar por nome, efeito ou ingrediente...">
+    </div>
+
+    <div class="deploy-tabs-wrap">
+      <div class="deploy-tabs" id="chem-tabs">
+        <button class="deploy-tab-btn active" data-cat="todos">Todos</button>
+        <button class="deploy-tab-btn" data-cat="coating">🛡️ Revestimentos</button>
+        <button class="deploy-tab-btn" data-cat="flask">💣 Frascos</button>
+        <button class="deploy-tab-btn" data-cat="tincture">💊 Tinturas</button>
+      </div>
+    </div>
+
+    <div class="chem-grid" id="chem-grid"></div>
+
+    <div class="deploy-source-note">
+      Dados de receitas, efeitos e fontes de Destilação compilados a partir da <a href="https://abioticfactor.wiki.gg/wiki/Chemistry" target="_blank" class="tips-source-link" style="display:inline">Wiki Oficial — Chemistry</a>. Catálogo com as <strong style="color:var(--greenLt)">16 Destilações</strong> e as <strong style="color:var(--greenLt)">32 Concocções</strong> (10 Revestimentos, 12 Frascos, 10 Tinturas) conhecidas até a atualização Cosmic Companions.
+    </div>
+
+    <!-- Modal de detalhe -->
+    <div class="deploy-modal-overlay" id="chem-modal">
+      <div class="deploy-modal">
+        <button class="deploy-modal-close" id="chem-modal-close">✕</button>
+        <div class="deploy-modal-header">
+          <div class="deploy-modal-title" id="chem-m-title">⚗️ Item</div>
+          <span class="deploy-modal-cat" id="chem-m-cat">CATEGORIA</span>
+        </div>
+        <div class="chem-modal-mixtime" id="chem-m-mixtime"></div>
+        <div class="deploy-modal-section-title">🧬 RECEITA (Bancada de Química)</div>
+        <div class="chem-modal-recipe" id="chem-m-recipe"></div>
+        <div class="deploy-modal-section-title">✨ EFEITO</div>
+        <div class="chem-modal-effect" id="chem-m-effect"></div>
+        <div class="deploy-modal-section-title" id="chem-m-notetitle" style="display:none">💡 NOTA</div>
+        <div class="deploy-modal-note" id="chem-m-note" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -2972,6 +3349,54 @@
       <div class="section-title">FONTES</div>
       <a href="https://gamerant.com/abiotic-factor-all-enemies-types-strengths-weaknesses-what-they-do/" target="_blank" class="tips-source-link">→ GameRant — All Enemies & What They Do (EN)</a>
       <a href="https://abioticfactor.wiki.gg/wiki/Damage_Types" target="_blank" class="tips-source-link">→ Wiki Oficial — Damage Types</a>
+    </div>
+  </div>
+
+  <!-- ══ PETS ══ -->
+  <div class="panel" id="panel-pets">
+    <div class="map-intro" style="border-left-color:var(--green)">
+      <div class="map-intro-title" style="color:var(--green)">// SISTEMA DE PETS — ATUALIZAÇÃO COSMIC COMPANIONS</div>
+      <div style="font-size:var(--fs-md);color:var(--text);line-height:1.8">
+        4 famílias domesticáveis — <strong style="color:var(--amber)">Pragas</strong>, <strong style="color:var(--red)">Pecaris</strong>, <strong style="color:var(--cyan)">Lagartos</strong> e <strong style="color:var(--purple)">Lamogi</strong> — totalizando <strong style="color:var(--greenLt)">22 variantes</strong>, além de 2 invocações automáticas de Set de Armadura que não precisam ser domesticadas.<br>
+        Cada família tem seu próprio método de captura: <strong style="color:var(--text)">Pest Trap</strong> (Pragas e Lagartos, sem precisar de Química), <strong style="color:var(--text)">Frasco de Feromônio + 3x Trigo Anteverso</strong> (Pecaris, só depois de desbloquear Química) ou <strong style="color:var(--text)">Lançador de Rede</strong> (Lagartos, 5 acertos).<br>
+        Muitas variantes não são capturadas no mundo — são <strong style="color:var(--amberLt)">mutações</strong>: alimente um pet já domesticado com 3x de um item específico pra transformá-lo em algo novo.
+      </div>
+    </div>
+
+    <div class="pets-hud-grid">
+      <div class="pets-hud-chip">
+        <div class="pets-hud-label">ALIMENTAÇÃO</div>
+        <div class="pets-hud-value">A cada 8h in-game (16 min reais)</div>
+        <div class="pets-hud-sub">XP = Fome do alimento ÷ 3 · mín. 4, máx. 20 por alimentada</div>
+      </div>
+      <div class="pets-hud-chip">
+        <div class="pets-hud-label">NÍVEL MÁXIMO</div>
+        <div class="pets-hud-value">Nível 20</div>
+        <div class="pets-hud-sub">~38 alimentadas · mínimo 13 dias in-game inteiros</div>
+      </div>
+      <div class="pets-hud-chip">
+        <div class="pets-hud-label">ESTADO CRÍTICO (DBNO)</div>
+        <div class="pets-hud-value">30s pra reviver, ou morre de vez</div>
+        <div class="pets-hud-sub">Pet no Slot de Companheiro NUNCA morre de vez — só fica caído até você reviver</div>
+      </div>
+      <div class="pets-hud-chip">
+        <div class="pets-hud-label">SLOT vs. CAMA</div>
+        <div class="pets-hud-value">Slot = leva pra luta · Cama = 100% seguro</div>
+        <div class="pets-hud-sub">Pet solto sem slot nem cama pode morrer de vez normalmente</div>
+      </div>
+    </div>
+
+    <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.7;margin:6px 0 18px">
+      Ao reviver de um estado crítico, o pet volta com apenas <strong style="color:var(--amberLt)">25% de HP</strong> — não mande ele de volta pra mesma luta na hora. Pragas e Lagartos também podem ser guardados numa Pest Trap como forma alternativa de armazenamento, e ambos servem pra gerar energia numa Roda de Praga (Pest Wheel) se colocados manualmente lá dentro.
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px" id="pet-filter-row"></div>
+    <div id="pets-list" class="pets-list"></div>
+
+    <div class="map-source-box" style="margin-top:14px">
+      <div class="section-title">FONTES</div>
+      <a href="https://abioticfactor.wiki.gg/wiki/Pets" target="_blank" class="tips-source-link">→ Wiki Oficial — Pets</a>
+      <a href="https://www.gamebrief.net/blog/abiotic-factor-pets-guide-2026" target="_blank" class="tips-source-link">→ GameBrief — All 22 Pets and How to Get Them</a>
     </div>
   </div>
 
@@ -5822,6 +6247,14 @@ function togglePortal(i) {
 //      aparecem em mapsData / portaisData.
 // x e y são porcentagem da imagem (0 = topo/esquerda, 100 = fundo/direita) —
 // não é pixel, então funciona em qualquer tamanho de tela.
+// ══════════════════════════════════════════════════════════════
+// MAPA — SISTEMA DE PINS (setores, portais, comida, armas, NPCs,
+// reciclagem e pins pessoais), com filtros, busca, progresso,
+// zoom e seletor de mapa.
+// ══════════════════════════════════════════════════════════════
+
+// Coordenadas em % da imagem (mesmo sistema de sempre — use o
+// "🎯 Modo Calibração" pra pegar novas coordenadas clicando na imagem).
 const gatepalSectorPoints = [
   { x: 10, y: 15 }, // 0 — Tutorial / Pré-Facility
   { x: 20, y: 15 }, // 1 — Setor Escritório
@@ -5842,48 +6275,349 @@ const gatepalPortalPoints = [
   { x: 84,  y: 85 }, { x: 89,  y: 85 }, { x: 94,  y: 85 }, { x: 99,  y: 85 },
 ]; // 20 pontos, mesma ordem de portaisData (placeholder — ainda não calibrado)
 
+// ── Mapas disponíveis — hoje só o Geral. Pra adicionar um mapa por setor no
+// futuro, basta um novo objeto aqui { id, name, icon, img } e usar esse
+// mesmo id no mapId de cada POI que pertence a ele. ──
+const gatepalMaps = [
+  { id: 'geral', name: 'Mapa Geral', icon: '🗺️', img: 'Images/MUNDO/GATEPAL.webp' },
+];
+let gatepalCurrentMapId = 'geral';
+
+// ── Categorias de pin — ícone e cor definem a identidade visual: o ícone
+// sozinho já diz "isso é comida", "isso é arma", etc. ──
+const gatepalCategories = {
+  setor:      { label: 'Setores',    icon: '🧭', color: C.cyan },
+  portal:     { label: 'Portais',    icon: '🌀', color: C.purple },
+  comida:     { label: 'Comida',     icon: '🍖', color: C.green },
+  arma:       { label: 'Armas',      icon: '⚔️', color: C.red },
+  npc:        { label: 'NPCs',       icon: '🧑', color: C.amber },
+  reciclagem: { label: 'Reciclagem', icon: '♻️', color: C.steel },
+};
+
+// Pins de Setores — mesmos dados de mapsData (já usado na grade de cards
+// abaixo do mapa), agora também virando um pin clicável.
+const gatepalSetorPois = mapsData.map((m, i) => ({
+  id: 'setor-' + i, cat: 'setor', mapId: 'geral', pt: gatepalSectorPoints[i],
+  name: m.name, icon: m.icon, color: m.color, img: '', desc: m.desc,
+  jump: { type: 'sector', i },
+})).filter(p => p.pt);
+
+// Pins de Portais — mesmos dados de portaisData (já usado na aba Portais).
+const gatepalPortalPois = portaisData.map((p, i) => ({
+  id: 'portal-' + i, cat: 'portal', mapId: 'geral', pt: gatepalPortalPoints[i],
+  name: p.name, icon: p.icon, img: p.img || '', desc: p.universo || '',
+  jump: { type: 'portal', i },
+})).filter(p => p.pt);
+
+// Pins de Comida, Armas, NPCs e Reciclagem — AINDA VAZIOS DE PROPÓSITO.
+// Diferente dos Setores/Portais (que já tinham coordenadas do sistema
+// antigo), não existe nenhuma fonte confiável de ONDE ficam pontos fixos
+// de comida/armas/NPCs/salas de reciclagem no Mapa Geral — ele é uma visão
+// macro da Facility (setores + portais), não um mapa detalhado por sala.
+// Pra adicionar um pin real: use o "🎯 Modo Calibração" pra pegar x/y, e
+// copie o formato de gatepalSetorPois/gatepalPortalPois acima. Até lá, use
+// os Pins Pessoais (📌) pra marcar por conta própria enquanto explora.
+const gatepalComidaPois = [];
+const gatepalArmaPois = [];
+const gatepalNpcPois = [];
+const gatepalReciclagemPois = [];
+
+const gatepalOficialPois = [
+  ...gatepalSetorPois, ...gatepalPortalPois,
+  ...gatepalComidaPois, ...gatepalArmaPois, ...gatepalNpcPois, ...gatepalReciclagemPois,
+];
+
+// ── Persistência local — progresso ("já encontrei") e pins pessoais.
+// Duas chaves novas de localStorage, com prefixo próprio pra não colidir
+// com nada mais no site. ──
+const GATEPAL_PROGRESS_KEY = 'abioticGuide_mapaProgresso';
+const GATEPAL_PERSONAL_KEY = 'abioticGuide_mapaPinsPessoais';
+
+function gatepalLoadProgress() {
+  try { return JSON.parse(localStorage.getItem(GATEPAL_PROGRESS_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function gatepalSaveProgress(obj) {
+  try { localStorage.setItem(GATEPAL_PROGRESS_KEY, JSON.stringify(obj)); } catch (e) {}
+}
+let gatepalProgress = gatepalLoadProgress();
+
+function gatepalLoadPersonalPins() {
+  try { return JSON.parse(localStorage.getItem(GATEPAL_PERSONAL_KEY)) || []; }
+  catch (e) { return []; }
+}
+function gatepalSavePersonalPins(arr) {
+  try { localStorage.setItem(GATEPAL_PERSONAL_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+let gatepalPersonalPins = gatepalLoadPersonalPins();
+
+function gatepalAllPoisForMap(mapId) {
+  const personal = gatepalPersonalPins
+    .filter(p => p.mapId === mapId)
+    .map(p => ({ id: p.id, cat: 'pessoal', mapId: p.mapId, pt: { x: p.x, y: p.y }, name: p.name, note: p.note }));
+  return gatepalOficialPois.filter(p => p.mapId === mapId).concat(personal);
+}
+
+// ── Elementos ──
 const gatepalHotspotsEl = document.getElementById('gatepalHotspots');
 const gatepalNoticeEl = document.getElementById('gatepalNotice');
+const gatepalImgEl = document.getElementById('gatepalImg');
+const gatepalMapTabsEl = document.getElementById('gatepalMapTabs');
+const gatepalCatFiltersEl = document.getElementById('gatepalCatFilters');
+const gatepalStatusFiltersEl = document.getElementById('gatepalStatusFilters');
+const gatepalSearchEl = document.getElementById('gatepalSearch');
+const gatepalHideBtn = document.getElementById('gatepalHideBtn');
+const gatepalAddPinBtn = document.getElementById('gatepalAddPinBtn');
+const gatepalAddPinNoticeEl = document.getElementById('gatepalAddPinNotice');
+const gatepalProgressLabelEl = document.getElementById('gatepalProgressLabel');
+const gatepalProgressFillEl = document.getElementById('gatepalProgressFill');
 
-// Setores
-mapsData.forEach((m, i) => {
-  const pt = gatepalSectorPoints[i];
-  if (!pt) return;
-  const dot = document.createElement('div');
-  dot.className = 'gatepal-hotspot';
-  dot.style.left = pt.x + '%';
-  dot.style.top = pt.y + '%';
-  dot.style.background = m.color;
-  dot.style.color = m.color;
-  dot.title = m.name;
-  dot.textContent = m.icon;
-  dot.addEventListener('click', () => jumpToSector(i));
-  gatepalHotspotsEl.appendChild(dot);
+let gatepalCatFilter = 'todos';
+let gatepalStatusFilter = 'todos';
+let gatepalPinsHidden = false;
+let gatepalAddPinMode = false;
+
+// ── Seletor de mapa (hoje só 1 opção, pronto pra crescer) ──
+gatepalMaps.forEach((m) => {
+  const btn = document.createElement('button');
+  btn.className = 'deploy-tab-btn' + (m.id === gatepalCurrentMapId ? ' active' : '');
+  btn.textContent = `${m.icon} ${m.name}`;
+  btn.addEventListener('click', () => {
+    gatepalCurrentMapId = m.id;
+    gatepalMapTabsEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('gatepalMapTitle').textContent = m.id === 'geral' ? 'Mapa Geral da Facility' : m.name;
+    gatepalImgEl.src = m.img;
+    document.getElementById('gatepalLightboxImg').src = m.img;
+    renderGatepalHotspots();
+  });
+  gatepalMapTabsEl.appendChild(btn);
 });
 
-// Portais
-portaisData.forEach((p, i) => {
-  const pt = gatepalPortalPoints[i];
-  if (!pt) return;
-  const dot = document.createElement('div');
-  dot.className = 'gatepal-hotspot is-portal';
-  dot.style.left = pt.x + '%';
-  dot.style.top = pt.y + '%';
-  dot.style.background = C.purple;
-  dot.style.color = C.purple;
-  dot.title = p.name;
-  dot.textContent = p.icon;
-  dot.addEventListener('click', () => openPortalPopover(i));
-  gatepalHotspotsEl.appendChild(dot);
+// ── Filtro por categoria (Todos + uma aba por categoria já cadastrada) ──
+const gatepalCatsPresentes = Object.keys(gatepalCategories).filter(cat =>
+  gatepalOficialPois.some(p => p.cat === cat)
+);
+const gatepalCatTodosBtn = document.createElement('button');
+gatepalCatTodosBtn.className = 'deploy-tab-btn active';
+gatepalCatTodosBtn.textContent = 'Todos';
+gatepalCatTodosBtn.dataset.cat = 'todos';
+gatepalCatFiltersEl.appendChild(gatepalCatTodosBtn);
+gatepalCatsPresentes.forEach(cat => {
+  const info = gatepalCategories[cat];
+  const btn = document.createElement('button');
+  btn.className = 'deploy-tab-btn';
+  btn.textContent = `${info.icon} ${info.label}`;
+  btn.dataset.cat = cat;
+  gatepalCatFiltersEl.appendChild(btn);
+});
+const gatepalPersonalCatBtn = document.createElement('button');
+gatepalPersonalCatBtn.className = 'deploy-tab-btn';
+gatepalPersonalCatBtn.textContent = '📌 Pessoais';
+gatepalPersonalCatBtn.dataset.cat = 'pessoal';
+gatepalCatFiltersEl.appendChild(gatepalPersonalCatBtn);
+
+gatepalCatFiltersEl.querySelectorAll('.deploy-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    gatepalCatFiltersEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    gatepalCatFilter = btn.dataset.cat;
+    gatepalApplyFilters();
+  });
 });
 
-// Aviso de "coordenadas ainda não calibradas" — some sozinho assim que
-// alguém editar os arrays acima (deixa de bater com a grade provisória).
-const isDefaultGrid = gatepalSectorPoints.every((pt, i) => pt.y === 15) &&
-                       gatepalPortalPoints.every((pt, i) => pt.y === 85 || pt.y === 92);
-if (isDefaultGrid) {
-  gatepalNoticeEl.style.display = 'block';
-  gatepalNoticeEl.innerHTML = '📍 As posições dos marcadores abaixo ainda são um placeholder (grade provisória) — use o <b>"🎯 Modo Calibração"</b> pra clicar em cima da imagem real e ajustar cada uma. Depois é só colar as coordenadas no array <code>gatepalSectorPoints</code> / <code>gatepalPortalPoints</code> do código.';
+// ── Filtro por progresso ──
+[
+  { v: 'todos', l: 'Todos' },
+  { v: 'concluidos', l: '✅ Concluídos' },
+  { v: 'pendentes', l: '⬜ Não concluídos' },
+].forEach((f, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'deploy-tab-btn' + (i === 0 ? ' active' : '');
+  btn.textContent = f.l;
+  btn.dataset.status = f.v;
+  gatepalStatusFiltersEl.appendChild(btn);
+});
+gatepalStatusFiltersEl.querySelectorAll('.deploy-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    gatepalStatusFiltersEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    gatepalStatusFilter = btn.dataset.status;
+    gatepalApplyFilters();
+  });
+});
+
+// ── Busca por nome ──
+gatepalSearchEl.addEventListener('input', gatepalApplyFilters);
+
+// ── Esconder todos os pins ──
+gatepalHideBtn.addEventListener('click', () => {
+  gatepalPinsHidden = !gatepalPinsHidden;
+  gatepalHideBtn.classList.toggle('active', gatepalPinsHidden);
+  gatepalHideBtn.textContent = gatepalPinsHidden ? '👁 Mostrar Pins' : '👁 Esconder Pins';
+  gatepalHotspotsEl.classList.toggle('pins-hidden', gatepalPinsHidden);
+});
+
+// ── Modo de pin pessoal ──
+gatepalAddPinBtn.addEventListener('click', () => {
+  gatepalAddPinMode = !gatepalAddPinMode;
+  gatepalAddPinBtn.classList.toggle('active', gatepalAddPinMode);
+  gatepalAddPinNoticeEl.classList.toggle('show', gatepalAddPinMode);
+  if (gatepalAddPinMode && calibrateMode) gatepalCalibrateBtn.click(); // os dois modos de clique não podem ficar ativos juntos
+});
+
+// ── Renderização dos pins ──
+function gatepalIconFor(poi) {
+  if ((poi.cat === 'setor' || poi.cat === 'portal') && poi.icon) return poi.icon;
+  if (poi.cat === 'pessoal') return '📌';
+  return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].icon : '📍';
+}
+function gatepalColorFor(poi) {
+  if (poi.cat === 'setor') return poi.color || C.cyan;
+  if (poi.cat === 'pessoal') return '#9fb0a8';
+  return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
+}
+
+function renderGatepalHotspots() {
+  gatepalHotspotsEl.innerHTML = '';
+  const pois = gatepalAllPoisForMap(gatepalCurrentMapId);
+  pois.forEach(poi => {
+    const dot = document.createElement('div');
+    const color = gatepalColorFor(poi);
+    dot.className = 'gatepal-hotspot' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.cat === 'pessoal' ? ' is-personal' : '');
+    dot.style.left = poi.pt.x + '%';
+    dot.style.top = poi.pt.y + '%';
+    dot.style.background = color;
+    dot.style.color = color;
+    dot.title = poi.name;
+    dot.textContent = gatepalIconFor(poi);
+    dot.dataset.cat = poi.cat;
+    dot.dataset.name = (poi.name || '').toLowerCase();
+    dot.dataset.poiId = poi.id;
+    dot.dataset.done = gatepalProgress[poi.id] ? '1' : '0';
+    dot.addEventListener('click', () => openGatepalPoiPopover(poi));
+    gatepalHotspotsEl.appendChild(dot);
+  });
+  gatepalApplyFilters();
+  gatepalUpdateProgressBar();
+}
+
+// ── Filtros (categoria + status + busca) combinados, sem re-renderizar tudo ──
+function gatepalApplyFilters() {
+  const term = (gatepalSearchEl.value || '').toLowerCase().trim();
+  gatepalHotspotsEl.querySelectorAll('.gatepal-hotspot').forEach(dot => {
+    const matchCat = gatepalCatFilter === 'todos' || dot.dataset.cat === gatepalCatFilter;
+    const matchStatus = gatepalStatusFilter === 'todos'
+      || (gatepalStatusFilter === 'concluidos' && dot.dataset.done === '1')
+      || (gatepalStatusFilter === 'pendentes' && dot.dataset.done === '0');
+    const matchSearch = !term || dot.dataset.name.includes(term);
+    dot.classList.toggle('hidden-by-filter', !(matchCat && matchStatus && matchSearch));
+  });
+}
+
+// ── Barra de progresso — conclusão dos pins "oficiais" do mapa atual
+// (setor/portal/comida/arma/npc/reciclagem). Pins pessoais não entram na
+// conta — são lembretes, não coisas "pra achar no jogo". ──
+function gatepalUpdateProgressBar() {
+  const officialOnMap = gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId);
+  const total = officialOnMap.length;
+  const done = officialOnMap.filter(p => gatepalProgress[p.id]).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  gatepalProgressFillEl.style.width = pct + '%';
+  gatepalProgressLabelEl.textContent = `// PROGRESSO DO MAPA — ${done}/${total} pins conferidos (${pct}%)`;
+}
+
+// ── Popup único do pin ──
+const gatepalPoiPopoverEl = document.getElementById('gatepalPoiPopover');
+let gatepalCurrentPoi = null;
+
+function openGatepalPoiPopover(poi) {
+  gatepalCurrentPoi = poi;
+  const isPersonal = poi.cat === 'pessoal';
+  const catInfo = gatepalCategories[poi.cat];
+
+  document.getElementById('gpPoiTitle').textContent = `${gatepalIconFor(poi)} ${poi.name}`;
+  document.getElementById('gpPoiCat').textContent = isPersonal ? 'PIN PESSOAL' : (catInfo ? catInfo.label.toUpperCase() : poi.cat.toUpperCase());
+  document.getElementById('gpPoiDesc').textContent = isPersonal ? (poi.note || '') : (poi.desc || '');
+
+  const holo = document.getElementById('gpPoiHologram');
+  const img = document.getElementById('gpPoiImg');
+  const fallback = document.getElementById('gpPoiFallback');
+  if (isPersonal) {
+    holo.style.display = 'none';
+  } else {
+    holo.style.display = 'flex';
+    fallback.style.display = 'none';
+    img.style.display = 'block';
+    img.src = poi.img || '';
+    img.onerror = () => { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = gatepalIconFor(poi); };
+    if (!poi.img) { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = gatepalIconFor(poi); }
+  }
+
+  const checkWrap = document.getElementById('gpPoiCheckWrap');
+  const checkbox = document.getElementById('gpPoiCheckbox');
+  if (isPersonal) {
+    checkWrap.style.display = 'none';
+  } else {
+    checkWrap.style.display = 'flex';
+    checkbox.checked = !!gatepalProgress[poi.id];
+    checkbox.onchange = () => {
+      gatepalProgress[poi.id] = checkbox.checked;
+      gatepalSaveProgress(gatepalProgress);
+      renderGatepalHotspots(); // atualiza data-done de todos os pins + barra de progresso
+    };
+  }
+
+  const jumpBtn = document.getElementById('gpPoiJumpBtn');
+  if (!isPersonal && poi.jump) {
+    jumpBtn.style.display = 'block';
+    jumpBtn.onclick = () => { gatepalPoiPopoverEl.classList.remove('active'); gatepalJumpToPoi(poi); };
+  } else {
+    jumpBtn.style.display = 'none';
+  }
+
+  const delBtn = document.getElementById('gpPoiDelBtn');
+  if (isPersonal) {
+    delBtn.style.display = 'block';
+    delBtn.onclick = () => {
+      if (!confirm('Remover este pin pessoal?')) return;
+      gatepalPersonalPins = gatepalPersonalPins.filter(p => p.id !== poi.id);
+      gatepalSavePersonalPins(gatepalPersonalPins);
+      gatepalPoiPopoverEl.classList.remove('active');
+      renderGatepalHotspots();
+    };
+  } else {
+    delBtn.style.display = 'none';
+  }
+
+  gatepalPoiPopoverEl.classList.add('active');
+}
+document.getElementById('gpPoiClose').addEventListener('click', () => gatepalPoiPopoverEl.classList.remove('active'));
+gatepalPoiPopoverEl.addEventListener('click', (e) => { if (e.target === gatepalPoiPopoverEl) gatepalPoiPopoverEl.classList.remove('active'); });
+
+// ── "Saiba mais" — leva pro ponto de detalhe correspondente em outra aba/seção ──
+function gatepalJumpToPoi(poi) {
+  if (!poi.jump) return;
+  if (poi.jump.type === 'sector') { jumpToSector(poi.jump.i); return; }
+  if (poi.jump.type === 'portal') {
+    const portalTabBtn = document.querySelector('.tab-btn[onclick*="\'portals\'"]');
+    switchTab('portals', portalTabBtn);
+    setTimeout(() => {
+      const card = document.getElementById('pcard-' + poi.jump.i);
+      if (!card) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!card.classList.contains('expanded')) togglePortal(poi.jump.i);
+    }, 60);
+    return;
+  }
+  if (poi.jump.type === 'anchor' && poi.jump.tab && poi.jump.anchor) {
+    const btn = document.querySelector(`.tab-btn[onclick*="'${poi.jump.tab}'"]`);
+    switchTab(poi.jump.tab, btn);
+    setTimeout(() => {
+      const el = document.getElementById(poi.jump.anchor);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
+  }
 }
 
 // Clique num setor → rola até o card correspondente na grade de baixo e pisca a borda
@@ -5896,39 +6630,14 @@ function jumpToSector(i) {
   card.classList.add('map-card-flash');
 }
 
-// Clique num portal → abre popover rápido (reaproveita visual do deploy-modal)
-const gatepalPortalPopoverEl = document.getElementById('gatepalPortalPopover');
-let gatepalCurrentPortal = null;
-
-function openPortalPopover(i) {
-  gatepalCurrentPortal = i;
-  const p = portaisData[i];
-  document.getElementById('gpPortalTitle').textContent = `${p.icon} ${p.name}`;
-  document.getElementById('gpPortalUniverso').textContent = p.universo;
-  const img = document.getElementById('gpPortalImg');
-  const fallback = document.getElementById('gpPortalFallback');
-  fallback.style.display = 'none';
-  img.style.display = 'block';
-  img.src = p.img || '';
-  img.onerror = () => { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = p.icon; };
-  gatepalPortalPopoverEl.classList.add('active');
+// Aviso de "coordenadas ainda não calibradas" — some sozinho assim que
+// alguém editar os arrays acima (deixa de bater com a grade provisória).
+const isDefaultGrid = gatepalSectorPoints.every((pt) => pt.y === 15) &&
+                       gatepalPortalPoints.every((pt) => pt.y === 85 || pt.y === 92);
+if (isDefaultGrid) {
+  gatepalNoticeEl.style.display = 'block';
+  gatepalNoticeEl.innerHTML = '📍 As posições dos marcadores de Setores/Portais ainda são um placeholder (grade provisória) — use o <b>"🎯 Modo Calibração"</b> pra clicar em cima da imagem real e ajustar cada uma. Depois é só colar as coordenadas no array <code>gatepalSectorPoints</code> / <code>gatepalPortalPoints</code> do código.';
 }
-document.getElementById('gatepalPortalPopoverClose').addEventListener('click', () => gatepalPortalPopoverEl.classList.remove('active'));
-gatepalPortalPopoverEl.addEventListener('click', (e) => { if (e.target === gatepalPortalPopoverEl) gatepalPortalPopoverEl.classList.remove('active'); });
-
-document.getElementById('gpPortalJumpBtn').addEventListener('click', () => {
-  if (gatepalCurrentPortal === null) return;
-  gatepalPortalPopoverEl.classList.remove('active');
-  const i = gatepalCurrentPortal;
-  const portalTabBtn = document.querySelector('.tab-btn[onclick*="\'portals\'"]');
-  switchTab('portals', portalTabBtn);
-  setTimeout(() => {
-    const card = document.getElementById('pcard-' + i);
-    if (!card) return;
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (!card.classList.contains('expanded')) togglePortal(i);
-  }, 60);
-});
 
 // ── Modo Calibração — clique na imagem devolve as coordenadas em % ──
 // Ferramenta de régua: não sei onde as coisas ficam na imagem real, então
@@ -5947,32 +6656,49 @@ gatepalCalibrateBtn.addEventListener('click', () => {
   gatepalHotspotsEl.classList.toggle('calibrating', calibrateMode);
   gatepalCrosshairEl.style.display = 'none';
   gatepalCoordReadoutEl.style.display = 'none';
+  if (calibrateMode && gatepalAddPinMode) gatepalAddPinBtn.click(); // os dois modos de clique não podem ficar ativos juntos
 });
 
 gatepalScreenEl.addEventListener('click', (e) => {
-  if (!calibrateMode) {
-    // Fora do modo calibração, clicar na imagem abre o zoom (lightbox)
-    if (e.target.id === 'gatepalImg') openGatepalLightbox();
+  if (calibrateMode) {
+    const rect = gatepalScreenEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+    gatepalCrosshairEl.style.left = x + '%';
+    gatepalCrosshairEl.style.top = y + '%';
+    gatepalCrosshairEl.style.display = 'block';
+
+    const coordText = `{ x: ${x}, y: ${y} }`;
+    gatepalCoordReadoutEl.style.display = 'flex';
+    gatepalCoordReadoutEl.innerHTML = `x: ${x} · y: ${y} <button id="gatepalCopyCoord">copiar</button>`;
+    document.getElementById('gatepalCopyCoord').addEventListener('click', () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(coordText).catch(() => {});
+      }
+    });
     return;
   }
-  const rect = gatepalScreenEl.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-  const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-  gatepalCrosshairEl.style.left = x + '%';
-  gatepalCrosshairEl.style.top = y + '%';
-  gatepalCrosshairEl.style.display = 'block';
 
-  const coordText = `{ x: ${x}, y: ${y} }`;
-  gatepalCoordReadoutEl.style.display = 'flex';
-  gatepalCoordReadoutEl.innerHTML = `x: ${x} · y: ${y} <button id="gatepalCopyCoord">copiar</button>`;
-  document.getElementById('gatepalCopyCoord').addEventListener('click', () => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(coordText).catch(() => {});
-    }
-  });
+  if (gatepalAddPinMode) {
+    if (e.target.closest('.gatepal-hotspot')) return; // clicou em cima de um pin já existente — não cria outro ali
+    const rect = gatepalScreenEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+    const name = prompt('Nome curto do pin pessoal (o que precisa ser lembrado/adicionado aqui):');
+    if (!name || !name.trim()) return;
+    const note = prompt('Nota opcional (deixe em branco se não precisar):') || '';
+    const pin = { id: 'pessoal-' + Date.now(), mapId: gatepalCurrentMapId, x: parseFloat(x), y: parseFloat(y), name: name.trim(), note: note.trim() };
+    gatepalPersonalPins.push(pin);
+    gatepalSavePersonalPins(gatepalPersonalPins);
+    renderGatepalHotspots();
+    return;
+  }
+
+  // Fora dos dois modos, clicar na imagem abre o zoom (lightbox)
+  if (e.target.id === 'gatepalImg') openGatepalLightbox();
 });
 
-// ── Lightbox de zoom (fora do modo calibração) ──
+// ── Lightbox de zoom (imagem cheia, sem pins) ──
 const gatepalLightboxEl = document.getElementById('gatepalLightbox');
 const gatepalLightboxImgEl = document.getElementById('gatepalLightboxImg');
 
@@ -5987,6 +6713,34 @@ gatepalLightboxEl.addEventListener('click', (e) => {
   }
 });
 gatepalLightboxImgEl.addEventListener('click', () => gatepalLightboxImgEl.classList.toggle('zoomed'));
+
+// ── Zoom com botões — funciona com os pins clicáveis por cima (ao contrário
+// do lightbox acima, que é só a imagem sem pins). Escala o mesmo
+// .gatepal-screen que já tem a imagem e os pins dentro, então os dois
+// aumentam/diminuem juntos e alinhados. ──
+let gatepalZoomLevel = 1;
+const GATEPAL_ZOOM_MIN = 1, GATEPAL_ZOOM_MAX = 3, GATEPAL_ZOOM_STEP = 0.25;
+const gpZoomLevelEl = document.getElementById('gpZoomLevel');
+function gatepalApplyZoom() {
+  gatepalScreenEl.style.transform = `scale(${gatepalZoomLevel})`;
+  gpZoomLevelEl.textContent = Math.round(gatepalZoomLevel * 100) + '%';
+}
+document.getElementById('gpZoomIn').addEventListener('click', () => {
+  gatepalZoomLevel = Math.min(GATEPAL_ZOOM_MAX, gatepalZoomLevel + GATEPAL_ZOOM_STEP);
+  gatepalApplyZoom();
+});
+document.getElementById('gpZoomOut').addEventListener('click', () => {
+  gatepalZoomLevel = Math.max(GATEPAL_ZOOM_MIN, gatepalZoomLevel - GATEPAL_ZOOM_STEP);
+  gatepalApplyZoom();
+});
+document.getElementById('gpZoomReset').addEventListener('click', () => {
+  gatepalZoomLevel = 1;
+  gatepalApplyZoom();
+  document.getElementById('gatepalViewport').scrollTo({ top: 0, left: 0 });
+});
+
+// ── Primeira renderização ──
+renderGatepalHotspots();
 
 
 const skillsGrid = document.getElementById('skills-grid');
@@ -6190,6 +6944,317 @@ const weaponsGrid = document.getElementById('weapons-grid');
   group.appendChild(grid);
   weaponsGrid.appendChild(group);
 });
+
+// ══════════════════════════════════════════════════════════════════
+// QUÍMICA E DESTILAÇÕES — sistema completo (Distillation Bench + Chemistry Bench)
+// Dados verificados na Wiki Oficial: https://abioticfactor.wiki.gg/wiki/Chemistry
+// ══════════════════════════════════════════════════════════════════
+const distillationsData = [
+  { id:"vigorous",    name:"Destilação Vigorosa",     eng:"Vigorous Distillation",    color:"#00e060", icon:"🌱",
+    sources:[{n:"Maçã",q:4},{n:"Batata",q:3},{n:"Cenoura",q:4},{n:"Abóbora",q:12}] },
+  { id:"fizzy",       name:"Destilação Efervescente", eng:"Fizzy Distillation",       color:"#20d0c0", icon:"🥤",
+    sources:[{n:"Gem Sugar",q:8},{n:"Sorvete",q:3},{n:"Slushie",q:2},{n:"XETA NRG",q:2}] },
+  { id:"alien",       name:"Destilação Alienígena",   eng:"Alien Distillation",       color:"#a060e0", icon:"👽",
+    sources:[{n:"Anti-Fungal Gelatin",q:32},{n:"Peccary Alpha Skull",q:8},{n:"Exor Skull",q:3},{n:"Filé de Portal Fish",q:2}] },
+  { id:"foggy",       name:"Destilação Nebulosa",     eng:"Foggy Distillation",       color:"#7090a8", icon:"🌫️",
+    sources:[{n:"Órgão (Organ)",q:12},{n:"Cabeça do Sinfonista",q:4},{n:"Porcelain Shards",q:2}] },
+  { id:"brainy",      name:"Destilação Cerebral",     eng:"Brainy Distillation",      color:"#e060a0", icon:"🧠",
+    sources:[{n:"Crânio de Yeti",q:12},{n:"Cérebro Humano",q:4},{n:"Crânio de Sniper",q:4}] },
+  { id:"void",        name:"Destilação do Vazio",     eng:"Void Distillation",        color:"#6020c0", icon:"🕳️",
+    sources:[{n:"Anteverse Gem",q:3},{n:"Gem Crab",q:3},{n:"Powdered Crystal",q:4}] },
+  { id:"mycological", name:"Destilação Micológica",   eng:"Mycological Distillation", color:"#a06020", icon:"🍄",
+    sources:[{n:"Carbuncle Mushroom",q:4},{n:"Mushroom Peccary Skull",q:8}] },
+  { id:"charged",     name:"Destilação Carregada",    eng:"Charged Distillation",     color:"#e0d020", icon:"⚡",
+    sources:[{n:"Capacitor",q:6},{n:"Electrical Organ",q:6},{n:"Transcendium",q:8}] },
+  { id:"boiling",     name:"Destilação Fervente",     eng:"Boiling Distillation",     color:"#e05020", icon:"🔥",
+    sources:[{n:"Anteverse Gel",q:3},{n:"Royal Pepper",q:4}] },
+  { id:"expanding",   name:"Destilação Expansiva",    eng:"Expanding Distillation",   color:"#20a090", icon:"💥",
+    sources:[{n:"Tarasque Ichor",q:12},{n:"Behemoth Skull",q:24},{n:"Tarasque Skull",q:8}] },
+  { id:"unnerving",   name:"Destilação Perturbadora", eng:"Unnerving Distillation",   color:"#c02040", icon:"😨",
+    sources:[{n:"Night Essence",q:12},{n:"Keresphere",q:4},{n:"Black Oil",q:2}] },
+  { id:"fleshy",      name:"Destilação Carnal",       eng:"Fleshy Distillation",      color:"#e08070", icon:"🩸",
+    sources:[{n:"Lodestone Fragment",q:6},{n:"Greyeb",q:2},{n:"STOLAS Hard Drive",q:1}] },
+  { id:"unstable",    name:"Destilação Instável",     eng:"Unstable Distillation",    color:"#ff2020", icon:"☢️",
+    sources:[{n:"Plutonic Blood",q:4},{n:"Plutonic Carapace",q:2},{n:"Volatile Exor Skull",q:3}] },
+  { id:"occult",      name:"Destilação Oculta",       eng:"Occult Distillation",      color:"#8020a0", icon:"🔮",
+    sources:[{n:"Purported Grimoire",q:5},{n:"Chieftain Skull",q:3},{n:"Witch Skull",q:3}] },
+  { id:"endothermic", name:"Destilação Endotérmica",  eng:"Endothermic Distillation", color:"#40c0e0", icon:"❄️",
+    sources:[{n:"Frozen Essence",q:12},{n:"Snow Peccary Skull",q:2}] },
+  { id:"noxious",     name:"Lodo Nocivo",             eng:"Noxious Sludge",           color:"#608020", icon:"☣️",
+    sources:[{n:"Ácido, Alvejante, Pólvora e ~15 outros itens de sucata",q:1}], note:"Resultado indesejado — evite destilar itens de sucata/lixo se não quiser gerar isso." },
+];
+const distById = {};
+distillationsData.forEach(d => distById[d.id] = d);
+
+const catInfo = {
+  coating:  { label:"REVESTIMENTO", c:"#20d0c0" },
+  flask:    { label:"FRASCO",       c:"#e05020" },
+  tincture: { label:"TINTURA",      c:"#00e060" },
+};
+
+const concoctionsData = [
+  // ── REVESTIMENTOS (10) ──
+  { id:"acid_coating", name:"Revestimento Ácido", eng:"Acid Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"unstable",q:6},{d:"boiling",q:6},{d:"alien",q:6}],
+    effect:"Dano ácido bônus = 25% do dano da arma, a cada golpe. Efeito visual verde translúcido + respingo de ácido no impacto." },
+  { id:"bounce_coating", name:"Revestimento de Repulsão", eng:"Bounce Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"mycological",q:8},{d:"fizzy",q:8},{d:"foggy",q:4}],
+    effect:"A arma passa a empurrar (knockback) o inimigo a cada golpe.",
+    note:"Só funciona em armas corpo a corpo — o jogo deixa aplicar em armas à distância, mas o efeito não faz nada nos projéteis." },
+  { id:"disruptor_coating", name:"Revestimento Disruptor", eng:"Disruptor Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"occult",q:8},{d:"charged",q:8},{d:"boiling",q:8}],
+    effect:"Triplica (3x) o dano contra escudos de hardlight. Brilho rosa na ponta da arma." },
+  { id:"electromagnetic_coating", name:"Revestimento Eletromagnético", eng:"Electromagnetic Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"charged",q:8},{d:"fizzy",q:4},{d:"void",q:4}],
+    effect:"Recarrega 1 unidade de carga de baterias no inventário a cada acerto, além de +5% de dano elétrico bônus.",
+    note:"Combo conhecido: aplique numa arma corpo a corpo pra ter bateria praticamente infinita em outros itens." },
+  { id:"foggy_coating", name:"Revestimento Nebuloso", eng:"Foggy Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"foggy",q:8},{d:"vigorous",q:4},{d:"void",q:2}],
+    effect:"A arma ignora resistências de dano do inimigo. Cria neblina no impacto.",
+    note:"Muito útil contra Grunts blindados e outros inimigos com resistência elemental específica." },
+  { id:"holy_coating", name:"Revestimento Sagrado", eng:"\"Holy\" Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"fleshy",q:6},{d:"charged",q:6},{d:"unnerving",q:4}],
+    effect:"Aplica uma queimadura sagrada (3 tiques de 10 de dano) que NÃO escala com o dano da arma.",
+    note:"Pouco eficaz contra os vários inimigos imunes a dano de fogo/sagrado do jogo." },
+  { id:"quantum_coating", name:"Revestimento Quântico", eng:"Quantum Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"occult",q:6},{d:"endothermic",q:6},{d:"void",q:6}],
+    effect:"20% de chance de não gastar munição ou recurso a cada uso. Brilho roxo na ponta da arma." },
+  { id:"reforge_coating", name:"Revestimento de Autorreparo", eng:"Reforge Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"fleshy",q:6},{d:"mycological",q:6},{d:"vigorous",q:6}],
+    effect:"Recupera 0.5 de durabilidade a cada 5 segundos, automaticamente, enquanto a arma estiver em mãos." },
+  { id:"somnivorous_coating", name:"Revestimento Somnívoro", eng:"Somnivorous Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"brainy",q:6},{d:"unnerving",q:6},{d:"foggy",q:6}],
+    effect:"Rouba vida: cura você em 20% do dano causado a cada golpe. Efeito visual de gêiser de sangue." },
+  { id:"thermal_coating", name:"Revestimento Térmico", eng:"Thermal Coating", category:"coating", mixTime:"0:15",
+    recipe:[{d:"boiling",q:6},{d:"vigorous",q:4},{d:"alien",q:4}],
+    effect:"Dano de fogo bônus = 15% do dano da arma, incendeia o inimigo.",
+    note:"Também aumenta a temperatura ambiente sentida por você em 1 nível (ex.: de Hipotérmico pra Frio) enquanto a arma estiver equipada." },
+
+  // ── FRASCOS (12, incl. Frasco Instável) ──
+  { id:"blizzard_flask", name:"Frasco Nevasca", eng:"Blizzard Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"endothermic",q:2},{d:"occult",q:2},{d:"fizzy",q:4}],
+    effect:"Cria um vórtice de nevasca que congela e reduz a velocidade dos inimigos em 50% por 8 segundos." },
+  { id:"charging_flask", name:"Frasco de Recarga", eng:"Charging Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"charged",q:4},{d:"void",q:2},{d:"alien",q:1}],
+    effect:"Recarrega baterias de itens próximos — 4 frascos recarregam completamente todo o seu equipamento.",
+    note:"Alternativa de campo muito mais eficiente que Field Batteries." },
+  { id:"concussive_flask", name:"Frasco Concussivo", eng:"Concussive Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"fizzy",q:2},{d:"alien",q:2},{d:"vigorous",q:1}],
+    effect:"Explode causando 50 de dano direto e 16 de dano concussivo em área.",
+    note:"Barato de craftar, mas fraco perto de outras opções — bom só no early/mid game." },
+  { id:"corrosive_flask", name:"Frasco Corrosivo", eng:"Corrosive Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"unstable",q:2},{d:"boiling",q:2},{d:"fizzy",q:4}],
+    effect:"Espalha ácido que corrói a armadura do alvo, aplicando um debuff que aumenta o dano recebido em 30% por 30 segundos.",
+    note:"Jogue antes de um burst de dano do time pra punir o alvo enfraquecido." },
+  { id:"holy_flask", name:"Frasco Sagrado", eng:"\"Holy\" Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"boiling",q:2},{d:"fleshy",q:2},{d:"unnerving",q:1}],
+    effect:"Efeito de fogo sagrado em área — um dos itens menos documentados do jogo até pela própria comunidade.",
+    note:"Provavelmente similar ao Revestimento Sagrado, mas em formato de explosão em área." },
+  { id:"megaton_flask", name:"Frasco Megaton", eng:"Megaton Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"unstable",q:4},{d:"boiling",q:4},{d:"expanding",q:2}],
+    effect:"Explosão que causa até 600 de dano no centro do impacto e no mínimo 50 de dano numa área de 0.5m.",
+    note:"A maior explosão disponível na Química — reserve pra alvos grandes." },
+  { id:"panic_flask", name:"Frasco do Pânico", eng:"Panic Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"unnerving",q:4},{d:"charged",q:2},{d:"brainy",q:1}],
+    effect:"Gás alucinógeno que faz os inimigos entrarem em pânico e atacarem uns aos outros por 30 segundos.",
+    note:"Em jogadores, só reproduz sons de perseguição do Leyak — não causa o mesmo efeito de caos." },
+  { id:"pheromone_flask", name:"Frasco de Feromônio", eng:"Pheromone Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"alien",q:6},{d:"mycological",q:4},{d:"brainy",q:4}],
+    effect:"Pacifica Pests, Peccaries e Skinks por 45 segundos, deixando-os neutros a você.",
+    note:"Essencial pra domesticação — alimente a criatura pacificada com Trigo Anteverso ou Nachos em seguida." },
+  { id:"portal_flask", name:"Frasco de Portal", eng:"Portal Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"alien",q:8},{d:"void",q:4},{d:"unstable",q:2}],
+    effect:"Abre uma micro-perfuração que puxa uma criatura hostil aleatória pro seu lado — geralmente um Pest (~35%) ou Peccary (~17.5%).",
+    note:"Use pra criar caos/distração, não como algo previsível — o alvo puxado é sempre aleatório." },
+  { id:"restorative_flask", name:"Frasco Restaurador", eng:"Restorative Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"mycological",q:2},{d:"fizzy",q:2},{d:"vigorous",q:4}],
+    effect:"Nuvem de esporos que cura 60 HP por segundo por 2 segundos (120 HP no total) e estanca sangramento instantaneamente em quem estiver na área.",
+    note:"Funciona em jogadores e pets — jogue onde só seus aliados vão pisar." },
+  { id:"updraft_flask", name:"Frasco de Corrente Ascendente", eng:"Updraft Flask", category:"flask", mixTime:"0:15",
+    recipe:[{d:"foggy",q:1},{d:"fizzy",q:2},{d:"void",q:1}],
+    effect:"Cria uma corrente de ar ascendente, como um Jump Pad ou Gaseous Nest.",
+    note:"Jogado bem antes de bater no chão numa queda grande, anula o dano de queda se o timing for certo." },
+  { id:"unstable_flask", name:"Frasco Instável", eng:"Unstable Flask", category:"flask", mixTime:"0:15", special:true,
+    recipe:null,
+    effect:"Efeito completamente imprevisível ao ser arremessado — já foi visto deixando o alvo com mau cheiro até efeitos aleatórios não documentados oficialmente.",
+    note:"Não é craftado de propósito — é o resultado de errar a receita: 3 Destilações na proporção errada, OU 2 Destilações + 1 Lodo Nocivo. Também causa uma pequena explosão com empurrão na própria Bancada de Química." },
+
+  // ── TINTURAS (10) ──
+  { id:"antiheat_tincture", name:"Tintura Anticalor", eng:"Antiheat Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:4},{d:"endothermic",q:4},{d:"boiling",q:4}],
+    effect:"Imunidade a dano de fogo + 3 de resistência ao calor, por 1 minuto e 30 segundos." },
+  { id:"berserker_tincture", name:"Tintura Berserker", eng:"Berserker Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:4},{d:"occult",q:2},{d:"alien",q:4}],
+    effect:"+20% de velocidade de movimento e de dano, e imunidade à maioria das formas de morte, por 1 minuto." },
+  { id:"brainpower_tincture", name:"Tintura Cerebral", eng:"Brainpower Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:1},{d:"alien",q:2},{d:"brainy",q:2}],
+    effect:"+15% de ganho de experiência (XP) por 10 minutos.",
+    note:"Beba antes de uma sessão planejada de farm de XP." },
+  { id:"curative_tincture", name:"Tintura Curativa", eng:"Curative Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:4},{d:"void",q:4},{d:"mycological",q:4}],
+    effect:"Cura instantaneamente todos os debuffs (exceto o Vírus Estranho) e limpa 40 rads.",
+    note:"NÃO restaura HP — combine com uma Tintura Restauradora se precisar de cura também." },
+  { id:"electrifying_tincture", name:"Tintura Eletrizante", eng:"Electrifying Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:4},{d:"charged",q:4},{d:"boiling",q:2}],
+    effect:"Ao receber dano corpo a corpo, libera uma explosão de 35 de dano elétrico num raio de 2.9m (efeito 'espinho'). Só pode disparar 1x a cada 2 segundos. Dura 2 minutos." },
+  { id:"giganto_tincture", name:"Tintura Giganto", eng:"Giganto Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:2},{d:"expanding",q:2},{d:"alien",q:2}],
+    effect:"+20% de tamanho/hitbox, +50% de dano corpo a corpo e +30% de redução de dano, por 1 minuto e 30 segundos.",
+    note:"Curiosidade: alimentar um Peccary (pet) com 3 doses dessa tintura o transforma num Tareccary." },
+  { id:"phasing_tincture", name:"Tintura de Fase", eng:"Phasing Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"alien",q:2},{d:"foggy",q:2},{d:"vigorous",q:2}],
+    effect:"35% de chance de ataques atravessarem você sem causar dano, por 45 segundos." },
+  { id:"reinforcing_tincture", name:"Tintura de Reforço", eng:"Reinforcing Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:4},{d:"fleshy",q:3},{d:"void",q:3}],
+    effect:"+60 de armadura por 1 minuto e 30 segundos." },
+  { id:"restorative_tincture", name:"Tintura Restauradora", eng:"Restorative Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:2},{d:"void",q:1},{d:"alien",q:2}],
+    effect:"Regenera 15 HP por segundo por 45 segundos (675 HP no total). O efeito termina cedo se você atingir HP máximo." },
+  { id:"speedy_tincture", name:"Tintura Veloz", eng:"Speedy Tincture", category:"tincture", mixTime:"0:15",
+    recipe:[{d:"vigorous",q:2},{d:"fizzy",q:2},{d:"void",q:1}],
+    effect:"+50% de velocidade de movimento por 1 minuto." },
+];
+
+// ── Render: grid de Destilações (clicável, funciona como filtro) ──
+const chemDistGridEl = document.getElementById('chem-dist-grid');
+let chemDistFilter = null;
+
+function renderChemDistGrid() {
+  if (!chemDistGridEl) return;
+  chemDistGridEl.innerHTML = distillationsData.map(d => {
+    const srcTxt = d.sources.map(s => `<b>${s.q}x</b> ${s.n}`).join(' · ');
+    const selected = chemDistFilter === d.id ? ' selected' : '';
+    return `
+      <div class="chem-dist-card${selected}" data-dist="${d.id}" style="--dc:${d.color}">
+        <span class="chem-dist-icon">${d.icon}</span>
+        <div class="chem-dist-name">${d.name}</div>
+        <div class="chem-dist-eng">${d.eng}</div>
+        <div class="chem-dist-sources">${srcTxt}${d.note ? `<br><em>${d.note}</em>` : ''}</div>
+      </div>`;
+  }).join('');
+  chemDistGridEl.querySelectorAll('.chem-dist-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.dist;
+      chemDistFilter = (chemDistFilter === id) ? null : id;
+      renderChemDistGrid();
+      renderChemGrid();
+    });
+  });
+}
+
+// ── Render: grid de Concocções (Revestimentos/Frascos/Tinturas), com busca + categoria + filtro por destilação ──
+const chemGridEl = document.getElementById('chem-grid');
+const chemSearchEl = document.getElementById('chem-search');
+const chemTabsEl = document.getElementById('chem-tabs');
+const chemFilterBarEl = document.getElementById('chem-filter-bar');
+const chemFilterLabelEl = document.getElementById('chem-filter-label');
+const chemFilterClearEl = document.getElementById('chem-filter-clear');
+let chemActiveCat = 'todos';
+
+function renderChemGrid() {
+  if (!chemGridEl) return;
+  const term = (chemSearchEl?.value || '').trim().toLowerCase();
+
+  if (chemDistFilter && chemFilterBarEl) {
+    chemFilterBarEl.style.display = 'flex';
+    chemFilterLabelEl.textContent = `Filtrando por: ${distById[chemDistFilter].icon} ${distById[chemDistFilter].name}`;
+  } else if (chemFilterBarEl) {
+    chemFilterBarEl.style.display = 'none';
+  }
+
+  const filtered = concoctionsData.filter(item => {
+    if (chemActiveCat !== 'todos' && item.category !== chemActiveCat) return false;
+    if (chemDistFilter) {
+      if (!item.recipe) return false;
+      if (!item.recipe.some(r => r.d === chemDistFilter)) return false;
+    }
+    if (term) {
+      const hay = (item.name + ' ' + item.eng + ' ' + item.effect).toLowerCase();
+      if (!hay.includes(term)) return false;
+    }
+    return true;
+  });
+
+  if (!filtered.length) {
+    chemGridEl.innerHTML = `<div style="grid-column:1/-1;color:var(--textMuted);font-size:var(--fs-sm);padding:14px 0">Nenhum item encontrado com esse filtro.</div>`;
+    return;
+  }
+
+  chemGridEl.innerHTML = filtered.map(item => {
+    const ci = catInfo[item.category];
+    const recipeChips = item.recipe
+      ? item.recipe.map(r => {
+          const d = distById[r.d];
+          const hl = (chemDistFilter === r.d) ? ' highlight' : '';
+          return `<span class="chem-recipe-chip${hl}" style="--bc:${d.color}">${d.icon} ${r.q}x</span>`;
+        }).join('')
+      : `<span class="chem-recipe-chip" style="--bc:#ff2020">⚠️ receita errada</span>`;
+    return `
+      <div class="chem-card" data-id="${item.id}" style="--cc:${ci.c}">
+        <div class="chem-card-cat">${ci.label}</div>
+        <div class="chem-card-name">${item.name}</div>
+        <div class="chem-card-recipe">${recipeChips}</div>
+        <div class="chem-card-effect">${item.effect.length > 90 ? item.effect.slice(0,90)+'…' : item.effect}</div>
+      </div>`;
+  }).join('');
+
+  chemGridEl.querySelectorAll('.chem-card').forEach(card => {
+    card.addEventListener('click', () => openChemModal(card.dataset.id));
+  });
+}
+
+if (chemSearchEl) chemSearchEl.addEventListener('input', renderChemGrid);
+if (chemTabsEl) {
+  chemTabsEl.querySelectorAll('.deploy-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chemTabsEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      chemActiveCat = btn.dataset.cat;
+      renderChemGrid();
+    });
+  });
+}
+if (chemFilterClearEl) {
+  chemFilterClearEl.addEventListener('click', () => {
+    chemDistFilter = null;
+    renderChemDistGrid();
+    renderChemGrid();
+  });
+}
+
+// ── Modal de detalhe de uma Concocção ──
+const chemModalEl = document.getElementById('chem-modal');
+function openChemModal(id) {
+  const item = concoctionsData.find(c => c.id === id);
+  if (!item || !chemModalEl) return;
+  const ci = catInfo[item.category];
+  document.getElementById('chem-m-title').textContent = `${item.name}`;
+  document.getElementById('chem-m-cat').textContent = `${ci.label} — ${item.eng}`;
+  document.getElementById('chem-m-mixtime').textContent = `⏱️ Tempo de mistura: ${item.mixTime}`;
+  document.getElementById('chem-m-recipe').innerHTML = item.recipe
+    ? item.recipe.map(r => {
+        const d = distById[r.d];
+        return `<span class="chem-recipe-chip" style="--bc:${d.color}">${d.icon} ${d.name} ×${r.q}</span>`;
+      }).join('')
+    : `<span class="chem-recipe-chip" style="--bc:#ff2020">⚠️ Resultado de receita errada — sem receita própria</span>`;
+  document.getElementById('chem-m-effect').textContent = item.effect;
+  const noteTitleEl = document.getElementById('chem-m-notetitle');
+  const noteEl = document.getElementById('chem-m-note');
+  if (item.note) {
+    noteTitleEl.style.display = 'block';
+    noteEl.style.display = 'block';
+    noteEl.textContent = item.note;
+  } else {
+    noteTitleEl.style.display = 'none';
+    noteEl.style.display = 'none';
+  }
+  chemModalEl.classList.add('active');
+}
+document.getElementById('chem-modal-close')?.addEventListener('click', () => chemModalEl.classList.remove('active'));
+chemModalEl?.addEventListener('click', (e) => { if (e.target === chemModalEl) chemModalEl.classList.remove('active'); });
+
+renderChemDistGrid();
+renderChemGrid();
 
 // Toggle expansível das faixas de classificação (S/A/B/C) em Armas e Armaduras —
 // mesma lógica de animação por max-height já usada em Dicas/Skills, mas aplicada
@@ -6765,7 +7830,24 @@ const entitiesData = [
   { name:"Jotun",              eng:"Jotun", img:"Images/Entidades/Jotun.webp",           icon:"🗿", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores / Shadowgate",threat:5,weak:"Precisão alta",           immune:"Físico fraco",  loot:"Itens do Jotun",                                            tip:"Boss — troféu Sjaund. Alta vida. Mantenha distância e use armas de alto dano por tiro." },
   { name:"Robô de Segurança",  eng:"Security Bot", img:"Images/Entidades/Securitybot.webp",    icon:"🤖", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"PEM (Pulso Eletromagnético), Haywire",           immune:"Veneno",        loot:"CPU de Robô de Segurança",                                  tip:"Patrulha só de noite. Night Pass Trinket = invisível para eles. Choppinator é o método safe." },
   { name:"Robô de Contenção",  eng:"Containment Bot", img:"Images/Entidades/Containmentbot.webp", icon:"🔒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Todos (noite)",       threat:3, weak:"Lança (Spear)",          immune:"Veneno",        loot:"CPU Desbloqueada, bebidas raras",                           tip:"Vulnerável a armas de longo alcance. Dropa CPUs e bebidas especiais raras." },
-  { name:"Guardiões do Portão", eng:"Gatekeeper", img:"Images/Entidades/Gatekeeper.webp",      icon:"💀", type:"ROBÔ",      typeColor:C.cyan,  sector:"Reatores+",           threat:5, weak:"Sagrado, PEM (Pulso Eletromagnético)",              immune:"Físico leve",   loot:"Loot do Guardião do Portão, Liga Magnética",                        tip:"⚠️ GRIND: 100 kills para Ragnarök. Sagrado damage ignora escudo pessoal hardlight." },
+  { name:"Neófito",             eng:"Neophyte", img:"Images/Entidades/Neophyte.webp",        icon:"🥋", type:"HUMANO",    typeColor:C.red,   sector:"Reatores+",           threat:2, weak:"Sagrado (ignora escudo)", immune:"—",             loot:"GATE Defense Rune (raro), Liga Magnética",                  tip:"O soldado básico dos Gatekeepers — usa escudo hardlight. Flanqueie ou use dano Sagrado pra ignorar o bloqueio." },
+  { name:"Chefe (Chieftain)",  eng:"Chieftain", img:"Images/Entidades/Chieftain.webp",       icon:"🎖️", type:"HUMANO",    typeColor:C.red,   sector:"Reatores+",           threat:3, weak:"Sagrado (ignora escudo)", immune:"—",             loot:"Pistola de alto calibre, GATE Defense Rune (raro)",         tip:"Líder promovido de Neófitos — usa escudo hardlight + pistola forte. Trate como um Neófito só que mais perigoso." },
+  { name:"Bruxa (Witch)",       eng:"Witch", img:"Images/Entidades/Witch.webp",           icon:"🧙", type:"HUMANO",    typeColor:C.red,   sector:"Shadowgate / Setor Residencial", threat:3, weak:"Sagrado (ignora escudo)", immune:"—",             loot:"Escopeta, Jetpack (peças), GATE Defense Rune (raro)",       tip:"A mais leve blindagem dos Gatekeepers, mas usa jetpack pra reposicionar rápido — não deixe ela manter distância." },
+  { name:"Mystagogue",          eng:"Mystagogue", img:"Images/Entidades/Mystagogue.webp",     icon:"🔮", type:"ENTIDADE",  typeColor:C.purple,sector:"Reatores / Shadowgate / Residencial", threat:4, weak:"Destruir os Mystagogue Eyes primeiro", immune:"Estrangulamento não bloqueável", loot:"GATE Defense Rune (raro), Liga Magnética", tip:"Flutua, joga bolas de fogo e pode te estrangular telecineticamente à distância. Sempre vem escoltada por Mystagogue Eyes — destrua-os primeiro." },
+  { name:"Exor",                eng:"Exor", img:"Images/Entidades/Exor.webp",             icon:"🦂", type:"CRIATURA",  typeColor:C.amber, sector:"Cascade / Anteverse",  threat:3, weak:"Elétrico",               immune:"—",             loot:"Coração de Exor Cru, Coxa Alienígena Crua, Braço de Exor, Espinho de Exor", tip:"Rajada de 4-6 tiros do Braço-Espinho à distância + melee forte. Corte o corpo com arma afiada pra pegar todo o loot." },
+  { name:"Monge Exor",          eng:"Exor Monk", img:"Images/Entidades/ExorMonk.webp",        icon:"🥷", type:"CRIATURA",  typeColor:C.amber, sector:"Cascade / Anteverse",  threat:4, weak:"Rede (impede teleporte)", immune:"—",             loot:"Coração de Exor Cru, Coxa Alienígena Crua",                 tip:"Teleporta após atacar — Redes o impedem de fugir. No Apocalíptico dispara rajada tripla de laser, cuidado redobrado." },
+  { name:"Exor Blindado",       eng:"Armored Exor", img:"Images/Entidades/ArmoredExor.webp",     icon:"🛡️", type:"CRIATURA",  typeColor:C.amber, sector:"Hydroplant",           threat:4, weak:"Ácido, Elétrico",        immune:"Alta resistência a armas de fogo", loot:"Coração de Exor Cru, Coxa Alienígena Crua, Braço de Exor", tip:"O dobro de durabilidade e mobilidade de um Exor comum — usa teleporte E disparo de espinhos ao mesmo tempo, além de granadas." },
+  { name:"Robô Corrompido",     eng:"Corrupted Bot", img:"Images/Entidades/CorruptedBot.webp",    icon:"🌿", type:"ROBÔ",      typeColor:C.cyan,  sector:"Facility (áreas dos Gatekeepers)", threat:3, weak:"Sagrado",     immune:"—",             loot:"Heart of Corruption, GATE Defense Rune",                    tip:"Unidade G.E.A.R. tomada pelos Gatekeepers — Lodehammer e outras armas Sagradas fazem MUITO mais dano." },
+  { name:"Robô de Defesa",      eng:"Defense Bot", img:"Images/Entidades/DefenseBot.webp",      icon:"🎒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Hydroplant",           threat:4, weak:"Costas (mochila)",       immune:"—",             loot:"Reinforced CPU, Coil Winding (raramente Crânio Humano)",    tip:"Ataque a mochila nas costas — vá por trás (Gravity Cube ajuda solo). Ele recua pra recarregar granadas, aproveite a brecha." },
+  { name:"Zumbi",               eng:"Zombie", img:"Images/Entidades/Zombie.webp",          icon:"🧟", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores / Night Realm",threat:1, weak:"Qualquer (é lento)",    immune:"—",             loot:"Sucata Biológica, Crânio Humano",                           tip:"Extremamente lento — a mordida causa infecção, vômito e desidratação. Prioriza devorar corpos antes de perseguir você." },
+  { name:"Carbúnculo Contaminado", eng:"Tainted Carbuncle", img:"Images/Entidades/TaintedCarbuncle.webp", icon:"🟣", type:"CRIATURA",  typeColor:C.amber, sector:"Áreas contaminadas",   threat:1, weak:"Agachado = sem ataque",  immune:"—",             loot:"Carbúnculo Cru",                                            tip:"Variante do Carbúnculo comum em zonas de resíduo radioativo — mesmo truque: agache-se perto e ele não ataca." },
+  { name:"Krasue",              eng:"Krasue (IS-0091-B)", img:"Images/Entidades/Krasue.webp",         icon:"🥶", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Residencial / áreas frias", threat:4, weak:"X-Ray (Torre/Lanterna)", immune:"Físico",        loot:"Essência Congelada",                                        tip:"Variante fria do Leyak — só aparece quando você está com frio. 10s de contato visual = Congelado. Repelida com X-Ray, igual ao Leyak." },
+  { name:"Tarasque",            eng:"Tarasque (IS-0121)", img:"Images/Entidades/Tarasque.webp",       icon:"🐲", type:"CRIATURA",  typeColor:C.amber, sector:"Cascade — Containment Anning", threat:5, weak:"Fogo, Elétrico",     immune:"Bala, Explosivo", loot:"Tarasque Ichor (100%), Tarasque Skull (100%)",             tip:"Atire nos tentáculos do peito até ele ajoelhar, revelando o ponto fraco nas costas. Sai da área e reseta o HP se você recuar." },
+  { name:"Behemoth",            eng:"Behemoth", img:"Images/Entidades/Behemoth.webp",        icon:"🐉", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores — Dusk Reactor", threat:5, weak:"Fogo, Elétrico (provável, variante do Tarasque)", immune:"—", loot:"Provavelmente igual ao Tarasque (Ichor/Skull) — não confirmado", tip:"Uma versão maior e mais vermelha do Tarasque — aparece de surpresa, sem aviso prévio como o original." },
+  { name:"Yeti",                eng:"Yeti", img:"Images/Entidades/Yeti.webp",            icon:"🦍", type:"CRIATURA",  typeColor:C.amber, sector:"Voussoir (Portal)",    threat:5, weak:"Sem fraqueza elemental documentada", immune:"—", loot:"—",                                                          tip:"Chefe opcional no fim de Voussoir — compartilha padrões de ataque com o Tarasque. Long Jump Pack ajuda a esquivar dos saltos." },
+  { name:"Ceifador (Reaper)",   eng:"Reaper (IS-0059)", img:"Images/Entidades/Reaper.webp",         icon:"💀", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Segurança",     threat:5, weak:"Laser, Sagrado, Raio-X", immune:"Praticamente tudo mais — não é 'matável' de verdade", loot:"Essência Noturna (a cada acerto de Laser/Sagrado/Raio-X, ~2.5min de cooldown)", tip:"⚠️ Se pegar você, te teleporta pro Night Realm. Fique de longe, use luz de Raio-X pra render Essência Noturna sem se aproximar." },
+  { name:"Niketas",             eng:"Niketas (Priest)", img:"Images/Entidades/Niketas.webp",        icon:"🙏", type:"HUMANO",    typeColor:C.red,   sector:"Canaan (Portal)",     threat:3, weak:"Qualquer",               immune:"—",             loot:"Itens de culto",                                            tip:"Líder do culto de Canaan — derrotá-lo dá o troféu Peso Retirado dos Ombros. Pode estar protegido por cultistas por perto." },
+  { name:"Médico",              eng:"Medic", img:"Images/Entidades/Medic.webp",           icon:"⚕️", type:"HUMANO",    typeColor:C.red,   sector:"Manufacturing West+",  threat:2, weak:"Distância média (usa Spear)", immune:"—",         loot:"Capacete de Médico, Submetralhadora, Eletrônicos Militares, Munição 9mm", tip:"Apesar do nome, NÃO cura ninguém — atira rápido à queima-roupa mas fraco à distância média. Use armas de alcance (Lança)." },
   { name:"Leyak (IS-0091)",    eng:"Leyak (IS-0091)", img:"Images/Entidades/Leyak.webp", icon:"👁️", type:"ENTIDADE",  typeColor:C.purple,sector:"Setor Residencial",   threat:4, weak:"X-Ray",                 immune:"Físico",        loot:"Essência de Leyak",                                         tip:"X-Ray o repele e dropa Essência. Interaja com Unidade de Contenção para troféu Presença Amigável." },
   { name:"Colega de Trabalho", eng:"Coworker", img:"Images/Entidades/Coworker.webp",        icon:"🕴️", type:"ENTIDADE",  typeColor:C.purple,sector:"Todos (noite)",       threat:0, weak:"—",                     immune:"—",             loot:"Item de escritório aleatório",                              tip:"PASSIVO. Dê qualquer consumível e ele troca por item de escritório. Café = troféu." },
 ];
@@ -6839,6 +7921,286 @@ function renderEntities(){
   });
 }
 renderEntities();
+
+// ══════════════════════════════════════════════════════════════════
+// PETS — Sistema de Domesticação (Cosmic Companions)
+// Dados verificados na Wiki Oficial: https://abioticfactor.wiki.gg/wiki/Pets
+// ══════════════════════════════════════════════════════════════════
+const petsData = [
+  // ── PRAGAS (8) ──
+  { family:"PRAGA", name:"Praga", eng:"Pest", icon:"🦟", img:"Images/Pets/Pest.png",
+    tag:"IS-0178-A", origin:"Captura selvagem",
+    hp:"80 HP no nível 1 (crescimento por nível ainda não documentado)",
+    dmg:"Ataque de salto padrão, sem dano especial",
+    tame:"Pest Trap: fica domesticada automaticamente ao ser pega. OU acerte com Frasco de Feromônio e alimente 3x com Trigo Anteverso, Nachos ou Pão.",
+    ability:"Ataque de salto simples contra inimigos, sem efeito elemental.",
+    risk:"Só 80 HP no nível 1 — cai rápido em dificuldades altas. Se não estiver no Slot de Companheiro, pode morrer de vez após 30s caída.",
+    tip:"A porta de entrada do sistema de pets — não exige nenhum progresso em Química pra conseguir a primeira." },
+  { family:"PRAGA", name:"Praga Gaseificada", eng:"Carbonated Pest", icon:"🥤", img:"Images/Pets/PragaGaseificada.png",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Soda",
+    hp:"90 HP no nível 1, +40 HP por nível",
+    dmg:"38 de dano no nível 1 (+3/nível) · ataque especial 15 (+5/nível)",
+    tame:"Domestique uma Praga comum primeiro, depois alimente-a com 3x Soda seguidas.",
+    ability:"Chance de causar uma explosão gaseificada ao acertar o inimigo.",
+    risk:"Mesma fragilidade de HP baixo da Praga base nos primeiros níveis.",
+    tip:"Sodas são fáceis de achar ou comprar — uma das mutações mais acessíveis." },
+  { family:"PRAGA", name:"Praga Elétrica", eng:"Electro Pest", icon:"⚡", img:"Images/Pets/PragaEletrica.png",
+    tag:"IS-0173-B", origin:"Captura selvagem OU craft do item",
+    hp:"80 HP no nível 1, +30 HP por nível",
+    dmg:"40 de dano no nível 1 (+5/nível) · ataque especial 35 (+5/nível)",
+    tame:"Capture um Electro-Pest selvagem (Laboratórios Cascata) com Pest Trap, OU crafte o item Electro Pest em bancada.",
+    ability:"Chance de causar uma explosão elétrica ao acertar — ótima contra Robôs.",
+    risk:"É lenta pra se mover — carregar ela até sua base pode ser demorado.",
+    tip:"Considerada um dos pets mais fortes em grupos de 3+ pra limpar salas dos Laboratórios Cascata." },
+  { family:"PRAGA", name:"Praga Iluminada", eng:"Enlightened Pest", icon:"💡", img:"Images/Pets/PragaIluminada.png",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Shadowberry ou fatia de torta de Shadowberry",
+    hp:"70 HP no nível 1 (+20/nível) + Escudo Hardlight de 30 HP",
+    dmg:"40 de dano no nível 1 (+5/nível) · disparo de laser 35 (+5/nível)",
+    tame:"Domestique uma Praga comum, depois alimente com 3x Shadowberry ou fatia de torta de Shadowberry.",
+    ability:"Ataca à distância com um disparo de laser em vez do salto padrão.",
+    risk:"Baixo HP base, mas o Escudo Hardlight de 30 HP absorve dano antes dela ser incapacitada.",
+    tip:"A única Praga com ataque 100% à distância — segura no Slot de Companheiro sem correr risco de melee." },
+  { family:"PRAGA", name:"Praga Leyak", eng:"Leyak Pest", icon:"👁️", img:"Images/Pets/PragaLeyak.png",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x fatia de Torta de Carne Assustadora",
+    hp:"150 HP no nível 1, +30 HP por nível",
+    dmg:"33 de dano no nível 1, +3/nível",
+    tame:"Domestique uma Praga comum, depois alimente com 3x fatias de Torta de Carne Assustadora.",
+    ability:"Ataca com tentáculos rápidos como o Leyak selvagem — no nível 3 já derruba um Robô de Segurança sozinha. Atordoada (não repelida) pela Torre de Raio-X.",
+    risk:"Se comporta como se estivesse sempre observando você (efeito parecido com o Companheiro Sensorial).",
+    tip:"Uma das Pragas de maior dano total do jogo — vale o esforço de conseguir a Torta de Carne Assustadora." },
+  { family:"PRAGA", name:"Praga de Magma", eng:"Magma Pest", icon:"🌋", img:"Images/Pets/PragaDeMagma.png",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Destilação Fervente",
+    hp:"80 HP no nível 1, +30 HP por nível",
+    dmg:"43 de dano no nível 1 (+8/nível) · ataque especial 35 (+5/nível)",
+    tame:"Domestique uma Praga comum, depois alimente com 3x Destilação Fervente (precisa da Bancada de Química).",
+    ability:"Chance de incendiar o inimigo e criar uma pequena explosão de fogo ao acertar. Aumenta passivamente a temperatura ambiente, como um Aquecedor.",
+    risk:"Ela aumenta sua temperatura ambiente o tempo todo — cuidado em áreas já quentes.",
+    tip:"Maior crescimento de dano por nível entre todas as Pragas (+8/nível) — vale muito investir XP nela." },
+  { family:"PRAGA", name:"Rattus Pestis", eng:"Rattus Pestis", icon:"🐀", img:"Images/Pets/RattusPestis.png",
+    tag:"Craft (vestido sobre uma Praga)", origin:"Craftável — não é mutação por comida nem captura selvagem",
+    hp:"76 HP no nível 1, +26 HP por nível",
+    dmg:"33 de dano no nível 1, +3/nível",
+    tame:"Crafte o item Rattus Pestis em bancada e vista numa Praga já domesticada. Receita exata de crafting ainda pouco documentada pela comunidade.",
+    ability:"Chance de ROUBAR um item do inimigo que está atacando e derrubá-lo no chão (ex: soda de Robôs de Segurança, Munição 9mm de Grunts da Order) — sem remover o loot normal de quando o inimigo morre.",
+    risk:"É a Praga mais complexa de conseguir — depende de uma receita de crafting pouco clara ainda.",
+    tip:"Ótima pra 'duplo loot' de inimigos duros — o item roubado é bônus puro, não substitui o loot normal." },
+  { family:"PRAGA", name:"Praga da Neve", eng:"Snow Pest", icon:"❄️", img:"Images/Pets/PragaDaNeve.png",
+    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga com 3x Essência Congelada",
+    hp:"80 HP no nível 1, +30 HP por nível",
+    dmg:"40 de dano no nível 1, +5/nível",
+    tame:"Capture uma Snow Pest selvagem com Pest Trap, OU alimente uma Praga comum com 3x Essência Congelada.",
+    ability:"Comportamento idêntico à Praga comum, sem efeito elemental adicional confirmado em combate.",
+    risk:"Nenhum risco elemental documentado além da fragilidade padrão das Pragas.",
+    tip:"Boa pra farmar Essência Congelada aos poucos — só precisa de 3 pra mutar." },
+  { family:"PRAGA", name:"Praga Volátil", eng:"Volatile Pest", icon:"☢️", img:"Images/Pets/PragaVolatil.png",
+    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga com 3x Sangue Plutônico",
+    hp:"70 HP no nível 1, +20 HP por nível",
+    dmg:"40 de dano no nível 1 (+5/nível) · ataque especial 26 (+6/nível)",
+    tame:"Capture uma Volatile Pest selvagem com Pest Trap, OU alimente uma Praga comum com 3x Sangue Plutônico.",
+    ability:"Chance de causar uma explosão de queimadura ácida ao acertar o inimigo.",
+    risk:"Sangue Plutônico é material de fim de jogo — mutação chega tarde na progressão.",
+    tip:"Boa contra inimigos com muita resistência física — o dano ácido complementa bem." },
+
+  // ── PECARIS (8) ──
+  { family:"PECARI", name:"Pecari", eng:"Peccary", icon:"🐗", img:"Images/Pets/Pecari.png",
+    tag:"Captura selvagem", origin:"Frasco de Feromônio + 3x Trigo Anteverso",
+    hp:"402 HP total no nível 1 (cabeça 170+50/nível, tronco 170+50/nível, cada braço/perna 31+16/nível)",
+    dmg:"53 de dano no nível 1, +3/nível",
+    tame:"Jogue um Frasco de Feromônio nele, depois alimente com 3x Trigo Anteverso.",
+    ability:"Mordidas, garras, investida e um ataque de carga que precisa de uma pequena animação de preparo antes de disparar em linha reta.",
+    risk:"Exige a Química desbloqueada (Bancada de Destilação/Química) — não dá pra domesticar Pecaris no dia 1.",
+    tip:"O primeiro pet 'de verdade' com dano de combate sério — vale a pena assim que tiver o Frasco de Feromônio." },
+  { family:"PECARI", name:"Pecari Elétrico", eng:"Electro Peccary", icon:"⚡", img:"Images/Pets/PecariEletrico.png",
+    tag:"Craft", origin:"Craftável — não é mutação nem captura selvagem",
+    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
+    dmg:"53 de dano no nível 1 (+3/nível) · ataque especial 155 (+5/nível)",
+    tame:"Crafte o item Electro Peccary em bancada.",
+    ability:"Efeito de raio em cadeia — o relâmpago salta até 5m pra atingir outro inimigo com o mesmo dano do ataque base.",
+    risk:"Nenhum risco elemental especial documentado.",
+    tip:"O ataque especial de 155 de dano é o maior entre os Pecaris não-mutados — ótimo contra grupos." },
+  { family:"PECARI", name:"Pecari-Cogumelo", eng:"Mushroom Peccary", icon:"🍄", img:"Images/Pets/PecariCogumelo.png",
+    tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Carbuncle Mushroom ou Sopa de Cogumelo Grudento",
+    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
+    dmg:"53 de dano no nível 1, +3/nível",
+    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso, OU mute um Pecari alimentando com 3x Carbuncle Mushroom/Sopa de Cogumelo Grudento.",
+    ability:"Cultiva um Carbuncle Mushroom sobre si mesmo a cada 5 dias in-game — colha apertando interagir quando aparecer o prompt 'Colher' (funciona solto OU numa cama de pet).",
+    risk:"Precisa ficar visível/acessível pra você conseguir colher.",
+    tip:"Um pet-fazenda de verdade — deixe numa cama perto da base e colha Carbuncle de graça a cada 5 dias." },
+  { family:"PECARI", name:"Pecari Alfa", eng:"Peccary Alpha", icon:"👑", img:"Images/Pets/PecariAlfa.png",
+    tag:"Captura selvagem", origin:"Frasco de Feromônio + 3x Trigo Anteverso (spawn raro)",
+    hp:"430 HP total no nível 1 (cabeça 180+60/nível, tronco 180+60/nível, cada braço/perna 35+20/nível)",
+    dmg:"54 de dano no nível 1, +4/nível",
+    tame:"Jogue um Frasco de Feromônio no Pecari Alfa (spawn raro no lugar de um Pecari Fêmea), depois alimente com 3x Trigo Anteverso.",
+    ability:"Mesmo padrão de combate do Pecari comum — vantagem é o HP e dano levemente maiores.",
+    risk:"Raro de encontrar — chance baixa de aparecer no lugar de um Pecari Fêmea.",
+    tip:"Se ver um Pecari maior/mais robusto num spot de Pecari Fêmea, é o Alfa — vale domesticar na hora." },
+  { family:"PECARI", name:"Pecari Fêmea", eng:"Peccary Sow", icon:"🥛", img:"Images/Pets/PecariFemea.png",
+    tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Alface Espacial",
+    hp:"412 HP total no nível 1 (cabeça/tronco 175+55/nível cada, braços/pernas 31+16/nível cada)",
+    dmg:"52.5 de dano no nível 1, +2.5/nível",
+    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso/Nachos/Pão, OU mute um Pecari com 3x Alface Espacial.",
+    ability:"Depois de domesticada/mutada, espere ~8h in-game: segure um Tubo de Ensaio e interaja pra produzir 1 Frasco de Leite.",
+    risk:"Precisa segurar Tubo de Ensaio especificamente — outro item de coleta não funciona.",
+    tip:"A única fonte de Leite do jogo — essencial se sua base usa receitas de culinária com leite." },
+  { family:"PECARI", name:"Pecari da Neve", eng:"Snow Peccary", icon:"🥶", img:"Images/Pets/PecariDaNeve.png",
+    tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Essência Congelada",
+    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
+    dmg:"53 de dano no nível 1, +3/nível",
+    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso, OU mute um Pecari com 3x Essência Congelada.",
+    ability:"Mantém o debuff Congelado (Frosted) em ataques de cauda à distância e de carga — pode até congelar você se ficar perto demais do alvo do ataque.",
+    risk:"O próprio efeito de congelamento pode acertar você (jogador) sem querer, deixando-o deslizar ou vulnerável.",
+    tip:"Mantenha distância do alvo dos ataques dele em combate por segurança." },
+  { family:"PECARI", name:"Tarecari", eng:"Tareccary", icon:"💪", img:"Images/Pets/Tarecari.png",
+    tag:"Mutação", origin:"Mutação — alimente um Pecari com 3x Tintura Giganto",
+    hp:"990 HP total no nível 1 — o DOBRO de um Pecari comum (cabeça/tronco 435+75/nível cada, braços/pernas 60+20/nível cada)",
+    dmg:"38 de dano no nível 1, +3/nível (menor que o base, compensado pelo roubo de vida)",
+    tame:"Domestique um Pecari comum, depois alimente com 3x Tintura Giganto (precisa da Química avançada).",
+    ability:"Sem ataque de carga elétrico, mas garras causam mais dano com chance de Sangramento, além de um ataque exclusivo de roubo de vida que cura uma pequena quantia.",
+    risk:"Exige 3 Tinturas Giganto — um dos requisitos de mutação mais caros do jogo.",
+    tip:"O pet com mais HP bruto do jogo inteiro — praticamente um tanque ambulante pro seu time." },
+  { family:"PECARI", name:"Pecari Volátil", eng:"Volatile Peccary", icon:"☢️", img:"Images/Pets/PecariVolatil.png",
+    tag:"Mutação", origin:"Mutação — alimente um Pecari com 3x Sangue Plutônico (sem versão selvagem)",
+    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
+    dmg:"53 de dano no nível 1, +3/nível",
+    tame:"Domestique um Pecari comum, depois alimente com 3x Sangue Plutônico.",
+    ability:"Chance de causar uma explosão de queimadura ácida ao acertar, igual à Praga Volátil.",
+    risk:"Sangue Plutônico é material de fim de jogo — mutação tardia na progressão.",
+    tip:"Junto com a Praga Volátil, forma a dupla 'ácida' do jogo — bom contra inimigos de armadura pesada." },
+
+  // ── LAGARTOS / SKINKS (3) ──
+  { family:"LAGARTO", name:"Lagarto", eng:"Skink", icon:"🦎", img:"Images/Pets/Lagarto.png",
+    tag:"Captura selvagem", origin:"5 acertos de Lançador de Rede, Rede arremessada, ou Pest Trap",
+    hp:"300 HP no nível 1, +20 HP por nível",
+    dmg:"40 de dano à distância no nível 1, +2/nível",
+    tame:"Acerte 5 vezes com o Lançador de Rede (domesticação automática), OU arremesse uma Rede pra atordoar e domesticar com pouco HP, OU capture com Pest Trap.",
+    ability:"Ataque de ácido à distância eficaz de curta a média distância. Se craftado na versão arma, pode ser empunhado como canhão biológico com munição.",
+    risk:"Fogo amigo pode acertá-lo se estiver ativo em combate caótico.",
+    tip:"Encontrado perto do Reator de Nuvem — leve uma Rede pra domesticar sem gastar munição de verdade." },
+  { family:"LAGARTO", name:"Lagarto de Magma", eng:"Magma Skink", icon:"🌋", img:"Images/Pets/LagartoDeMagma.png",
+    tag:"Mutação", origin:"Mutação — alimente um Lagarto com 3x Destilação Fervente",
+    hp:"300 HP no nível 1, +20 HP por nível",
+    dmg:"40 de dano à distância no nível 1, +2/nível",
+    tame:"Domestique um Lagarto comum, depois alimente com 3x Destilação Fervente.",
+    ability:"Causa dano de fogo ao acertar. Na versão arma, usa Material Fundido como munição (gasta 250 unidades por recarga, independente de quanto sobrou).",
+    risk:"O nível do Lagarto NÃO afeta o dano quando usado como arma — nível só importa como pet ativo.",
+    tip:"Drene o Lagarto de munição por completo antes de recarregar — mais eficiente que reabastecer aos poucos." },
+  { family:"LAGARTO", name:"Lagarto Verdejante", eng:"Verdant Skink", icon:"💚", img:"Images/Pets/LagartoVerdejante.png",
+    tag:"Mutação", origin:"Mutação — alimente um Lagarto com 3x Carbuncle Mushroom",
+    hp:"300 HP no nível 1, +20 HP por nível (mesma base do Lagarto comum)",
+    dmg:"Não causa dano — os projéteis curam em vez de ferir",
+    tame:"Domestique um Lagarto comum, depois alimente com 3x Carbuncle Mushroom.",
+    ability:"Dispara projéteis de cura em vez de ácido — na versão arma, carregar o disparo aumenta o alcance da cura em área. Também cultiva Carbuncle Mushroom sobre si mesmo, colhível como o Pecari-Cogumelo.",
+    risk:"Não serve pra combate ofensivo — é 100% suporte.",
+    tip:"Combine com o Pecari-Cogumelo — dois produtores de Carbuncle Mushroom de graça na base." },
+
+  // ── LAMOGI (3) — família mais nova, documentação ainda incompleta na wiki ──
+  { family:"LAMOGI", name:"Lamogi", eng:"Lamogi", icon:"🎮", img:"Images/Pets/Lamogi.png",
+    tag:"Documentação incompleta (WIP)", origin:"Cultivado — plante um Cartucho de Lamogi num Canteiro Digital",
+    hp:"Ainda não documentado publicamente",
+    dmg:"Ainda não documentado publicamente",
+    tame:"Plante um Lamogi Cartridge (Cartucho de Lamogi) num Digital Garden Plot (Canteiro Digital) e espere crescer.",
+    ability:"Comportamento em combate ainda pouco documentado pela comunidade.",
+    risk:"A versão selvagem (em Royal Range) é imune a quase toda arma, só morre com pulo na cabeça — não está confirmado se isso vale pra versão pet.",
+    tip:"Família mais nova e menos documentada do sistema — espere atualizações de dados em breve." },
+  { family:"LAMOGI", name:"Sir Ogi", eng:"Sir Ogi", icon:"🛡️", img:"Images/Pets/SirOgi.png",
+    tag:"Craft", origin:"Craftável — não é mutação nem cultivo direto",
+    hp:"Ainda não documentado publicamente",
+    dmg:"Ainda não documentado publicamente",
+    tame:"Crafte o item Sir Ogi em bancada e vista sobre um Lamogi já domesticado.",
+    ability:"Comportamento em combate ainda pouco documentado pela comunidade.",
+    risk:"Dados de combate insuficientes — trate como experimental até mais informação surgir.",
+    tip:"Nome sugere uma versão 'blindada' do Lamogi — visual de armadura confirmado, stats ainda não." },
+  { family:"LAMOGI", name:"Speedogi", eng:"Speedogi", icon:"💨", img:"Images/Pets/Speedogi.png",
+    tag:"Mutação", origin:"Mutação — alimente um Lamogi com 3x Caneca de Café ou Tintura Veloz",
+    hp:"Ainda não documentado publicamente",
+    dmg:"Ainda não documentado publicamente",
+    tame:"Domestique um Lamogi primeiro, depois alimente com 3x Caneca de Café ou 3x Tintura Veloz.",
+    ability:"Nome sugere bônus de velocidade — comportamento exato ainda pouco documentado.",
+    risk:"Dados de combate insuficientes — trate como experimental até mais informação surgir.",
+    tip:"Uma das mutações mais baratas da família — só precisa de café, fácil de conseguir cedo." },
+
+  // ── INVOCAÇÕES DE SET DE ARMADURA (2) — não são domesticáveis ──
+  { family:"INVOCAÇÃO", name:"Espírito Exor", eng:"Exor Spirit", icon:"👻", img:"Images/Pets/EspiritoExor.png",
+    tag:"Não é domesticável", origin:"Automático — vista o Set de Armadura Exor completo (4 peças)",
+    hp:"Extremamente durável, mas não invencível — sofre dano e efeitos de status normalmente",
+    dmg:"Lançadas de curto alcance + disparos de energia à distância",
+    tame:"Não precisa domesticar nada — vista as 4 peças do Set de Armadura Exor e o buff 'Espírito do Exor' o invoca automaticamente ao entrar em combate.",
+    ability:"Luta como um Chefe Exor fantasma — combina lança corpo a corpo e disparos de energia à distância, mas não teleporta como o inimigo real.",
+    risk:"Pode sofrer fogo amigo dos seus próprios disparos à distância. Pode se separar de você em terrenos irregulares.",
+    tip:"O Trinket Companheiro Central (Core Companion) também buffa ele em +50% de vida e dano, igual aos pets de verdade." },
+  { family:"INVOCAÇÃO", name:"Drone Mystagogue", eng:"Mystagogue Drone", icon:"🔮", img:"Images/Pets/DroneMystagogue.png",
+    tag:"Não é domesticável", origin:"Automático — vista o Set de Armadura Mystagogue completo (4 peças)",
+    hp:"HP não publicado — comunidade reporta baixíssimo dano de saída (~1-2 por disparo sem buffs)",
+    dmg:"Disparo de energia fraco comparado ao Espírito Exor",
+    tame:"Não precisa domesticar nada — vista as 4 peças do Set de Armadura Mystagogue e o buff 'Olhar do Mystagogue' invoca o drone automaticamente ao entrar em combate.",
+    ability:"Serve mais como distração do que dano real — pode ficar preso lutando com um inimigo fora de alcance, impedindo-o de ajudar em outro lugar.",
+    risk:"Considerado fraco pela comunidade mesmo com buffs — não conte com ele como fonte de dano principal.",
+    tip:"Tire e vista de novo uma peça da armadura pra dispensar e re-invocar o drone perto de você, se ele ficar preso longe." },
+];
+
+let petFilter = 'TODOS';
+function renderPets(){
+  const filterEl = document.getElementById('pet-filter-row');
+  const listEl = document.getElementById('pets-list');
+  if(!filterEl || !listEl) return;
+  const families = ['TODOS','PRAGA','PECARI','LAGARTO','LAMOGI','INVOCAÇÃO'];
+  const famColor = { PRAGA:C.amber, PECARI:C.red, LAGARTO:C.cyan, LAMOGI:C.purple, 'INVOCAÇÃO':C.green, TODOS:C.green };
+  filterEl.innerHTML = '';
+  families.forEach(f => {
+    const count = f === 'TODOS' ? petsData.length : petsData.filter(p => p.family === f).length;
+    const col = famColor[f];
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (petFilter === f ? ' active' : '');
+    if (petFilter === f) { btn.style.borderColor = col; btn.style.color = col; btn.style.background = col + '22'; }
+    btn.textContent = `${f} (${count})`;
+    btn.onclick = () => { petFilter = f; renderPets(); };
+    filterEl.appendChild(btn);
+  });
+  const filtered = petFilter === 'TODOS' ? petsData : petsData.filter(p => p.family === petFilter);
+  listEl.innerHTML = '';
+  filtered.forEach(p => {
+    const col = famColor[p.family];
+    const div = document.createElement('div');
+    div.className = 'gate-terminal';
+    div.innerHTML = `
+      <div class="hazard-stripe"></div>
+      <div class="terminal-header">
+        <span><span class="status-led"></span>GATEPAL_OS v1.0</span>
+        <span style="color:${col}">${p.family}</span>
+      </div>
+      <div class="holo-chamber">
+        <span class="target-reticle">${p.origin}</span>
+        <img src="${p.img}" class="monster-png" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="monster-fallback-icon">${p.icon}</span>
+      </div>
+      <div class="terminal-body">
+        <span class="specimen-code">[${p.family}] ${p.tag}</span>
+        <h2 class="specimen-title">${p.name}</h2>
+        <div class="meta-row">
+          <span>ESPÉCIE: ${p.eng}</span>
+          <span>NÍVEL MÁX: 20</span>
+        </div>
+        <div class="diag-grid">
+          <div class="diag-box weakness">
+            <div class="diag-title">❤️ Vida &amp; Dano</div>
+            <ul class="diag-list"><li>${p.hp}</li><li>${p.dmg}</li></ul>
+          </div>
+          <div class="diag-box immunity">
+            <div class="diag-title">🎯 Como Domesticar</div>
+            <ul class="diag-list"><li>${p.tame}</li></ul>
+          </div>
+        </div>
+        <div class="loot-box">
+          <div class="loot-title">⚔️ Habilidade em Combate</div>
+          <div class="loot-items">${p.ability}</div>
+        </div>
+        <div class="risk-line">⚠️ ${p.risk}</div>
+        <div class="specimen-tip">▸ ${p.tip}</div>
+      </div>`;
+    listEl.appendChild(div);
+  });
+}
+renderPets();
 
 // ══ WEATHER DATA ══
 // weatherData no formato "GATE Telemetry HUD" — estrutura baseada no modelo enviado (CLIMA.html).
