@@ -1097,7 +1097,7 @@
      deploy-modal (hologram/scanline) já usado no Craft e na Química. ── */
   .gatepal-popover-overlay {
     position: fixed; inset: 0; background: rgba(0,4,2,0.88);
-    backdrop-filter: blur(4px); z-index: 999;
+    backdrop-filter: blur(2px); z-index: 999;
     display: flex; align-items: center; justify-content: center; padding: 16px;
     opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
@@ -1126,7 +1126,7 @@
      do resto do painel, formulário simples (título, categoria,
      localização, descrição). ── */
   .gatepal-modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,4,2,0.88); backdrop-filter: blur(4px);
+    position: fixed; inset: 0; background: rgba(0,4,2,0.88); backdrop-filter: blur(2px);
     z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px;
     opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
@@ -6728,8 +6728,15 @@ function gatepalUpdateProgressBarSafe() {
   gatepalProgressCountEl.textContent = `${done} / ${total}`;
 }
 
-// ── Busca por nome ──
-gatepalSearchEl.addEventListener('input', gatepalApplyFilters);
+// ── Busca por nome — com debounce leve: em vez de recalcular o filtro de
+// TODOS os markers a cada tecla digitada (pesado em teclado de celular
+// enquanto a pessoa ainda está digitando), espera a digitação pausar por
+// um instante antes de aplicar o filtro. ──
+let gatepalSearchDebounceTimer;
+gatepalSearchEl.addEventListener('input', () => {
+  clearTimeout(gatepalSearchDebounceTimer);
+  gatepalSearchDebounceTimer = setTimeout(gatepalApplyFilters, 150);
+});
 
 // ── Ocultar todos os pins ──
 gatepalHideBtn.addEventListener('click', () => {
@@ -6793,6 +6800,22 @@ function renderGatepalPins() {
   });
 
   gatepalApplyFilters();
+  gatepalUpdateProgressBarSafe();
+}
+
+// ── Atualiza SÓ o ícone de um pin (estado "encontrado") + a barra de
+// progresso, sem destruir e recriar todos os markers do mapa — usado ao
+// marcar um POI como encontrado no popover, que antes disparava um
+// renderGatepalPins() completo (custoso em celular com vários markers). ──
+function gatepalUpdatePinDoneState(poi) {
+  const entry = gatepalMarkerEntries.find(e => e.poi.id === poi.id);
+  if (entry) {
+    const color = gatepalColorFor(poi);
+    const isDone = !!gatepalProgress[poi.id];
+    const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
+    const html = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
+    entry.marker.setIcon(L.divIcon({ className: 'gatepal-pin-wrap', html, iconSize: [28, 30], iconAnchor: [14, 30] }));
+  }
   gatepalUpdateProgressBarSafe();
 }
 
@@ -6893,7 +6916,7 @@ function openGatepalPoiPopover(poi) {
     checkbox.onchange = () => {
       gatepalProgress[poi.id] = checkbox.checked;
       gatepalSaveProgress(gatepalProgress);
-      renderGatepalPins(); // atualiza estilo "encontrado" de todos os pins + progresso
+      gatepalUpdatePinDoneState(poi); // atualiza só este pin + progresso, sem recriar todos os markers
     };
   }
 
@@ -7109,10 +7132,17 @@ function gatepalSetFullscreen(on) {
   }
   // o container do mapa muda de tamanho ao entrar/sair da tela cheia —
   // sem isso o Leaflet continua desenhando do jeito que estava antes.
+  // Dois requestAnimationFrame em sequência (em vez de um só): o primeiro
+  // frame deixa o navegador terminar de pintar a mudança de layout da
+  // tela cheia; só no segundo o Leaflet mede o container e redesenha —
+  // evita medir/redesenhar em cima de um layout que ainda está sendo
+  // aplicado, que é o que gerava o soluço perceptível na entrada.
   requestAnimationFrame(() => {
-    if (!gatepalMapInstance) return;
-    gatepalMapInstance.invalidateSize();
-    if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+    requestAnimationFrame(() => {
+      if (!gatepalMapInstance) return;
+      gatepalMapInstance.invalidateSize();
+      if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+    });
   });
 }
 gatepalFullscreenBtn.addEventListener('click', () => gatepalSetFullscreen(!gatepalFrameEl.classList.contains('is-fullscreen')));
