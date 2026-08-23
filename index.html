@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   @font-face {
     font-family: 'Burkhan';
@@ -881,142 +883,48 @@
   .map-source-box { background: var(--bgCard); border: 1px solid var(--borderGn); padding: 14px; }
 
   /* ── GATEPAL — MAPA GERAL INTERATIVO (aba Mapas) ──
-     Moldura estilo "tela do dispositivo GATEPAL" (o tablet que o
-     personagem carrega o jogo todo). Reaproveita a estética de
-     terminal/scanline já usada no resto do site — cantos em L, texto
-     de boot, e o mesmo verde/âmbar da paleta global. */
+     Reconstruído sobre Leaflet.js (motor real de pan/zoom contínuo,
+     mesmo usado por mapas de jogo como wand.com/mapgenie), mas com a
+     casca 100% GATE Terminal: moldura CRT com cantos em L, faixa de
+     risco (hazard stripe) igual à sinalização de segurança da própria
+     Facility, e "GATE FACILITY" em Poppins Black — a fonte de marca
+     oficial de Abiotic Factor (fontsinuse.com/uses/70313), reservada
+     só pro título grande do painel. O resto do texto continua no
+     Share Tech Mono/IBM Plex Mono já usado no resto do site. */
   .gatepal-frame {
     position: relative;
     background: var(--bgSection);
     border: 1px solid var(--borderGn);
-    padding: 18px 16px;
+    padding: 0 0 18px;
     margin-bottom: 22px;
+    overflow: hidden;
   }
-  .gatepal-frame-corner { position: absolute; width: 16px; height: 16px; border: 2px solid var(--green); opacity: 0.7; }
-  .gatepal-frame-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-  .gatepal-frame-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .gatepal-frame-corner { position: absolute; width: 16px; height: 16px; border: 2px solid var(--green); opacity: 0.7; z-index: 2; }
+  .gatepal-frame-corner.tl { top: 7px; left: -1px; border-right: none; border-bottom: none; }
+  .gatepal-frame-corner.tr { top: 7px; right: -1px; border-left: none; border-bottom: none; }
   .gatepal-frame-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
   .gatepal-frame-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
+  /* Faixa de risco no topo — mesmo padrão diagonal amarelo/preto usado
+     em .trader-hazard-stripe (Traders), só reaproveitado aqui pra dar
+     o "ar de sinalização de fábrica/facility" logo de cara. */
+  .gatepal-hazard-top {
+    height: 7px;
+    background: repeating-linear-gradient(-45deg, var(--amber), var(--amber) 9px, #0a0a0a 9px, #0a0a0a 18px);
+  }
+
+  .gatepal-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 14px 16px 0; }
   .gatepal-header-sys { font-size: var(--fs-2xs); color: var(--textDim); letter-spacing: 3px; margin-bottom: 4px; }
-  .gatepal-header-title { font-size: var(--fs-2xl); color: var(--greenLt); letter-spacing: 1px; margin-bottom: 4px; }
+  .gatepal-header-title {
+    font-family: 'Poppins', var(--font-base);
+    font-weight: 900;
+    font-size: var(--fs-2xl);
+    color: var(--greenLt);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
   .gatepal-header-sub { font-size: var(--fs-xs); color: var(--textMuted); margin-bottom: 12px; }
 
-  .gatepal-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .gatepal-calibrate-btn {
-    font-family: inherit; font-size: var(--fs-2xs); letter-spacing: 1px;
-    padding: 6px 10px; border: 1px solid var(--border); background: var(--bgCard);
-    color: var(--textDim); cursor: pointer;
-  }
-  .gatepal-calibrate-btn.active { border-color: var(--amber); color: var(--amberLt); background: var(--amberDim); }
-  .gatepal-legend { font-size: var(--fs-2xs); color: var(--textMuted); display: inline-flex; align-items: center; gap: 5px; }
-  .gatepal-legend .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-
-  .gatepal-notice {
-    display: none; /* ligado via JS só quando existem pontos ainda não calibrados */
-    background: var(--amberDim); border-left: 2px solid var(--amber); color: var(--amberLt);
-    font-size: var(--fs-xs); line-height: 1.6; padding: 8px 10px; margin-bottom: 10px;
-  }
-  .gatepal-notice code { background: rgba(0,0,0,0.3); padding: 1px 5px; font-family: var(--font-mono); }
-
-  /* Container do mapa — a altura é ditada pela própria imagem (width:100%,
-     height:auto), então os pins em % sempre batem certo com o que é
-     renderizado, não importa a proporção real do arquivo GATEPAL.webp. */
-  .gatepal-screen { position: relative; width: 100%; line-height: 0; background: #000; border: 1px solid var(--border); }
-  .gatepal-img { width: 100%; height: auto; display: block; }
-  .gatepal-img-fallback {
-    display: none; width: 100%; aspect-ratio: 16/9; background: var(--bgCard);
-    color: var(--textMuted); font-size: 40px; flex-direction: column; align-items: center;
-    justify-content: center; gap: 8px; text-align: center;
-  }
-  .gatepal-img-fallback span { font-size: var(--fs-xs); letter-spacing: 0.5px; }
-
-  .gatepal-hotspots { position: absolute; inset: 0; }
-  .gatepal-hotspot {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; cursor: pointer;
-    border: 2px solid var(--bg);
-    box-shadow: 0 0 0 1px currentColor, 0 1px 4px rgba(0,0,0,0.6);
-  }
-  .gatepal-hotspot.is-portal { width: 16px; height: 16px; font-size: 9px; }
-  .gatepal-hotspot::after {
-    content: ''; position: absolute; inset: -6px; border-radius: 50%;
-    border: 1px solid currentColor; opacity: 0.5; animation: gatepalPulse 2.2s ease-out infinite;
-  }
-  @keyframes gatepalPulse { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
-  .gatepal-hotspots.calibrating { display: none; }
-
-  .gatepal-crosshair {
-    position: absolute; width: 20px; height: 20px; transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .gatepal-crosshair::before, .gatepal-crosshair::after {
-    content: ''; position: absolute; background: var(--amberLt);
-  }
-  .gatepal-crosshair::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
-  .gatepal-crosshair::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
-
-  .gatepal-coord-readout {
-    display: none; align-items: center; gap: 10px; flex-wrap: wrap;
-    background: var(--bgCard); border: 1px solid var(--amber); color: var(--amberLt);
-    font-family: var(--font-mono); font-size: var(--fs-xs);
-    padding: 8px 10px; margin-top: 8px;
-  }
-  .gatepal-coord-readout button {
-    font-family: inherit; font-size: var(--fs-2xs); letter-spacing: 1px;
-    padding: 4px 8px; border: 1px solid var(--amber); background: var(--amberDim); color: var(--amberLt); cursor: pointer;
-  }
-
-  /* Popover de portal (clicado a partir do mapa geral) — reaproveita 100%
-     as classes visuais do deploy-modal (blueprint/hologram) já existentes
-     no site, só com um overlay próprio pra não colidir com o modal de craft. */
-  .gatepal-popover-overlay {
-    position: fixed; inset: 0; background: rgba(0,4,2,0.88);
-    backdrop-filter: blur(4px); z-index: 999;
-    display: flex; align-items: center; justify-content: center; padding: 16px;
-    opacity: 0; pointer-events: none; transition: opacity 0.2s;
-  }
-  .gatepal-popover-overlay.active { opacity: 1; pointer-events: all; }
-  .gatepal-popover-jump-btn {
-    width: 100%; margin-top: 4px; padding: 10px; font-family: inherit; font-size: var(--fs-xs);
-    letter-spacing: 1px; border: 1px solid var(--purple); background: rgba(160,96,224,0.12);
-    color: var(--platinumLt); cursor: pointer;
-  }
-
-  /* Lightbox de zoom — clique alterna a largura da imagem; o pan no
-     zoom acontece via scroll nativo do navegador (overflow:auto), sem
-     nenhum tracking de toque customizado. Bem mais leve que um motor
-     de pan/zoom próprio, ao custo de não ter "zoom contínuo" (só 2 níveis). */
-  .gatepal-lightbox {
-    position: fixed; inset: 0; background: rgba(0,4,2,0.94); z-index: 998;
-    display: none; flex-direction: column;
-  }
-  .gatepal-lightbox.active { display: flex; }
-  .gatepal-lightbox-inner { flex: 1; overflow: auto; }
-  .gatepal-lightbox-img { width: 100%; display: block; cursor: zoom-in; transition: width 0.25s ease; }
-  .gatepal-lightbox-img.zoomed { width: 230%; cursor: zoom-out; }
-  .gatepal-lightbox-close {
-    position: absolute; top: 12px; right: 12px; z-index: 2;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--redDim); border: 1px solid var(--red); color: var(--red);
-    font-weight: bold; cursor: pointer;
-  }
-  .gatepal-lightbox-hint {
-    text-align: center; font-size: var(--fs-2xs); color: var(--textMuted);
-    padding: 8px; letter-spacing: 0.5px; flex-shrink: 0;
-  }
-
-  /* ── MAPA — sistema de pins estilo "mapa interativo profissional" (tela
-     cheia opcional, sidebar de filtros multi-toggle com contador por
-     categoria, zoom flutuante, progresso fixo no topo). Reaproveita
-     .deploy-tabs-wrap / .deploy-tab-btn / .deploy-search-box já usados no
-     Craft e na Química, e escopa o polimento do popup só ao próprio
-     #gatepalPoiPopover, pra nunca afetar os outros modais do site. ── */
-  .gatepal-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   .gatepal-fullscreen-btn {
     font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.5px; padding: 7px 12px;
     background: var(--bgCard); border: 1px solid var(--green); color: var(--greenLt); cursor: pointer;
@@ -1024,7 +932,28 @@
   }
   .gatepal-fullscreen-btn:hover { background: var(--greenDim); }
 
-  .gatepal-body { display: flex; flex-direction: column; gap: 12px; }
+  .gatepal-mapselect-label { font-size: var(--fs-2xs); letter-spacing: 1.5px; color: var(--greenLt); font-weight: bold; margin: 4px 16px 6px; }
+  .gatepal-mapselect-tabs { padding: 0 16px; }
+  .gatepal-mapselect-tabs .deploy-tab-btn { font-size: var(--fs-sm); padding: 9px 16px; font-weight: 600; }
+
+  /* ── Info do mapa atual — o que ESTE mapa específico mostra (hoje só o
+     Mapa Geral existe, mas fica pronto pra quando cada setor ganhar o
+     próprio mapa detalhado: a descrição troca sozinha por mapa). ── */
+  .gatepal-map-info {
+    margin: 10px 16px 0;
+    background: var(--bgCard);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .gatepal-map-info-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .gatepal-map-info-title { font-size: var(--fs-sm); color: var(--cyan); font-weight: bold; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .gatepal-map-info-desc { font-size: var(--fs-xs); color: var(--textDim); line-height: 1.6; }
+
+  .gatepal-body { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
   .gatepal-sidebar { display: flex; flex-direction: column; gap: 10px; }
   .gatepal-sidebar-close, .gatepal-sidebar-open { display: none; }
 
@@ -1046,6 +975,8 @@
   .gatepal-quick-btn:hover { color: var(--text); border-color: var(--green); }
   .gatepal-quick-btn.active { background: var(--amberDim); border-color: var(--amber); color: var(--amberLt); }
 
+  /* ── Sidebar de categorias — cada linha liga/desliga por conta
+     própria (multi-toggle, não aba exclusiva), com contagem ao lado. ── */
   .gatepal-cat-groups { display: flex; flex-direction: column; max-height: 320px; overflow-y: auto; border: 1px solid var(--border); }
   .gatepal-cat-row {
     display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer; user-select: none;
@@ -1062,12 +993,12 @@
   }
   .gatepal-cat-eye { font-size: var(--fs-sm); flex-shrink: 0; width: 20px; text-align: center; }
 
-  .gatepal-addpin-btn {
+  .gatepal-addpin-btn, .gatepal-export-btn {
     font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.5px; padding: 8px 10px;
     background: var(--bgCard); border: 1px solid var(--border); color: var(--textMuted);
     cursor: pointer; transition: all 0.15s;
   }
-  .gatepal-addpin-btn:hover { color: var(--text); border-color: var(--cyan); }
+  .gatepal-addpin-btn:hover, .gatepal-export-btn:hover { color: var(--text); border-color: var(--cyan); }
   .gatepal-addpin-btn.active { background: var(--cyanDim); border-color: var(--cyan); color: var(--cyan); }
 
   .gatepal-addpin-notice {
@@ -1076,14 +1007,45 @@
   }
   .gatepal-addpin-notice.show { display: block; }
 
-  .gatepal-maparea { position: relative; }
-  .gatepal-viewport { overflow: auto; max-height: 62vh; max-height: 62dvh; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; }
-  .gatepal-screen { transform-origin: 0 0; }
+  .gatepal-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .gatepal-calibrate-btn {
+    font-family: inherit; font-size: var(--fs-2xs); letter-spacing: 1px;
+    padding: 6px 10px; border: 1px solid var(--border); background: var(--bgCard);
+    color: var(--textDim); cursor: pointer;
+  }
+  .gatepal-calibrate-btn.active { border-color: var(--amber); color: var(--amberLt); background: var(--amberDim); }
 
-  /* zoom flutuante — mesmo estilo dos apps de mapa (círculos empilhados
-     no canto), em vez de barra fixa embaixo do mapa */
+  .gatepal-notice {
+    display: none;
+    background: var(--amberDim); border-left: 2px solid var(--amber); color: var(--amberLt);
+    font-size: var(--fs-xs); line-height: 1.6; padding: 8px 10px;
+  }
+  .gatepal-notice code { background: rgba(0,0,0,0.3); padding: 1px 5px; font-family: var(--font-mono); }
+
+  /* ── Área do mapa real (Leaflet) ── */
+  .gatepal-maparea { position: relative; }
+  .gatepal-leaflet-map {
+    width: 100%; height: 62vh; height: 62dvh;
+    background: #000; border: 1px solid var(--border);
+  }
+  .gatepal-img-fallback {
+    display: none; position: absolute; inset: 0; width: 100%; height: 100%; background: var(--bgCard);
+    color: var(--textMuted); font-size: 40px; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px; text-align: center; z-index: 3;
+  }
+  .gatepal-img-fallback span { font-size: var(--fs-xs); letter-spacing: 0.5px; }
+
+  .gatepal-sidebar-open {
+    position: absolute; top: 10px; left: 10px; z-index: 401;
+    font-family: var(--font-mono); font-size: var(--fs-2xs); padding: 7px 12px;
+    background: rgba(4,12,8,0.9); border: 1px solid var(--green); color: var(--greenLt); cursor: pointer;
+  }
+
+  /* Zoom flutuante — Leaflet já tem os próprios controles de zoom, então
+     estes botões viram um atalho estilizado que chama map.zoomIn()/Out(),
+     em vez de reimplementar o motor de zoom. */
   .gatepal-zoom-controls {
-    position: absolute; right: 12px; bottom: 12px; z-index: 5;
+    position: absolute; right: 12px; bottom: 12px; z-index: 401;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
     background: rgba(4,12,8,0.85); border: 1px solid var(--border); border-radius: 24px; padding: 8px 6px;
   }
@@ -1094,16 +1056,57 @@
   .gatepal-zoom-controls button:hover { border-color: var(--green); background: var(--greenDim); }
   .gatepal-zoom-controls span { font-size: 9px; color: var(--textDim); }
 
-  .gatepal-sidebar-open {
-    position: absolute; top: 10px; left: 10px; z-index: 5;
-    font-family: var(--font-mono); font-size: var(--fs-2xs); padding: 7px 12px;
-    background: rgba(4,12,8,0.9); border: 1px solid var(--green); color: var(--greenLt); cursor: pointer;
+  /* ── Pin em formato de "paleta" (marcador de mapa), agora como
+     L.divIcon do Leaflet — mesmo visual de antes, só que dentro de um
+     marcador real (arrasta/escala/reposiciona sozinho com o mapa). ── */
+  .gatepal-pin-wrap { background: transparent; border: none; }
+  .gatepal-pin {
+    width: 28px; height: 30px;
+    clip-path: path('M14,0 C22,0 28,6 28,14 C28,22 21,27 14,30 C7,27 0,22 0,14 C0,6 6,0 14,0 Z');
+    background: currentColor;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 6px;
+    cursor: pointer;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55));
+  }
+  .gatepal-pin-icon { font-size: 12px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5)); }
+  .gatepal-pin.is-portal {
+    width: 22px; height: 24px; padding-top: 5px;
+    clip-path: path('M11,0 C17,0 22,4.7 22,11 C22,17.3 16.5,21.2 11,24 C5.5,21.2 0,17.3 0,11 C0,4.7 5,0 11,0 Z');
+  }
+  .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 10px; }
+  .gatepal-pin.is-personal {
+    width: 17px; height: 18px; padding-top: 4px; opacity: 0.85;
+    clip-path: path('M8.5,0 C13.2,0 17,3.6 17,8.5 C17,13.4 12.8,16.4 8.5,18 C4.2,16.4 0,13.4 0,8.5 C0,3.6 3.9,0 8.5,0 Z');
+  }
+  .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 8px; }
+  .gatepal-pin.is-done { opacity: 0.35; filter: grayscale(70%) drop-shadow(0 2px 3px rgba(0,0,0,0.55)); }
+
+  .gatepal-coord-readout {
+    display: none; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--bgCard); border: 1px solid var(--amber); color: var(--amberLt);
+    font-family: var(--font-mono); font-size: var(--fs-xs);
+    padding: 8px 10px; margin-top: 8px;
+  }
+  .gatepal-coord-readout button {
+    font-family: inherit; font-size: var(--fs-2xs); letter-spacing: 1px;
+    padding: 4px 8px; border: 1px solid var(--amber); background: var(--amberDim); color: var(--amberLt); cursor: pointer;
   }
 
-  .gatepal-hotspots.pins-hidden { display: none; }
-  .gatepal-hotspot.hidden-by-filter { display: none !important; }
-  .gatepal-hotspot.is-personal { border-style: dashed; opacity: 0.78; width: 14px; height: 14px; font-size: 8px; }
-
+  /* ── Popover de detalhe do pin — reaproveita 100% o visual do
+     deploy-modal (hologram/scanline) já usado no Craft e na Química. ── */
+  .gatepal-popover-overlay {
+    position: fixed; inset: 0; background: rgba(0,4,2,0.88);
+    backdrop-filter: blur(4px); z-index: 999;
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .gatepal-popover-overlay.active { opacity: 1; pointer-events: all; }
+  .gatepal-popover-jump-btn {
+    width: 100%; margin-top: 4px; padding: 10px; font-family: inherit; font-size: var(--fs-xs);
+    letter-spacing: 1px; border: 1px solid var(--purple); background: rgba(160,96,224,0.12);
+    color: var(--platinumLt); cursor: pointer;
+  }
   .gatepal-poi-desc { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; margin-bottom: 10px; }
   .gatepal-poi-check {
     display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--text);
@@ -1117,25 +1120,63 @@
     font-family: var(--font-mono);
   }
   .gatepal-poi-del-btn:hover { background: var(--red); color: #fff; }
-  /* polimento do popup — escopado só a este popover específico, nunca ao
-     .deploy-modal genérico (usado por Craft/Química), pra não vazar estilo */
   #gatepalPoiPopover .deploy-modal { border-radius: 10px; overflow: hidden; box-shadow: 0 14px 44px rgba(0,0,0,0.65); }
 
-  /* ── MODO TELA CHEIA — o mapa cobre a página inteira, sidebar de filtros
-     flutua ao lado (desktop) ou vira gaveta deslizante (mobile). Fecha com
-     o botão, clicando fora da gaveta, ou tecla Esc. ── */
+  /* ── Modal de novo pin pessoal / export JSON — mesmo padrão hazard/CRT
+     do resto do painel, formulário simples (título, categoria,
+     localização, descrição). ── */
+  .gatepal-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,4,2,0.88); backdrop-filter: blur(4px);
+    z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .gatepal-modal-overlay.active { opacity: 1; pointer-events: all; }
+  .gatepal-modal-box {
+    background: var(--bgSection); border: 1px solid var(--amber); width: 100%; max-width: 420px;
+    max-height: 88vh; overflow-y: auto; position: relative;
+  }
+  .gatepal-modal-hazard { height: 6px; background: repeating-linear-gradient(-45deg, var(--amber), var(--amber) 8px, #0a0a0a 8px, #0a0a0a 16px); }
+  .gatepal-modal-inner { padding: 16px; }
+  .gatepal-modal-title { font-family: 'Poppins', var(--font-base); font-weight: 700; font-size: var(--fs-lg); color: var(--amberLt); margin-bottom: 12px; }
+  .gatepal-modal-field { margin-bottom: 12px; }
+  .gatepal-modal-field label { display: block; font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; margin-bottom: 4px; }
+  .gatepal-modal-field input, .gatepal-modal-field select, .gatepal-modal-field textarea {
+    width: 100%; font-family: var(--font-base); font-size: var(--fs-sm); color: var(--text);
+    background: var(--bgCard); border: 1px solid var(--border); padding: 8px 10px;
+  }
+  .gatepal-modal-field input:focus, .gatepal-modal-field select:focus, .gatepal-modal-field textarea:focus { outline: none; border-color: var(--cyan); }
+  .gatepal-modal-field textarea { min-height: 64px; resize: vertical; }
+  .gatepal-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+  .gatepal-modal-btn {
+    font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.5px; padding: 8px 14px;
+    border: 1px solid var(--border); background: var(--bgCard); color: var(--textDim); cursor: pointer;
+  }
+  .gatepal-modal-btn-save { border-color: var(--green); color: var(--greenLt); }
+  .gatepal-modal-btn-save:hover { background: var(--greenDim); }
+  .gatepal-modal-json { width: 100%; min-height: 200px; font-family: var(--font-mono); font-size: var(--fs-2xs); }
+
+  /* ── Tema do Leaflet (popups/controles nativos) puxado pra paleta do
+     site — escopado ao container do próprio mapa, nunca afeta outro
+     .leaflet-* fora daqui, caso o site ganhe outro mapa Leaflet no futuro. ── */
+  .gatepal-leaflet-map .leaflet-control-zoom a {
+    background: var(--bgCard); color: var(--greenLt); border-color: var(--border) !important;
+  }
+  .gatepal-leaflet-map .leaflet-control-zoom a:hover { background: var(--greenDim); }
+  .gatepal-leaflet-map .leaflet-control-attribution {
+    background: rgba(4,12,8,0.75); color: var(--textMuted); font-size: 10px;
+  }
+  .gatepal-leaflet-map .leaflet-control-attribution a { color: var(--textDim); }
+
+  /* ── Modo Tela Cheia ── */
   .gatepal-frame.is-fullscreen {
     position: fixed; inset: 0; z-index: 900; background: var(--bg, #050a06);
-    display: flex; flex-direction: column; padding: 10px; overflow: hidden; border: none;
+    display: flex; flex-direction: column; overflow: hidden; border: none;
   }
   .gatepal-frame.is-fullscreen .gatepal-frame-corner { display: none; }
-  .gatepal-frame.is-fullscreen .gatepal-body { flex: 1; min-height: 0; flex-direction: row; }
+  .gatepal-frame.is-fullscreen .gatepal-body { flex: 1; min-height: 0; flex-direction: row; padding: 12px 12px 12px; }
   .gatepal-frame.is-fullscreen .gatepal-sidebar { width: 300px; flex-shrink: 0; overflow-y: auto; padding-right: 4px; }
   .gatepal-frame.is-fullscreen .gatepal-maparea { flex: 1; min-width: 0; }
-  .gatepal-frame.is-fullscreen .gatepal-viewport { height: 100%; max-height: none; }
-  /* position:fixed (não só overflow:hidden) — o iOS Safari "quica" a página
-     por trás de overlays fixos mesmo com overflow:hidden sozinho; travar a
-     posição de verdade evita esse efeito de "resetar" o scroll sozinho. */
+  .gatepal-frame.is-fullscreen .gatepal-leaflet-map { height: 100%; }
   body.gatepal-fs-lock { position: fixed; left: 0; right: 0; overflow: hidden; }
 
   @keyframes mapCardFlash {
@@ -1145,10 +1186,13 @@
   .map-card-flash { animation: mapCardFlash 1.6s ease; }
 
   @media (max-width: 480px) {
-    .gatepal-hotspot { width: 18px; height: 18px; font-size: 9px; }
-    .gatepal-hotspot.is-portal { width: 14px; height: 14px; font-size: 8px; }
-    .gatepal-hotspot.is-personal { width: 12px; height: 12px; font-size: 7px; }
-    .gatepal-viewport { max-height: 48vh; max-height: 48dvh; }
+    .gatepal-pin { width: 24px; height: 26px; padding-top: 5px; }
+    .gatepal-pin-icon { font-size: 11px; }
+    .gatepal-pin.is-portal { width: 19px; height: 21px; padding-top: 4px; }
+    .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 9px; }
+    .gatepal-pin.is-personal { width: 15px; height: 16px; padding-top: 3px; }
+    .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 7px; }
+    .gatepal-leaflet-map { height: 48vh; height: 48dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
   }
   @media (max-width: 768px) {
@@ -2925,6 +2969,7 @@
   <!-- ══ MAPAS ══ -->
   <div class="panel" id="panel-maps">
     <div class="gatepal-frame" id="gatepalFrame">
+      <div class="gatepal-hazard-top"></div>
       <div class="gatepal-frame-corner tl"></div>
       <div class="gatepal-frame-corner tr"></div>
       <div class="gatepal-frame-corner bl"></div>
@@ -2933,21 +2978,24 @@
       <div class="gatepal-topbar">
         <div>
           <div class="gatepal-header-sys">// DISPOSITIVO GATEPAL — SISTEMA DE NAVEGAÇÃO</div>
-          <div class="gatepal-header-title" id="gatepalMapTitle">Mapa Geral da Facility</div>
-          <div class="gatepal-header-sub">Toque num pin pra ver detalhes · toque na imagem pra ampliar · Shift+clique adiciona um pin pessoal.</div>
+          <div class="gatepal-header-title" id="gatepalMapTitle">GATE FACILITY</div>
+          <div class="gatepal-header-sub">Toque num pin pra ver detalhes · arraste/role pra navegar e ampliar · Shift+clique adiciona um pin pessoal.</div>
         </div>
         <button class="gatepal-fullscreen-btn" id="gatepalFullscreenBtn" type="button">⛶ Tela Cheia</button>
       </div>
 
-      <!-- Seletor de mapa — hoje só existe o Mapa Geral, mas o sistema já
-           está pronto pra receber mapas por setor (basta adicionar em
-           gatepalMaps, no JS). -->
-      <div class="deploy-tabs-wrap"><div class="deploy-tabs" id="gatepalMapTabs"></div></div>
+      <div class="gatepal-mapselect-label">🗺️ ESCOLHER MAPA</div>
+      <div class="deploy-tabs-wrap"><div class="deploy-tabs gatepal-mapselect-tabs" id="gatepalMapTabs"></div></div>
+
+      <div class="gatepal-map-info" id="gatepalMapInfo">
+        <span class="gatepal-map-info-icon" id="gatepalMapInfoIcon">🗺️</span>
+        <div>
+          <div class="gatepal-map-info-title" id="gatepalMapInfoTitle"></div>
+          <div class="gatepal-map-info-desc" id="gatepalMapInfoDesc"></div>
+        </div>
+      </div>
 
       <div class="gatepal-body" id="gatepalBody">
-        <!-- Sidebar de filtros — em tela cheia vira coluna fixa (desktop) ou
-             gaveta deslizante (mobile); no modo normal fica empilhada
-             acima do mapa. -->
         <div class="gatepal-sidebar" id="gatepalSidebar">
           <button class="gatepal-sidebar-close" id="gatepalSidebarClose" type="button">✕</button>
 
@@ -2967,13 +3015,11 @@
             <button class="gatepal-quick-btn" id="gatepalPendingBtn" type="button">⬜ Só Não Encontrados</button>
           </div>
 
-          <!-- Cada categoria liga/desliga por conta própria (clique na linha) —
-               nada de aba única exclusiva, dá pra combinar Comida + Armas
-               ligados e o resto desligado, por exemplo. -->
           <div class="gatepal-cat-groups" id="gatepalCatGroups"></div>
 
           <button class="gatepal-addpin-btn" id="gatepalAddPinBtn" type="button">📌 Adicionar Pin Pessoal</button>
-          <div class="gatepal-addpin-notice" id="gatepalAddPinNotice">📌 Modo pin pessoal ativo — toque em qualquer ponto do mapa (ou Shift+clique no PC) pra criar um marcador com seu próprio texto. Toque no botão de novo pra sair do modo.</div>
+          <div class="gatepal-addpin-notice" id="gatepalAddPinNotice">📌 Modo pin pessoal ativo — toque em qualquer ponto do mapa (ou Shift+clique no PC) pra abrir o formulário de novo marcador. Toque no botão de novo pra sair do modo.</div>
+          <button class="gatepal-export-btn" id="gatepalExportBtn" type="button">💾 Exportar Pins (JSON)</button>
 
           <div class="gatepal-toolbar">
             <button class="gatepal-calibrate-btn" id="gatepalCalibrateBtn" type="button">🎯 Modo Calibração</button>
@@ -2981,19 +3027,11 @@
           <div class="gatepal-notice" id="gatepalNotice"></div>
         </div>
 
-        <!-- Área do mapa -->
         <div class="gatepal-maparea">
           <button class="gatepal-sidebar-open" id="gatepalSidebarOpen" type="button">☰ Filtros</button>
 
-          <div class="gatepal-viewport" id="gatepalViewport">
-            <div class="gatepal-screen" id="gatepalScreen">
-              <img src="Images/MUNDO/GATEPAL.webp" alt="Mapa Geral GATEPAL" class="gatepal-img" id="gatepalImg"
-                   onerror="this.style.display='none'; document.getElementById('gatepalImgFallback').style.display='flex'">
-              <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
-              <div class="gatepal-hotspots" id="gatepalHotspots"></div>
-              <div class="gatepal-crosshair" id="gatepalCrosshair" style="display:none"></div>
-            </div>
-          </div>
+          <div class="gatepal-leaflet-map" id="gatepalMapEl"></div>
+          <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
 
           <div class="gatepal-zoom-controls">
             <button id="gpZoomIn" title="Aumentar zoom" type="button">＋</button>
@@ -3031,15 +3069,6 @@
       <div style="font-size:var(--fs-xs);color:var(--textMuted);margin-top:6px">Inclui mapas de: Office, Manufacturing, Laboratórios Cascata, Security, Hydroplant, Reactors e todos os Portal Worlds.</div>
     </div>
 
-    <!-- Lightbox de zoom do mapa geral -->
-    <div class="gatepal-lightbox" id="gatepalLightbox">
-      <button class="gatepal-lightbox-close" id="gatepalLightboxClose">✕</button>
-      <div class="gatepal-lightbox-inner" id="gatepalLightboxInner">
-        <img src="Images/MUNDO/GATEPAL.webp" alt="Mapa Geral GATEPAL — ampliado" class="gatepal-lightbox-img" id="gatepalLightboxImg">
-      </div>
-      <div class="gatepal-lightbox-hint">toque na imagem pra ampliar/reduzir · toque fora ou no ✕ pra fechar</div>
-    </div>
-
     <!-- Popup único de pin — usado por TODAS as categorias (setor, portal,
          comida, arma, npc, reciclagem, pessoal). Reaproveita as classes
          visuais do deploy-modal (hologram/scanline) já usadas no Craft e
@@ -3062,6 +3091,52 @@
         </label>
         <button class="gatepal-popover-jump-btn" id="gpPoiJumpBtn" style="display:none">→ SAIBA MAIS</button>
         <button class="gatepal-poi-del-btn" id="gpPoiDelBtn" style="display:none">🗑 Remover este pin pessoal</button>
+      </div>
+    </div>
+
+    <!-- Modal: novo pin pessoal (título, categoria, localização, descrição) —
+         substitui os antigos prompt()/prompt() por um formulário de verdade. -->
+    <div class="gatepal-modal-overlay" id="gatepalAddPinModal">
+      <div class="gatepal-modal-box">
+        <div class="gatepal-modal-hazard"></div>
+        <div class="gatepal-modal-inner">
+          <div class="gatepal-modal-title">📌 NOVO PIN PESSOAL</div>
+          <div class="gatepal-modal-field">
+            <label>Título</label>
+            <input type="text" id="gpNewPinTitle" placeholder="Ex: Cartão Nível 2">
+          </div>
+          <div class="gatepal-modal-field">
+            <label>Categoria</label>
+            <select id="gpNewPinCategory"></select>
+          </div>
+          <div class="gatepal-modal-field">
+            <label>Localização / Sala (opcional)</label>
+            <input type="text" id="gpNewPinLocation" placeholder="Ex: Bloco de Segurança">
+          </div>
+          <div class="gatepal-modal-field">
+            <label>Nota (opcional)</label>
+            <textarea id="gpNewPinDesc" placeholder="Detalhes do que precisa lembrar..."></textarea>
+          </div>
+          <div class="gatepal-modal-actions">
+            <button class="gatepal-modal-btn" id="gpNewPinCancel" type="button">Cancelar</button>
+            <button class="gatepal-modal-btn gatepal-modal-btn-save" id="gpNewPinSave" type="button">Salvar Pin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: exportar pins pessoais em JSON -->
+    <div class="gatepal-modal-overlay" id="gatepalExportModal">
+      <div class="gatepal-modal-box">
+        <div class="gatepal-modal-hazard"></div>
+        <div class="gatepal-modal-inner">
+          <div class="gatepal-modal-title">💾 EXPORTAR PINS PESSOAIS (JSON)</div>
+          <textarea class="gatepal-modal-json" id="gatepalExportTextarea" readonly></textarea>
+          <div class="gatepal-modal-actions">
+            <button class="gatepal-modal-btn" id="gatepalExportClose" type="button">Fechar</button>
+            <button class="gatepal-modal-btn gatepal-modal-btn-save" id="gatepalExportCopy" type="button">Copiar</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3594,6 +3669,7 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ── DADOS ──
 const C = {
@@ -6331,9 +6407,13 @@ function togglePortal(i) {
 // ══════════════════════════════════════════════════════════════════
 // GATEPAL — MAPA GERAL INTERATIVO (aba Mapas)
 // ══════════════════════════════════════════════════════════════════
-// Reaproveita mapsData (9 setores) e portaisData (17 portais) que já
+// Reaproveita mapsData (9 setores) e portaisData (portais) que já
 // existem no arquivo — não duplica nenhum conteúdo, só posiciona um
 // marcador clicável em cima da imagem pra cada um.
+//
+// Motor de mapa: Leaflet.js (CRS.Simple), carregado via <script> logo
+// acima deste bloco. Pan/zoom contínuo de verdade (scroll, arrastar,
+// pinça no celular) em vez do zoom por escala CSS de antes.
 //
 // ⚠️ COORDENADAS PLACEHOLDER — LEIA ANTES DE MEXER ⚠️
 // Nunca vi a imagem Images/MUNDO/GATEPAL.webp de verdade, então os
@@ -6341,7 +6421,9 @@ function togglePortal(i) {
 // funcionar de cara. Pra calibrar com a imagem real:
 //   1. Abra a aba Mapas no site com a imagem já no lugar certo.
 //   2. Clique no botão "🎯 Modo Calibração".
-//   3. Clique em cima do ponto exato do setor/portal na imagem.
+//   3. Clique em cima do ponto exato do setor/portal no mapa (dá pra
+//      arrastar/zoom à vontade antes de clicar — o mapa agora é de
+//      verdade, então zoom não estraga a leitura da coordenada).
 //   4. Uma caixinha aparece embaixo do mapa com "x: NN.N, y: NN.N"
 //      e um botão "copiar" — copia isso.
 //   5. Cole esses dois números no lugar de "x" e "y" da linha
@@ -6349,15 +6431,15 @@ function togglePortal(i) {
 //      gatepalPortalPoints), na mesma ordem em que os setores/portais
 //      aparecem em mapsData / portaisData.
 // x e y são porcentagem da imagem (0 = topo/esquerda, 100 = fundo/direita) —
-// não é pixel, então funciona em qualquer tamanho de tela.
+// não é pixel, então funciona em qualquer tamanho de imagem.
 // ══════════════════════════════════════════════════════════════
 // MAPA — SISTEMA DE PINS (setores, portais, comida, armas, NPCs,
 // reciclagem e pins pessoais), com filtros, busca, progresso,
-// zoom e seletor de mapa.
+// zoom real e seletor de mapa.
 // ══════════════════════════════════════════════════════════════
 
 // Coordenadas em % da imagem (mesmo sistema de sempre — use o
-// "🎯 Modo Calibração" pra pegar novas coordenadas clicando na imagem).
+// "🎯 Modo Calibração" pra pegar novas coordenadas clicando no mapa).
 const gatepalSectorPoints = [
   { x: 10, y: 15 }, // 0 — Tutorial / Pré-Facility
   { x: 20, y: 15 }, // 1 — Setor Escritório
@@ -6382,12 +6464,16 @@ const gatepalPortalPoints = [
 // futuro, basta um novo objeto aqui { id, name, icon, img } e usar esse
 // mesmo id no mapId de cada POI que pertence a ele. ──
 const gatepalMaps = [
-  { id: 'geral', name: 'Mapa Geral', icon: '🗺️', img: 'Images/MUNDO/GATEPAL.webp' },
+  {
+    id: 'geral', name: 'Mapa Geral', icon: '🗺️', img: 'Images/MUNDO/GATEPAL.webp',
+    desc: 'Visão macro de toda a GATE Cascade Research Facility — mostra os setores principais da base e os pontos de acesso a TODOS os mundos-portais alcançáveis a partir dela. Não é um mapa detalhado sala-por-sala (isso fica pros mapas por setor, quando entrarem).',
+  },
 ];
 let gatepalCurrentMapId = 'geral';
 
 // ── Categorias de pin — ícone e cor definem a identidade visual: o ícone
-// sozinho já diz "isso é comida", "isso é arma", etc. ──
+// sozinho já diz "isso é comida", "isso é arma", etc. Pins pessoais também
+// podem usar uma dessas categorias (escolhida no formulário de novo pin). ──
 const gatepalCategories = {
   setor:      { label: 'Setores',    icon: '🧭', color: C.cyan },
   portal:     { label: 'Portais',    icon: '🌀', color: C.purple },
@@ -6431,8 +6517,7 @@ const gatepalOficialPois = [
 ];
 
 // ── Persistência local — progresso ("já encontrei") e pins pessoais.
-// Duas chaves novas de localStorage, com prefixo próprio pra não colidir
-// com nada mais no site. ──
+// Mesmas duas chaves de sempre, pra não perder nada que já esteja salvo. ──
 const GATEPAL_PROGRESS_KEY = 'abioticGuide_mapaProgresso';
 const GATEPAL_PERSONAL_KEY = 'abioticGuide_mapaPinsPessoais';
 
@@ -6454,17 +6539,22 @@ function gatepalSavePersonalPins(arr) {
 }
 let gatepalPersonalPins = gatepalLoadPersonalPins();
 
+// pins pessoais viram POIs com isPersonal:true — cat pode ser uma categoria
+// de verdade (se a pessoa escolheu uma no formulário) ou 'pessoal' genérico
+// (pins salvos antes desta versão não tinham "cat" nenhum, então caem aqui
+// também via fallback, sem quebrar nada que já estava salvo).
 function gatepalAllPoisForMap(mapId) {
   const personal = gatepalPersonalPins
     .filter(p => p.mapId === mapId)
-    .map(p => ({ id: p.id, cat: 'pessoal', mapId: p.mapId, pt: { x: p.x, y: p.y }, name: p.name, note: p.note }));
+    .map(p => ({
+      id: p.id, cat: p.cat || 'pessoal', mapId: p.mapId, pt: { x: p.x, y: p.y },
+      name: p.name, note: p.note, location: p.location, isPersonal: true,
+    }));
   return gatepalOficialPois.filter(p => p.mapId === mapId).concat(personal);
 }
 
 // ── Elementos ──
-const gatepalHotspotsEl = document.getElementById('gatepalHotspots');
 const gatepalNoticeEl = document.getElementById('gatepalNotice');
-const gatepalImgEl = document.getElementById('gatepalImg');
 const gatepalMapTabsEl = document.getElementById('gatepalMapTabs');
 const gatepalCatGroupsEl = document.getElementById('gatepalCatGroups');
 const gatepalSearchEl = document.getElementById('gatepalSearch');
@@ -6474,6 +6564,11 @@ const gatepalAddPinBtn = document.getElementById('gatepalAddPinBtn');
 const gatepalAddPinNoticeEl = document.getElementById('gatepalAddPinNotice');
 const gatepalProgressCountEl = document.getElementById('gatepalProgressCount');
 const gatepalProgressFillEl = document.getElementById('gatepalProgressFill');
+const gatepalImgFallbackEl = document.getElementById('gatepalImgFallback');
+const gatepalMapTitleEl = document.getElementById('gatepalMapTitle');
+const gatepalMapInfoIconEl = document.getElementById('gatepalMapInfoIcon');
+const gatepalMapInfoTitleEl = document.getElementById('gatepalMapInfoTitle');
+const gatepalMapInfoDescEl = document.getElementById('gatepalMapInfoDesc');
 
 // Filtro por categoria é multi-toggle (cada categoria liga/desliga por
 // conta própria — igual ao painel do WAND), não uma aba de seleção única.
@@ -6482,22 +6577,156 @@ let gatepalPendingOnly = false;
 let gatepalPinsHidden = false;
 let gatepalAddPinMode = false;
 
+// ── Estado do Leaflet ──
+let gatepalMapInstance = null;
+let gatepalImageOverlay = null;
+let gatepalImgDims = { w: 1000, h: 1000 };
+let gatepalCurrentBounds = null;
+let gatepalInitialZoom = 0;
+let gatepalMarkerEntries = []; // [{ poi, marker }]
+let gatepalInitialized = false;
+let gatepalTempPinCoords = null;
+let gatepalCalibMarker = null;
+
+// Converte % da imagem (mesmo sistema salvo em gatepalSectorPoints/
+// gatepalPortalPoints/pins pessoais) pra coordenada real do Leaflet, e
+// vice-versa. CRS.Simple usa lat crescendo pra cima, então y da imagem
+// (que cresce pra baixo) vira lat negativo — assim (0,0) da imagem bate
+// com o canto superior esquerdo do mapa, como esperado visualmente.
+function gatepalPercentToLatLng(pt) {
+  const x = (pt.x / 100) * gatepalImgDims.w;
+  const y = (pt.y / 100) * gatepalImgDims.h;
+  return L.latLng(-y, x);
+}
+function gatepalLatLngToPercent(latlng) {
+  const x = (latlng.lng / gatepalImgDims.w) * 100;
+  const y = (-latlng.lat / gatepalImgDims.h) * 100;
+  return {
+    x: Math.max(0, Math.min(100, x)).toFixed(1),
+    y: Math.max(0, Math.min(100, y)).toFixed(1),
+  };
+}
+
 // ── Seletor de mapa (hoje só 1 opção, pronto pra crescer) ──
 gatepalMaps.forEach((m) => {
   const btn = document.createElement('button');
   btn.className = 'deploy-tab-btn' + (m.id === gatepalCurrentMapId ? ' active' : '');
   btn.textContent = `${m.icon} ${m.name}`;
   btn.addEventListener('click', () => {
-    gatepalCurrentMapId = m.id;
     gatepalMapTabsEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('gatepalMapTitle').textContent = m.id === 'geral' ? 'Mapa Geral da Facility' : m.name;
-    gatepalImgEl.src = m.img;
-    document.getElementById('gatepalLightboxImg').src = m.img;
-    renderGatepalHotspots();
+    gatepalLoadMap(m.id);
   });
   gatepalMapTabsEl.appendChild(btn);
 });
+
+// ── Carrega o mapa (id) — descobre as dimensões reais da imagem antes de
+// montar o Leaflet, pra imagem e pins baterem certo sem precisar saber o
+// tamanho do arquivo de antemão. ──
+function gatepalLoadMap(mapId) {
+  gatepalCurrentMapId = mapId;
+  const cfg = gatepalMaps.find(m => m.id === mapId);
+  gatepalMapTitleEl.textContent = mapId === 'geral' ? 'GATE FACILITY' : (cfg ? cfg.name : 'GATE FACILITY');
+  gatepalImgFallbackEl.style.display = 'none';
+
+  // Bloco de info do mapa — descreve O QUE este mapa específico mostra.
+  // As contagens de setores/portais vêm sempre dos dados de verdade
+  // (mapsData/portaisData), nunca de um número fixo escrito na mão.
+  gatepalMapInfoIconEl.textContent = cfg ? cfg.icon : '🗺️';
+  gatepalMapInfoTitleEl.textContent = cfg ? cfg.name : '';
+  const sectorCount = gatepalSetorPois.filter(p => p.mapId === mapId).length;
+  const portalCount = gatepalPortalPois.filter(p => p.mapId === mapId).length;
+  const countsLine = mapId === 'geral'
+    ? ` Mapeando atualmente ${sectorCount} setores e ${portalCount} portais de mundos.`
+    : '';
+  gatepalMapInfoDescEl.textContent = (cfg && cfg.desc ? cfg.desc : '') + countsLine;
+
+  const probe = new Image();
+  probe.onload = () => {
+    gatepalImgDims = { w: probe.naturalWidth, h: probe.naturalHeight };
+    gatepalMountLeaflet(cfg.img);
+  };
+  probe.onerror = () => {
+    gatepalImgFallbackEl.style.display = 'flex';
+    const span = gatepalImgFallbackEl.querySelector('span');
+    if (span) span.textContent = cfg.img + ' não encontrada ainda';
+    gatepalImgDims = { w: 1000, h: 1000 }; // espaço "vazio" quadrado, só pra pins não quebrarem
+    gatepalMountLeaflet(null);
+  };
+  probe.src = cfg.img;
+}
+
+function gatepalUpdateZoomLabel() {
+  if (!gatepalMapInstance) return;
+  const pct = Math.round(Math.pow(2, gatepalMapInstance.getZoom() - gatepalInitialZoom) * 100);
+  document.getElementById('gpZoomLevel').textContent = pct + '%';
+}
+
+function gatepalMountLeaflet(imgUrl) {
+  if (!gatepalMapInstance) {
+    gatepalMapInstance = L.map('gatepalMapEl', {
+      crs: L.CRS.Simple,
+      attributionControl: false,
+      zoomSnap: 0.25,
+      zoomDelta: 0.5,
+      minZoom: -6,
+    });
+    gatepalMapInstance.on('zoomend', gatepalUpdateZoomLabel);
+    gatepalMapInstance.on('click', gatepalHandleMapClick);
+  }
+  if (gatepalImageOverlay) { gatepalMapInstance.removeLayer(gatepalImageOverlay); gatepalImageOverlay = null; }
+
+  const h = gatepalImgDims.h, w = gatepalImgDims.w;
+  gatepalCurrentBounds = [[-h, 0], [0, w]];
+  if (imgUrl) {
+    gatepalImageOverlay = L.imageOverlay(imgUrl, gatepalCurrentBounds);
+    gatepalImageOverlay.addTo(gatepalMapInstance);
+  }
+  gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+  gatepalInitialZoom = gatepalMapInstance.getZoom();
+  gatepalUpdateZoomLabel();
+  renderGatepalPins();
+}
+
+// ── Só inicializa o Leaflet quando a aba Mapas é aberta de verdade — o
+// painel fica com display:none até lá, e um mapa Leaflet criado dentro de
+// um container de tamanho zero fica com o enquadramento errado. ──
+function gatepalEnsureInit() {
+  if (gatepalInitialized) return;
+  gatepalInitialized = true;
+  gatepalLoadMap(gatepalCurrentMapId);
+}
+function gatepalOnTabShown() {
+  gatepalEnsureInit();
+  // Modo expandido é o padrão de entrada (igual ao seu protótipo, que já é
+  // uma página inteira dedicada ao mapa) — não precisa clicar em nada.
+  // O botão "⛶ Tela Cheia" continua existindo só como saída/entrada manual,
+  // caso queira voltar pro layout compacto por algum motivo.
+  if (gatepalFrameEl && !gatepalFrameEl.classList.contains('is-fullscreen')) {
+    gatepalSetFullscreen(true);
+  } else if (gatepalMapInstance) {
+    gatepalMapInstance.invalidateSize();
+    if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+  }
+}
+const gatepalPanelEl = document.getElementById('panel-maps');
+const gatepalMapsTabBtn = document.querySelector('.tab-btn[onclick*="\'maps\'"]');
+if (gatepalMapsTabBtn) gatepalMapsTabBtn.addEventListener('click', () => requestAnimationFrame(gatepalOnTabShown));
+if (gatepalPanelEl && gatepalPanelEl.classList.contains('active')) gatepalOnTabShown();
+window.addEventListener('resize', () => { if (gatepalMapInstance) gatepalMapInstance.invalidateSize(); });
+
+// Renderiza a sidebar de categorias mesmo antes do mapa existir, já que
+// ela só depende dos dados (não do Leaflet em si).
+renderGatepalCatGroups();
+gatepalUpdateProgressBarSafe();
+function gatepalUpdateProgressBarSafe() {
+  const officialOnMap = gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId);
+  const total = officialOnMap.length;
+  const done = officialOnMap.filter(p => gatepalProgress[p.id]).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  gatepalProgressFillEl.style.width = pct + '%';
+  gatepalProgressCountEl.textContent = `${done} / ${total}`;
+}
 
 // ── Busca por nome ──
 gatepalSearchEl.addEventListener('input', gatepalApplyFilters);
@@ -6507,7 +6736,7 @@ gatepalHideBtn.addEventListener('click', () => {
   gatepalPinsHidden = !gatepalPinsHidden;
   gatepalHideBtn.classList.toggle('active', gatepalPinsHidden);
   gatepalHideBtn.textContent = gatepalPinsHidden ? '👁 Mostrar Todos' : '👁 Ocultar Todos';
-  gatepalHotspotsEl.classList.toggle('pins-hidden', gatepalPinsHidden);
+  gatepalApplyFilters();
 });
 
 // ── Só mostrar pendentes (não encontrados) ──
@@ -6525,48 +6754,52 @@ gatepalAddPinBtn.addEventListener('click', () => {
   if (gatepalAddPinMode && calibrateMode) gatepalCalibrateBtn.click(); // os dois modos de clique não podem ficar ativos juntos
 });
 
-// ── Renderização dos pins ──
+// ── Ícone/cor de cada pin ──
 function gatepalIconFor(poi) {
+  if (poi.isPersonal) {
+    if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].icon;
+    return '📌';
+  }
   if ((poi.cat === 'setor' || poi.cat === 'portal') && poi.icon) return poi.icon;
-  if (poi.cat === 'pessoal') return '📌';
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].icon : '📍';
 }
 function gatepalColorFor(poi) {
+  if (poi.isPersonal) {
+    if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].color;
+    return '#9fb0a8';
+  }
   if (poi.cat === 'setor') return poi.color || C.cyan;
-  if (poi.cat === 'pessoal') return '#9fb0a8';
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
 
-function renderGatepalHotspots() {
-  gatepalHotspotsEl.innerHTML = '';
+// ── Renderização dos pins (markers reais do Leaflet, não mais divs
+// posicionados em % dentro da imagem) ──
+function renderGatepalPins() {
+  if (!gatepalMapInstance) return;
+  gatepalMarkerEntries.forEach(entry => gatepalMapInstance.removeLayer(entry.marker));
+  gatepalMarkerEntries = [];
+
   const pois = gatepalAllPoisForMap(gatepalCurrentMapId);
   pois.forEach(poi => {
-    const dot = document.createElement('div');
     const color = gatepalColorFor(poi);
-    dot.className = 'gatepal-hotspot' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.cat === 'pessoal' ? ' is-personal' : '');
-    dot.style.left = poi.pt.x + '%';
-    dot.style.top = poi.pt.y + '%';
-    dot.style.background = color;
-    dot.style.color = color;
-    dot.title = poi.name;
-    dot.textContent = gatepalIconFor(poi);
-    dot.dataset.cat = poi.cat;
-    dot.dataset.name = (poi.name || '').toLowerCase();
-    dot.dataset.poiId = poi.id;
-    dot.dataset.done = gatepalProgress[poi.id] ? '1' : '0';
-    dot.addEventListener('click', () => openGatepalPoiPopover(poi));
-    gatepalHotspotsEl.appendChild(dot);
+    const isDone = !!gatepalProgress[poi.id];
+    const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
+    const html = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
+    const icon = L.divIcon({ className: 'gatepal-pin-wrap', html, iconSize: [28, 30], iconAnchor: [14, 30] });
+    const marker = L.marker(gatepalPercentToLatLng(poi.pt), { icon, title: poi.name });
+    marker.on('click', () => openGatepalPoiPopover(poi));
+    marker.addTo(gatepalMapInstance);
+    gatepalMarkerEntries.push({ poi, marker });
   });
-  renderGatepalCatGroups();
+
   gatepalApplyFilters();
-  gatepalUpdateProgressBar();
+  gatepalUpdateProgressBarSafe();
 }
 
 // ── Grupos de categoria na sidebar — cada linha é um toggle independente
-// (liga/desliga aquela categoria no mapa), com contador ao lado, igual ao
-// painel de filtros do WAND. Mostra todas as 6 categorias oficiais +
-// Pins Pessoais sempre, mesmo com contagem 0 (fica pronto pra quando
-// entrar dado real de comida/armas/npc/reciclagem). ──
+// (liga/desliga aquela categoria no mapa), com contador ao lado. Pins
+// pessoais sempre entram no grupo único "Pins Pessoais" pro filtro, não
+// importa qual categoria visual eles usam pro ícone/cor. ──
 function gatepalCatCount(cat) {
   if (cat === 'pessoal') return gatepalPersonalPins.filter(p => p.mapId === gatepalCurrentMapId).length;
   return gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId && p.cat === cat).length;
@@ -6596,28 +6829,21 @@ function renderGatepalCatGroups() {
   });
 }
 
-// ── Filtros (categorias ocultas + pendentes + busca) combinados, sem
-// re-renderizar tudo — só liga/desliga a classe de cada pin já desenhado. ──
+// ── Filtros (categorias ocultas + pendentes + busca + "ocultar todos")
+// combinados — adiciona/remove cada marker do mapa em vez de brincar com
+// classes CSS num div absoluto. ──
 function gatepalApplyFilters() {
   const term = (gatepalSearchEl.value || '').toLowerCase().trim();
-  gatepalHotspotsEl.querySelectorAll('.gatepal-hotspot').forEach(dot => {
-    const matchCat = !gatepalHiddenCats.has(dot.dataset.cat);
-    const matchPending = !gatepalPendingOnly || dot.dataset.done === '0';
-    const matchSearch = !term || dot.dataset.name.includes(term);
-    dot.classList.toggle('hidden-by-filter', !(matchCat && matchPending && matchSearch));
+  gatepalMarkerEntries.forEach(({ poi, marker }) => {
+    const filterCat = poi.isPersonal ? 'pessoal' : poi.cat;
+    const matchCat = !gatepalHiddenCats.has(filterCat);
+    const matchPending = !gatepalPendingOnly || !gatepalProgress[poi.id];
+    const matchSearch = !term || (poi.name || '').toLowerCase().includes(term);
+    const shouldShow = !gatepalPinsHidden && matchCat && matchPending && matchSearch;
+    const isOnMap = gatepalMapInstance.hasLayer(marker);
+    if (shouldShow && !isOnMap) marker.addTo(gatepalMapInstance);
+    if (!shouldShow && isOnMap) gatepalMapInstance.removeLayer(marker);
   });
-}
-
-// ── Progresso de descoberta — conclusão dos pins "oficiais" do mapa atual
-// (setor/portal/comida/arma/npc/reciclagem). Pins pessoais não entram na
-// conta — são lembretes, não coisas "pra achar no jogo". ──
-function gatepalUpdateProgressBar() {
-  const officialOnMap = gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId);
-  const total = officialOnMap.length;
-  const done = officialOnMap.filter(p => gatepalProgress[p.id]).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  gatepalProgressFillEl.style.width = pct + '%';
-  gatepalProgressCountEl.textContent = `${done} / ${total}`;
 }
 
 // ── Popup único do pin ──
@@ -6626,12 +6852,22 @@ let gatepalCurrentPoi = null;
 
 function openGatepalPoiPopover(poi) {
   gatepalCurrentPoi = poi;
-  const isPersonal = poi.cat === 'pessoal';
+  const isPersonal = !!poi.isPersonal;
   const catInfo = gatepalCategories[poi.cat];
 
   document.getElementById('gpPoiTitle').textContent = `${gatepalIconFor(poi)} ${poi.name}`;
-  document.getElementById('gpPoiCat').textContent = isPersonal ? 'PIN PESSOAL' : (catInfo ? catInfo.label.toUpperCase() : poi.cat.toUpperCase());
-  document.getElementById('gpPoiDesc').textContent = isPersonal ? (poi.note || '') : (poi.desc || '');
+  document.getElementById('gpPoiCat').textContent = isPersonal
+    ? 'PIN PESSOAL' + (catInfo ? ' · ' + catInfo.label.toUpperCase() : '')
+    : (catInfo ? catInfo.label.toUpperCase() : poi.cat.toUpperCase());
+
+  const descParts = [];
+  if (isPersonal) {
+    if (poi.location) descParts.push('📍 ' + poi.location);
+    if (poi.note) descParts.push(poi.note);
+  } else if (poi.desc) {
+    descParts.push(poi.desc);
+  }
+  document.getElementById('gpPoiDesc').textContent = descParts.join(' — ');
 
   const holo = document.getElementById('gpPoiHologram');
   const img = document.getElementById('gpPoiImg');
@@ -6657,7 +6893,7 @@ function openGatepalPoiPopover(poi) {
     checkbox.onchange = () => {
       gatepalProgress[poi.id] = checkbox.checked;
       gatepalSaveProgress(gatepalProgress);
-      renderGatepalHotspots(); // atualiza data-done de todos os pins + progresso
+      renderGatepalPins(); // atualiza estilo "encontrado" de todos os pins + progresso
     };
   }
 
@@ -6677,7 +6913,8 @@ function openGatepalPoiPopover(poi) {
       gatepalPersonalPins = gatepalPersonalPins.filter(p => p.id !== poi.id);
       gatepalSavePersonalPins(gatepalPersonalPins);
       gatepalPoiPopoverEl.classList.remove('active');
-      renderGatepalHotspots();
+      renderGatepalPins();
+      renderGatepalCatGroups();
     };
   } else {
     delBtn.style.display = 'none';
@@ -6691,10 +6928,6 @@ gatepalPoiPopoverEl.addEventListener('click', (e) => { if (e.target === gatepalP
 // ── "Saiba mais" — leva pro ponto de detalhe correspondente em outra aba/seção ──
 function gatepalJumpToPoi(poi) {
   if (!poi.jump) return;
-  // Sai da tela cheia ANTES de navegar — senão o overlay fixo (position:fixed,
-  // inset:0) continua cobrindo a tela inteira por cima do destino, e o
-  // overflow:hidden do body (travado enquanto em tela cheia) impede
-  // qualquer scroll. É por isso que "ia pro ponto mas ficava travado".
   if (gatepalFrameEl.classList.contains('is-fullscreen')) gatepalSetFullscreen(false);
   if (poi.jump.type === 'sector') { jumpToSector(poi.jump.i); return; }
   if (poi.jump.type === 'portal') {
@@ -6734,115 +6967,120 @@ const isDefaultGrid = gatepalSectorPoints.every((pt) => pt.y === 15) &&
                        gatepalPortalPoints.every((pt) => pt.y === 85 || pt.y === 92);
 if (isDefaultGrid) {
   gatepalNoticeEl.style.display = 'block';
-  gatepalNoticeEl.innerHTML = '📍 As posições dos marcadores de Setores/Portais ainda são um placeholder (grade provisória) — use o <b>"🎯 Modo Calibração"</b> pra clicar em cima da imagem real e ajustar cada uma. Depois é só colar as coordenadas no array <code>gatepalSectorPoints</code> / <code>gatepalPortalPoints</code> do código.';
+  gatepalNoticeEl.innerHTML = '📍 As posições dos marcadores de Setores/Portais ainda são um placeholder (grade provisória) — use o <b>"🎯 Modo Calibração"</b> pra clicar em cima do mapa real e ajustar cada uma. Depois é só colar as coordenadas no array <code>gatepalSectorPoints</code> / <code>gatepalPortalPoints</code> do código.';
 }
 
-// ── Modo Calibração — clique na imagem devolve as coordenadas em % ──
-// Ferramenta de régua: não sei onde as coisas ficam na imagem real, então
-// em vez de adivinhar, dou uma forma de VOCÊ ler a coordenada certa direto
-// clicando em cima do ponto que quer marcar.
-const gatepalScreenEl = document.getElementById('gatepalScreen');
+// ── Modo Calibração — clique no mapa devolve as coordenadas em % ──
 const gatepalCalibrateBtn = document.getElementById('gatepalCalibrateBtn');
-const gatepalCrosshairEl = document.getElementById('gatepalCrosshair');
 const gatepalCoordReadoutEl = document.getElementById('gatepalCoordReadout');
 let calibrateMode = false;
 
 gatepalCalibrateBtn.addEventListener('click', () => {
   calibrateMode = !calibrateMode;
   gatepalCalibrateBtn.classList.toggle('active', calibrateMode);
-  gatepalCalibrateBtn.textContent = calibrateMode ? '🎯 Calibrando... (clique na imagem)' : '🎯 Modo Calibração';
-  gatepalHotspotsEl.classList.toggle('calibrating', calibrateMode);
-  gatepalCrosshairEl.style.display = 'none';
+  gatepalCalibrateBtn.textContent = calibrateMode ? '🎯 Calibrando... (clique no mapa)' : '🎯 Modo Calibração';
   gatepalCoordReadoutEl.style.display = 'none';
+  if (gatepalCalibMarker && gatepalMapInstance) { gatepalMapInstance.removeLayer(gatepalCalibMarker); gatepalCalibMarker = null; }
   if (calibrateMode && gatepalAddPinMode) gatepalAddPinBtn.click(); // os dois modos de clique não podem ficar ativos juntos
 });
 
-function gatepalCreatePersonalPinAt(clientX, clientY) {
-  const rect = gatepalScreenEl.getBoundingClientRect();
-  const x = ((clientX - rect.left) / rect.width * 100).toFixed(1);
-  const y = ((clientY - rect.top) / rect.height * 100).toFixed(1);
-  const name = prompt('Nome curto do pin pessoal (o que precisa ser lembrado/adicionado aqui):');
-  if (!name || !name.trim()) return;
-  const note = prompt('Nota opcional (deixe em branco se não precisar):') || '';
-  const pin = { id: 'pessoal-' + Date.now(), mapId: gatepalCurrentMapId, x: parseFloat(x), y: parseFloat(y), name: name.trim(), note: note.trim() };
+function gatepalShowCalibrationReadout(pt, latlng) {
+  if (gatepalCalibMarker) gatepalMapInstance.removeLayer(gatepalCalibMarker);
+  gatepalCalibMarker = L.circleMarker(latlng, { radius: 5, color: '#f8d060', weight: 2, fillColor: '#f8d060', fillOpacity: 0.9 }).addTo(gatepalMapInstance);
+  const coordText = `{ x: ${pt.x}, y: ${pt.y} }`;
+  gatepalCoordReadoutEl.style.display = 'flex';
+  gatepalCoordReadoutEl.innerHTML = `x: ${pt.x} · y: ${pt.y} <button id="gatepalCopyCoord">copiar</button>`;
+  document.getElementById('gatepalCopyCoord').addEventListener('click', () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(coordText).catch(() => {});
+  });
+}
+
+// ── Novo pin pessoal — modo dedicado (botão) ou Shift+clique (atalho de PC) ──
+function gatepalOpenAddPinModal(pt) {
+  gatepalTempPinCoords = pt;
+  document.getElementById('gpNewPinTitle').value = '';
+  document.getElementById('gpNewPinCategory').value = 'pessoal';
+  document.getElementById('gpNewPinLocation').value = '';
+  document.getElementById('gpNewPinDesc').value = '';
+  document.getElementById('gatepalAddPinModal').classList.add('active');
+}
+function gatepalCloseAddPinModal() {
+  document.getElementById('gatepalAddPinModal').classList.remove('active');
+  gatepalTempPinCoords = null;
+}
+
+// ── Clique único no mapa — decide entre calibração, novo pin, ou nada ──
+function gatepalHandleMapClick(e) {
+  if (calibrateMode) {
+    const pt = gatepalLatLngToPercent(e.latlng);
+    gatepalShowCalibrationReadout(pt, e.latlng);
+    return;
+  }
+  const shiftHeld = !!(e.originalEvent && e.originalEvent.shiftKey);
+  if (gatepalAddPinMode || shiftHeld) {
+    gatepalOpenAddPinModal(gatepalLatLngToPercent(e.latlng));
+  }
+}
+
+// Popula o seletor de categoria do formulário de novo pin (categorias
+// oficiais + a opção "Pin Genérico", sem categoria específica).
+(function gatepalFillCategorySelect() {
+  const sel = document.getElementById('gpNewPinCategory');
+  const opts = Object.keys(gatepalCategories).map(k => `<option value="${k}">${gatepalCategories[k].icon} ${gatepalCategories[k].label}</option>`);
+  opts.push('<option value="pessoal">📌 Pin Genérico</option>');
+  sel.innerHTML = opts.join('');
+})();
+
+document.getElementById('gpNewPinCancel').addEventListener('click', gatepalCloseAddPinModal);
+document.getElementById('gatepalAddPinModal').addEventListener('click', (e) => {
+  if (e.target.id === 'gatepalAddPinModal') gatepalCloseAddPinModal();
+});
+document.getElementById('gpNewPinSave').addEventListener('click', () => {
+  const title = document.getElementById('gpNewPinTitle').value.trim();
+  if (!title) { alert('Digite um título pro pin.'); return; }
+  if (!gatepalTempPinCoords) return;
+  const pin = {
+    id: 'pessoal-' + Date.now(),
+    mapId: gatepalCurrentMapId,
+    x: parseFloat(gatepalTempPinCoords.x),
+    y: parseFloat(gatepalTempPinCoords.y),
+    name: title,
+    cat: document.getElementById('gpNewPinCategory').value,
+    location: document.getElementById('gpNewPinLocation').value.trim(),
+    note: document.getElementById('gpNewPinDesc').value.trim(),
+  };
   gatepalPersonalPins.push(pin);
   gatepalSavePersonalPins(gatepalPersonalPins);
-  renderGatepalHotspots();
-}
-
-gatepalScreenEl.addEventListener('click', (e) => {
-  if (calibrateMode) {
-    const rect = gatepalScreenEl.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-    gatepalCrosshairEl.style.left = x + '%';
-    gatepalCrosshairEl.style.top = y + '%';
-    gatepalCrosshairEl.style.display = 'block';
-
-    const coordText = `{ x: ${x}, y: ${y} }`;
-    gatepalCoordReadoutEl.style.display = 'flex';
-    gatepalCoordReadoutEl.innerHTML = `x: ${x} · y: ${y} <button id="gatepalCopyCoord">copiar</button>`;
-    document.getElementById('gatepalCopyCoord').addEventListener('click', () => {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(coordText).catch(() => {});
-      }
-    });
-    return;
-  }
-
-  // Shift+clique (PC) funciona como atalho pro modo pin pessoal, sem
-  // precisar ligar o botão antes — igual ao comportamento do WAND. No
-  // celular (sem tecla Shift) continua valendo o botão "📌 Adicionar Pin
-  // Pessoal" pra entrar no modo.
-  if (gatepalAddPinMode || e.shiftKey) {
-    if (e.target.closest('.gatepal-hotspot')) return; // clicou em cima de um pin já existente — não cria outro ali
-    gatepalCreatePersonalPinAt(e.clientX, e.clientY);
-    return;
-  }
-
-  // Fora dos modos acima, clicar na imagem abre o zoom (lightbox)
-  if (e.target.id === 'gatepalImg') openGatepalLightbox();
+  gatepalCloseAddPinModal();
+  renderGatepalPins();
+  renderGatepalCatGroups();
 });
 
-// ── Lightbox de zoom (imagem cheia, sem pins) ──
-const gatepalLightboxEl = document.getElementById('gatepalLightbox');
-const gatepalLightboxImgEl = document.getElementById('gatepalLightboxImg');
+// ── Exportar pins pessoais em JSON ──
+document.getElementById('gatepalExportBtn').addEventListener('click', () => {
+  document.getElementById('gatepalExportTextarea').value = JSON.stringify(gatepalPersonalPins, null, 2);
+  document.getElementById('gatepalExportModal').classList.add('active');
+});
+document.getElementById('gatepalExportClose').addEventListener('click', () => {
+  document.getElementById('gatepalExportModal').classList.remove('active');
+});
+document.getElementById('gatepalExportModal').addEventListener('click', (e) => {
+  if (e.target.id === 'gatepalExportModal') document.getElementById('gatepalExportModal').classList.remove('active');
+});
+document.getElementById('gatepalExportCopy').addEventListener('click', () => {
+  const ta = document.getElementById('gatepalExportTextarea');
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).catch(() => {});
+});
 
-function openGatepalLightbox() {
-  gatepalLightboxImgEl.classList.remove('zoomed');
-  gatepalLightboxEl.classList.add('active');
-}
-document.getElementById('gatepalLightboxClose').addEventListener('click', () => gatepalLightboxEl.classList.remove('active'));
-gatepalLightboxEl.addEventListener('click', (e) => {
-  if (e.target === gatepalLightboxEl || e.target.classList.contains('gatepal-lightbox-inner')) {
-    gatepalLightboxEl.classList.remove('active');
-  }
-});
-gatepalLightboxImgEl.addEventListener('click', () => gatepalLightboxImgEl.classList.toggle('zoomed'));
-
-// ── Zoom com botões — funciona com os pins clicáveis por cima (ao contrário
-// do lightbox acima, que é só a imagem sem pins). Escala o mesmo
-// .gatepal-screen que já tem a imagem e os pins dentro, então os dois
-// aumentam/diminuem juntos e alinhados. ──
-let gatepalZoomLevel = 1;
-const GATEPAL_ZOOM_MIN = 1, GATEPAL_ZOOM_MAX = 3, GATEPAL_ZOOM_STEP = 0.25;
-const gpZoomLevelEl = document.getElementById('gpZoomLevel');
-function gatepalApplyZoom() {
-  gatepalScreenEl.style.transform = `scale(${gatepalZoomLevel})`;
-  gpZoomLevelEl.textContent = Math.round(gatepalZoomLevel * 100) + '%';
-}
-document.getElementById('gpZoomIn').addEventListener('click', () => {
-  gatepalZoomLevel = Math.min(GATEPAL_ZOOM_MAX, gatepalZoomLevel + GATEPAL_ZOOM_STEP);
-  gatepalApplyZoom();
-});
-document.getElementById('gpZoomOut').addEventListener('click', () => {
-  gatepalZoomLevel = Math.max(GATEPAL_ZOOM_MIN, gatepalZoomLevel - GATEPAL_ZOOM_STEP);
-  gatepalApplyZoom();
-});
+// ── Zoom — botões chamam o motor real do Leaflet em vez de reimplementar
+// escala/arrastar/pinça na mão (o próprio Leaflet já cobre scroll, drag e
+// pinça de dois dedos nativamente). ──
+document.getElementById('gpZoomIn').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomIn(0.5); });
+document.getElementById('gpZoomOut').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomOut(0.5); });
 document.getElementById('gpZoomReset').addEventListener('click', () => {
-  gatepalZoomLevel = 1;
-  gatepalApplyZoom();
-  document.getElementById('gatepalViewport').scrollTo({ top: 0, left: 0 });
+  if (gatepalMapInstance && gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
 });
 
 // ── Modo Tela Cheia — o mapa cobre a página inteira, sidebar flutua ao
@@ -6869,16 +7107,24 @@ function gatepalSetFullscreen(on) {
     window.scrollTo(0, gatepalScrollYBeforeFs);
     gatepalSidebarEl.classList.remove('open');
   }
+  // o container do mapa muda de tamanho ao entrar/sair da tela cheia —
+  // sem isso o Leaflet continua desenhando do jeito que estava antes.
+  requestAnimationFrame(() => {
+    if (!gatepalMapInstance) return;
+    gatepalMapInstance.invalidateSize();
+    if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+  });
 }
 gatepalFullscreenBtn.addEventListener('click', () => gatepalSetFullscreen(!gatepalFrameEl.classList.contains('is-fullscreen')));
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && gatepalFrameEl.classList.contains('is-fullscreen')) gatepalSetFullscreen(false);
+  if (e.key !== 'Escape') return;
+  if (gatepalFrameEl.classList.contains('is-fullscreen')) gatepalSetFullscreen(false);
+  document.getElementById('gatepalAddPinModal').classList.remove('active');
+  document.getElementById('gatepalExportModal').classList.remove('active');
+  gatepalPoiPopoverEl.classList.remove('active');
 });
 gatepalSidebarOpenBtn.addEventListener('click', () => gatepalSidebarEl.classList.add('open'));
 gatepalSidebarCloseBtn.addEventListener('click', () => gatepalSidebarEl.classList.remove('open'));
-
-// ── Primeira renderização ──
-renderGatepalHotspots();
 
 
 const skillsGrid = document.getElementById('skills-grid');
