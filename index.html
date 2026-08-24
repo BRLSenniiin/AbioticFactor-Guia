@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
   @font-face {
     font-family: 'Burkhan';
@@ -883,14 +883,15 @@
   .map-source-box { background: var(--bgCard); border: 1px solid var(--borderGn); padding: 14px; }
 
   /* ── GATEPAL — MAPA GERAL INTERATIVO (aba Mapas) ──
-     Reconstruído sobre Leaflet.js (motor real de pan/zoom contínuo,
-     mesmo usado por mapas de jogo como wand.com/mapgenie), mas com a
-     casca 100% GATE Terminal: moldura CRT com cantos em L, faixa de
-     risco (hazard stripe) igual à sinalização de segurança da própria
-     Facility, e "GATE FACILITY" em Poppins Black — a fonte de marca
-     oficial de Abiotic Factor (fontsinuse.com/uses/70313), reservada
-     só pro título grande do painel. O resto do texto continua no
-     Share Tech Mono/IBM Plex Mono já usado no resto do site. */
+     Reconstruído sobre MapLibre GL JS (motor real de pan/zoom contínuo
+     via WebGL/GPU, mesma categoria técnica usada por mapas de jogo
+     comerciais como mapgenie/IGN Maps), mas com a casca 100% GATE
+     Terminal: moldura CRT com cantos em L, faixa de risco (hazard
+     stripe) igual à sinalização de segurança da própria Facility, e
+     "GATE FACILITY" em Poppins Black — a fonte de marca oficial de
+     Abiotic Factor (fontsinuse.com/uses/70313), reservada só pro título
+     grande do painel. O resto do texto continua no Share Tech
+     Mono/IBM Plex Mono já usado no resto do site. */
   .gatepal-frame {
     position: relative;
     background: var(--bgSection);
@@ -1022,9 +1023,11 @@
   }
   .gatepal-notice code { background: rgba(0,0,0,0.3); padding: 1px 5px; font-family: var(--font-mono); }
 
-  /* ── Área do mapa real (Leaflet) ── */
+  /* ── Área do mapa real (MapLibre GL — renderiza em canvas/WebGL,
+     aceleração de hardware é o comportamento padrão da biblioteca, não
+     algo que se liga/desliga por CSS) ── */
   .gatepal-maparea { position: relative; }
-  .gatepal-leaflet-map {
+  .gatepal-mapengine {
     width: 100%; height: 62vh; height: 62dvh;
     background: #000; border: 1px solid var(--border);
   }
@@ -1041,7 +1044,7 @@
     background: rgba(4,12,8,0.9); border: 1px solid var(--green); color: var(--greenLt); cursor: pointer;
   }
 
-  /* Zoom flutuante — Leaflet já tem os próprios controles de zoom, então
+  /* Zoom flutuante — MapLibre GL já tem o próprio motor de zoom, então
      estes botões viram um atalho estilizado que chama map.zoomIn()/Out(),
      em vez de reimplementar o motor de zoom. */
   .gatepal-zoom-controls {
@@ -1056,9 +1059,10 @@
   .gatepal-zoom-controls button:hover { border-color: var(--green); background: var(--greenDim); }
   .gatepal-zoom-controls span { font-size: 9px; color: var(--textDim); }
 
-  /* ── Pin em formato de "paleta" (marcador de mapa), agora como
-     L.divIcon do Leaflet — mesmo visual de antes, só que dentro de um
-     marcador real (arrasta/escala/reposiciona sozinho com o mapa). ── */
+  /* ── Pin em formato de "paleta" (marcador de mapa) — um elemento DOM
+     comum, passado como "element" pro maplibregl.Marker, que o
+     posiciona sozinho em cima da câmera WebGL. Mesmo visual/CSS de
+     sempre, só a peça que reposiciona ele mudou de motor. ── */
   .gatepal-pin-wrap { background: transparent; border: none; }
   .gatepal-pin {
     width: 28px; height: 30px;
@@ -1155,17 +1159,11 @@
   .gatepal-modal-btn-save:hover { background: var(--greenDim); }
   .gatepal-modal-json { width: 100%; min-height: 200px; font-family: var(--font-mono); font-size: var(--fs-2xs); }
 
-  /* ── Tema do Leaflet (popups/controles nativos) puxado pra paleta do
-     site — escopado ao container do próprio mapa, nunca afeta outro
-     .leaflet-* fora daqui, caso o site ganhe outro mapa Leaflet no futuro. ── */
-  .gatepal-leaflet-map .leaflet-control-zoom a {
-    background: var(--bgCard); color: var(--greenLt); border-color: var(--border) !important;
-  }
-  .gatepal-leaflet-map .leaflet-control-zoom a:hover { background: var(--greenDim); }
-  .gatepal-leaflet-map .leaflet-control-attribution {
-    background: rgba(4,12,8,0.75); color: var(--textMuted); font-size: 10px;
-  }
-  .gatepal-leaflet-map .leaflet-control-attribution a { color: var(--textDim); }
+  /* ── MapLibre GL não usa os controles próprios de zoom/atribuição (o
+     mapa nasce com attributionControl:false e a gente usa os botões
+     .gatepal-zoom-controls de sempre, chamando map.zoomIn()/zoomOut()) —
+     por isso não há nenhum tema de controle nativo a sobrescrever aqui,
+     diferente de quando isso era Leaflet. ── */
 
   /* ── Modo Tela Cheia ── */
   .gatepal-frame.is-fullscreen {
@@ -1176,7 +1174,7 @@
   .gatepal-frame.is-fullscreen .gatepal-body { flex: 1; min-height: 0; flex-direction: row; padding: 12px 12px 12px; }
   .gatepal-frame.is-fullscreen .gatepal-sidebar { width: 300px; flex-shrink: 0; overflow-y: auto; padding-right: 4px; }
   .gatepal-frame.is-fullscreen .gatepal-maparea { flex: 1; min-width: 0; }
-  .gatepal-frame.is-fullscreen .gatepal-leaflet-map { height: 100%; }
+  .gatepal-frame.is-fullscreen .gatepal-mapengine { height: 100%; }
   body.gatepal-fs-lock { position: fixed; left: 0; right: 0; overflow: hidden; }
 
   @keyframes mapCardFlash {
@@ -1192,7 +1190,7 @@
     .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 9px; }
     .gatepal-pin.is-personal { width: 15px; height: 16px; padding-top: 3px; }
     .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 7px; }
-    .gatepal-leaflet-map { height: 48vh; height: 48dvh; }
+    .gatepal-mapengine { height: 48vh; height: 48dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
   }
   @media (max-width: 768px) {
@@ -3030,7 +3028,7 @@
         <div class="gatepal-maparea">
           <button class="gatepal-sidebar-open" id="gatepalSidebarOpen" type="button">☰ Filtros</button>
 
-          <div class="gatepal-leaflet-map" id="gatepalMapEl"></div>
+          <div class="gatepal-mapengine" id="gatepalMapEl"></div>
           <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
 
           <div class="gatepal-zoom-controls">
@@ -3669,7 +3667,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
 // ── DADOS ──
 const C = {
@@ -6411,9 +6409,17 @@ function togglePortal(i) {
 // existem no arquivo — não duplica nenhum conteúdo, só posiciona um
 // marcador clicável em cima da imagem pra cada um.
 //
-// Motor de mapa: Leaflet.js (CRS.Simple), carregado via <script> logo
-// acima deste bloco. Pan/zoom contínuo de verdade (scroll, arrastar,
-// pinça no celular) em vez do zoom por escala CSS de antes.
+// Motor de mapa: MapLibre GL JS, carregado via <script> logo acima deste
+// bloco. Diferente do Leaflet (que usava DOM+CSS pra mover cada elemento
+// na tela), o MapLibre desenha tudo num único <canvas> via WebGL — pan e
+// zoom são operação de GPU, não de recálculo de layout do navegador.
+//
+// O MapLibre foi feito pra mapas de verdade da Terra (projeção Mercator),
+// não tem um "modo plano" pronto igual o CRS.Simple do Leaflet. Por isso,
+// os 4 cantos da imagem são projetados num retângulo pequeno de
+// longitude/latitude perto de (0,0) — nessa escala minúscula a distorção
+// da Mercator é desprezível, o resultado visual é indistinguível de um
+// plano sem distorção nenhuma. Ver gatepalPercentToLngLat() mais abaixo.
 //
 // ⚠️ COORDENADAS PLACEHOLDER — LEIA ANTES DE MEXER ⚠️
 // Nunca vi a imagem Images/MUNDO/GATEPAL.webp de verdade, então os
@@ -6441,24 +6447,39 @@ function togglePortal(i) {
 // Coordenadas em % da imagem (mesmo sistema de sempre — use o
 // "🎯 Modo Calibração" pra pegar novas coordenadas clicando no mapa).
 const gatepalSectorPoints = [
-  { x: 10, y: 15 }, // 0 — Tutorial / Pré-Facility
-  { x: 20, y: 15 }, // 1 — Setor Escritório
-  { x: 30, y: 15 }, // 2 — Manufacturing West
-  { x: 40, y: 15 }, // 3 — Cascade Laboratories
-  { x: 50, y: 15 }, // 4 — Setor Segurança
-  { x: 60, y: 15 }, // 5 — Hidroplanta
-  { x: 70, y: 15 }, // 6 — Reatores
-  { x: 80, y: 15 }, // 7 — Mundos Portais (marcador geral)
-  { x: 90, y: 15 }, // 8 — Setor Residencial
+  { x: 10, y: 15 }, // 0 — Tutorial / Pré-Facility (ainda não calibrado)
+  { x: 40.0, y: 47.4 }, // 1 — Setor Escritório
+  { x: 39.1, y: 70.0 }, // 2 — Manufacturing West
+  { x: 60.5, y: 59.6 }, // 3 — Cascade Laboratories
+  { x: 53.3, y: 38.4 }, // 4 — Setor Segurança
+  { x: 45.9, y: 23.3 }, // 5 — Hidroplanta
+  { x: 36.1, y: 28.0 }, // 6 — Reatores
+  { x: 80, y: 15 }, // 7 — Mundos Portais (marcador geral, ainda não calibrado)
+  { x: 19.4, y: 54.6 }, // 8 — Setor Residencial
 ];
 
 const gatepalPortalPoints = [
-  { x: 4,   y: 85 }, { x: 9,   y: 85 }, { x: 14,  y: 85 }, { x: 19,  y: 85 },
-  { x: 24,  y: 85 }, { x: 29,  y: 85 }, { x: 34,  y: 85 }, { x: 39,  y: 85 },
-  { x: 44,  y: 85 }, { x: 49,  y: 85 }, { x: 54,  y: 85 }, { x: 59,  y: 85 },
-  { x: 64,  y: 85 }, { x: 69,  y: 85 }, { x: 74,  y: 85 }, { x: 79,  y: 85 },
-  { x: 84,  y: 85 }, { x: 89,  y: 85 }, { x: 94,  y: 85 }, { x: 99,  y: 85 },
-]; // 20 pontos, mesma ordem de portaisData (placeholder — ainda não calibrado)
+  { x: 35.3, y: 44.4 }, // 0 — Far Garden (Jardim Distante)
+  { x: 44.7, y: 44.1 }, // 1 — Flathill (Colina Plana)
+  { x: 43.3, y: 77.6 }, // 2 — Train World (O Trem)
+  { x: 66.0, y: 57.4 }, // 3 — Furniture Store (Loja de Móveis)
+  { x: 52.9, y: 64.6 }, // 4 — Mycofields
+  { x: 58.0, y: 40.4 }, // 5 — Night Realm (O Reino Noturno)
+  { x: 35.7, y: 35.6 }, // 6 — Vila Den da'ko Yeer (Aldeia Den da`ko Yeer)
+  { x: 55.0, y: 72.1 }, // 7 — Canaan
+  { x: 44.3, y: 14.0 }, // 8 — Voussoir
+  { x: 31.3, y: 31.3 }, // 9 — Shadowgate (Portão das Sombras)
+  { x: 27.1, y: 43.8 }, // 10 — Praetorium
+  { x: 15.3, y: 46.5 }, // 11 — GATE Arch Defense Facility
+  { x: 12.8, y: 53.3 }, // 12 — Albatross
+  { x: 63.3, y: 51.7 }, // 13 — Rise (Instalação Rise)
+  { x: 74,  y: 85 },    // 14 — North Pole (ainda não calibrado)
+  { x: 79,  y: 85 },    // 15 — Dunkeltaler Forest (ainda não calibrado)
+  { x: 69.3, y: 64.5 }, // 16 — Royal Range (Cordilheira Real)
+  { x: 89,  y: 85 },    // 17 — The Pool Room (ainda não calibrado)
+  { x: 59.9, y: 68.0 }, // 18 — The World in the Mirror (O Mundo da Janela)
+  { x: 7.2,  y: 90.3 }, // 19 — Some Distant Shore (Alguma Costa Distante)
+]; // mesma ordem de portaisData — 17/20 calibrados (North Pole, Dunkeltaler Forest e Pool Room ainda placeholder)
 
 // ── Mapas disponíveis — hoje só o Geral. Pra adicionar um mapa por setor no
 // futuro, basta um novo objeto aqui { id, name, icon, img } e usar esse
@@ -6577,30 +6598,32 @@ let gatepalPendingOnly = false;
 let gatepalPinsHidden = false;
 let gatepalAddPinMode = false;
 
-// ── Estado do Leaflet ──
+// ── Estado do motor (MapLibre GL) ──
 let gatepalMapInstance = null;
-let gatepalImageOverlay = null;
 let gatepalImgDims = { w: 1000, h: 1000 };
-let gatepalCurrentBounds = null;
+let gatepalCurrentBounds = null; // [[oeste,sul],[leste,norte]] no sistema fake de lng/lat
+let gatepalHalfLng = 1; // metade da largura da "janela" de coordenadas fake — SEMPRE proporcional à imagem real, nunca um quadrado fixo (é isso que evita esticar/achatar em qualquer zoom)
+let gatepalHalfLat = 1; // metade da altura da mesma janela
 let gatepalInitialZoom = 0;
-let gatepalMarkerEntries = []; // [{ poi, marker }]
+let gatepalMarkerEntries = []; // [{ poi, marker, el }]
 let gatepalInitialized = false;
 let gatepalTempPinCoords = null;
 let gatepalCalibMarker = null;
 
 // Converte % da imagem (mesmo sistema salvo em gatepalSectorPoints/
-// gatepalPortalPoints/pins pessoais) pra coordenada real do Leaflet, e
-// vice-versa. CRS.Simple usa lat crescendo pra cima, então y da imagem
-// (que cresce pra baixo) vira lat negativo — assim (0,0) da imagem bate
-// com o canto superior esquerdo do mapa, como esperado visualmente.
-function gatepalPercentToLatLng(pt) {
-  const x = (pt.x / 100) * gatepalImgDims.w;
-  const y = (pt.y / 100) * gatepalImgDims.h;
-  return L.latLng(-y, x);
+// gatepalPortalPoints/pins pessoais) pra coordenada fake de lng/lat que o
+// MapLibre entende, e vice-versa. Mesma ideia do gatepalPercentToLatLng
+// de antes (Leaflet), só que projetando pro retângulo [-halfLng,halfLng] x
+// [-halfLat,halfLat] em vez de pixel-a-pixel — y da imagem cresce pra
+// baixo, lat cresce pra cima, por isso o sinal invertido no cálculo de y.
+function gatepalPercentToLngLat(pt) {
+  const lng = -gatepalHalfLng + (pt.x / 100) * (2 * gatepalHalfLng);
+  const lat = gatepalHalfLat - (pt.y / 100) * (2 * gatepalHalfLat);
+  return [lng, lat];
 }
-function gatepalLatLngToPercent(latlng) {
-  const x = (latlng.lng / gatepalImgDims.w) * 100;
-  const y = (-latlng.lat / gatepalImgDims.h) * 100;
+function gatepalLngLatToPercent(lngLat) {
+  const x = ((lngLat.lng + gatepalHalfLng) / (2 * gatepalHalfLng)) * 100;
+  const y = ((gatepalHalfLat - lngLat.lat) / (2 * gatepalHalfLat)) * 100;
   return {
     x: Math.max(0, Math.min(100, x)).toFixed(1),
     y: Math.max(0, Math.min(100, y)).toFixed(1),
@@ -6621,7 +6644,7 @@ gatepalMaps.forEach((m) => {
 });
 
 // ── Carrega o mapa (id) — descobre as dimensões reais da imagem antes de
-// montar o Leaflet, pra imagem e pins baterem certo sem precisar saber o
+// montar o mapa, pra imagem e pins baterem certo sem precisar saber o
 // tamanho do arquivo de antemão. ──
 function gatepalLoadMap(mapId) {
   gatepalCurrentMapId = mapId;
@@ -6644,14 +6667,14 @@ function gatepalLoadMap(mapId) {
   const probe = new Image();
   probe.onload = () => {
     gatepalImgDims = { w: probe.naturalWidth, h: probe.naturalHeight };
-    gatepalMountLeaflet(cfg.img);
+    gatepalMountMap(cfg.img);
   };
   probe.onerror = () => {
     gatepalImgFallbackEl.style.display = 'flex';
     const span = gatepalImgFallbackEl.querySelector('span');
     if (span) span.textContent = cfg.img + ' não encontrada ainda';
     gatepalImgDims = { w: 1000, h: 1000 }; // espaço "vazio" quadrado, só pra pins não quebrarem
-    gatepalMountLeaflet(null);
+    gatepalMountMap(null);
   };
   probe.src = cfg.img;
 }
@@ -6662,35 +6685,85 @@ function gatepalUpdateZoomLabel() {
   document.getElementById('gpZoomLevel').textContent = pct + '%';
 }
 
-function gatepalMountLeaflet(imgUrl) {
-  if (!gatepalMapInstance) {
-    gatepalMapInstance = L.map('gatepalMapEl', {
-      crs: L.CRS.Simple,
-      attributionControl: false,
-      zoomSnap: 0.25,
-      zoomDelta: 0.5,
-      minZoom: -6,
-    });
-    gatepalMapInstance.on('zoomend', gatepalUpdateZoomLabel);
-    gatepalMapInstance.on('click', gatepalHandleMapClick);
-  }
-  if (gatepalImageOverlay) { gatepalMapInstance.removeLayer(gatepalImageOverlay); gatepalImageOverlay = null; }
-
-  const h = gatepalImgDims.h, w = gatepalImgDims.w;
-  gatepalCurrentBounds = [[-h, 0], [0, w]];
-  if (imgUrl) {
-    gatepalImageOverlay = L.imageOverlay(imgUrl, gatepalCurrentBounds);
-    gatepalImageOverlay.addTo(gatepalMapInstance);
-  }
-  gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+// ── Enquadra a imagem inteira na tela e trava os limites de zoom/pan —
+// é AQUI que mora a resposta pra "não ficar feio ao afastar/aproximar":
+//   • maxZoom trava um pouco ACIMA da resolução nativa da imagem — passar
+//     disso só amplia os mesmos pixels que já existem (fica borrado,
+//     "zoom digital"), então limitamos pra pouco além do necessário pra
+//     examinar detalhe de perto.
+//   • minZoom trava um pouco ABAIXO do zoom que já mostra a imagem
+//     inteira — afastar mais que isso só revela fundo preto vazio ao
+//     redor, sem nenhuma informação nova (o que os sites de referência
+//     como MapGenie/WAND nunca deixam acontecer).
+//   • setMaxBounds trava o arrastar/pan pra não deixar a pessoa "perder"
+//     o mapa vagando no vazio ao redor da imagem.
+// ──
+function gatepalFitToImage() {
+  gatepalMapInstance.fitBounds(gatepalCurrentBounds, { padding: 16, animate: false });
   gatepalInitialZoom = gatepalMapInstance.getZoom();
+  gatepalMapInstance.setMinZoom(gatepalInitialZoom - 1);
+  gatepalMapInstance.setMaxZoom(gatepalInitialZoom + 4);
+  const padLng = gatepalHalfLng * 0.4, padLat = gatepalHalfLat * 0.4;
+  gatepalMapInstance.setMaxBounds([
+    [-gatepalHalfLng - padLng, -gatepalHalfLat - padLat],
+    [gatepalHalfLng + padLng, gatepalHalfLat + padLat],
+  ]);
   gatepalUpdateZoomLabel();
+}
+
+// Monta (ou remonta, se o mapa já existe e só a imagem mudou — caso do
+// seletor "ESCOLHER MAPA") a imagem de fundo. gatepalHalfLng/gatepalHalfLat
+// SEMPRE seguem a proporção largura:altura real da imagem (nunca um
+// quadrado fixo) — é isso que garante que ela nunca apareça esticada nem
+// achatada, em nenhum nível de zoom.
+function gatepalMountImage(imgUrl) {
+  const aspect = gatepalImgDims.w / gatepalImgDims.h;
+  gatepalHalfLng = aspect >= 1 ? aspect : 1;
+  gatepalHalfLat = aspect >= 1 ? 1 : 1 / aspect;
+  gatepalCurrentBounds = [[-gatepalHalfLng, -gatepalHalfLat], [gatepalHalfLng, gatepalHalfLat]];
+
+  if (gatepalMapInstance.getLayer('gatepal-img-layer')) gatepalMapInstance.removeLayer('gatepal-img-layer');
+  if (gatepalMapInstance.getSource('gatepal-img')) gatepalMapInstance.removeSource('gatepal-img');
+
+  if (imgUrl) {
+    const corners = [
+      [-gatepalHalfLng, gatepalHalfLat],  // superior-esquerdo
+      [gatepalHalfLng, gatepalHalfLat],   // superior-direito
+      [gatepalHalfLng, -gatepalHalfLat],  // inferior-direito
+      [-gatepalHalfLng, -gatepalHalfLat], // inferior-esquerdo
+    ];
+    gatepalMapInstance.addSource('gatepal-img', { type: 'image', url: imgUrl, coordinates: corners });
+    gatepalMapInstance.addLayer({ id: 'gatepal-img-layer', type: 'raster', source: 'gatepal-img', paint: { 'raster-fade-duration': 0 } });
+  }
+
+  gatepalFitToImage();
   renderGatepalPins();
 }
 
-// ── Só inicializa o Leaflet quando a aba Mapas é aberta de verdade — o
-// painel fica com display:none até lá, e um mapa Leaflet criado dentro de
-// um container de tamanho zero fica com o enquadramento errado. ──
+function gatepalMountMap(imgUrl) {
+  if (!gatepalMapInstance) {
+    gatepalMapInstance = new maplibregl.Map({
+      container: 'gatepalMapEl',
+      style: { version: 8, sources: {}, layers: [{ id: 'gatepal-bg', type: 'background', paint: { 'background-color': '#000' } }] },
+      center: [0, 0],
+      zoom: 0,
+      attributionControl: false,
+      dragRotate: false,    // mapa 2D fixo — sem rotação/inclinação, igual ao comportamento de antes
+      pitchWithRotate: false,
+      touchPitch: false,
+    });
+    gatepalMapInstance.touchZoomRotate.disableRotation();
+    gatepalMapInstance.on('zoomend', gatepalUpdateZoomLabel);
+    gatepalMapInstance.on('click', gatepalHandleMapClick);
+    gatepalMapInstance.on('load', () => gatepalMountImage(imgUrl));
+  } else {
+    gatepalMountImage(imgUrl);
+  }
+}
+
+// ── Só inicializa o mapa quando a aba Mapas é aberta de verdade — o
+// painel fica com display:none até lá, e um mapa criado dentro de um
+// container de tamanho zero fica com o enquadramento errado. ──
 function gatepalEnsureInit() {
   if (gatepalInitialized) return;
   gatepalInitialized = true;
@@ -6705,18 +6778,18 @@ function gatepalOnTabShown() {
   if (gatepalFrameEl && !gatepalFrameEl.classList.contains('is-fullscreen')) {
     gatepalSetFullscreen(true);
   } else if (gatepalMapInstance) {
-    gatepalMapInstance.invalidateSize();
-    if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+    gatepalMapInstance.resize();
+    if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds, { padding: 16, animate: false });
   }
 }
 const gatepalPanelEl = document.getElementById('panel-maps');
 const gatepalMapsTabBtn = document.querySelector('.tab-btn[onclick*="\'maps\'"]');
 if (gatepalMapsTabBtn) gatepalMapsTabBtn.addEventListener('click', () => requestAnimationFrame(gatepalOnTabShown));
 if (gatepalPanelEl && gatepalPanelEl.classList.contains('active')) gatepalOnTabShown();
-window.addEventListener('resize', () => { if (gatepalMapInstance) gatepalMapInstance.invalidateSize(); });
+window.addEventListener('resize', () => { if (gatepalMapInstance) gatepalMapInstance.resize(); });
 
 // Renderiza a sidebar de categorias mesmo antes do mapa existir, já que
-// ela só depende dos dados (não do Leaflet em si).
+// ela só depende dos dados (não do motor do mapa em si).
 renderGatepalCatGroups();
 gatepalUpdateProgressBarSafe();
 function gatepalUpdateProgressBarSafe() {
@@ -6779,24 +6852,34 @@ function gatepalColorFor(poi) {
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
 
-// ── Renderização dos pins (markers reais do Leaflet, não mais divs
-// posicionados em % dentro da imagem) ──
+// ── Renderização dos pins — mesmo HTML/CSS de sempre (nenhuma mudança
+// visual), só quem posiciona o elemento na tela muda: antes era o
+// Leaflet reposicionando left/top a cada frame de pan/zoom, agora é o
+// MapLibre via matriz de transform sincronizada com a câmera WebGL. ──
+function gatepalBuildPinEl(poi) {
+  const color = gatepalColorFor(poi);
+  const isDone = !!gatepalProgress[poi.id];
+  const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
+  const wrap = document.createElement('div');
+  wrap.className = 'gatepal-pin-wrap';
+  wrap.title = poi.name;
+  wrap.innerHTML = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
+  return wrap;
+}
+
 function renderGatepalPins() {
   if (!gatepalMapInstance) return;
-  gatepalMarkerEntries.forEach(entry => gatepalMapInstance.removeLayer(entry.marker));
+  gatepalMarkerEntries.forEach(entry => entry.marker.remove());
   gatepalMarkerEntries = [];
 
   const pois = gatepalAllPoisForMap(gatepalCurrentMapId);
   pois.forEach(poi => {
-    const color = gatepalColorFor(poi);
-    const isDone = !!gatepalProgress[poi.id];
-    const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
-    const html = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
-    const icon = L.divIcon({ className: 'gatepal-pin-wrap', html, iconSize: [28, 30], iconAnchor: [14, 30] });
-    const marker = L.marker(gatepalPercentToLatLng(poi.pt), { icon, title: poi.name });
-    marker.on('click', () => openGatepalPoiPopover(poi));
-    marker.addTo(gatepalMapInstance);
-    gatepalMarkerEntries.push({ poi, marker });
+    const el = gatepalBuildPinEl(poi);
+    el.addEventListener('click', (e) => { e.stopPropagation(); openGatepalPoiPopover(poi); });
+    const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      .setLngLat(gatepalPercentToLngLat(poi.pt))
+      .addTo(gatepalMapInstance);
+    gatepalMarkerEntries.push({ poi, marker, el });
   });
 
   gatepalApplyFilters();
@@ -6813,8 +6896,7 @@ function gatepalUpdatePinDoneState(poi) {
     const color = gatepalColorFor(poi);
     const isDone = !!gatepalProgress[poi.id];
     const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
-    const html = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
-    entry.marker.setIcon(L.divIcon({ className: 'gatepal-pin-wrap', html, iconSize: [28, 30], iconAnchor: [14, 30] }));
+    entry.el.innerHTML = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
   }
   gatepalUpdateProgressBarSafe();
 }
@@ -6857,15 +6939,13 @@ function renderGatepalCatGroups() {
 // classes CSS num div absoluto. ──
 function gatepalApplyFilters() {
   const term = (gatepalSearchEl.value || '').toLowerCase().trim();
-  gatepalMarkerEntries.forEach(({ poi, marker }) => {
+  gatepalMarkerEntries.forEach(({ poi, el }) => {
     const filterCat = poi.isPersonal ? 'pessoal' : poi.cat;
     const matchCat = !gatepalHiddenCats.has(filterCat);
     const matchPending = !gatepalPendingOnly || !gatepalProgress[poi.id];
     const matchSearch = !term || (poi.name || '').toLowerCase().includes(term);
     const shouldShow = !gatepalPinsHidden && matchCat && matchPending && matchSearch;
-    const isOnMap = gatepalMapInstance.hasLayer(marker);
-    if (shouldShow && !isOnMap) marker.addTo(gatepalMapInstance);
-    if (!shouldShow && isOnMap) gatepalMapInstance.removeLayer(marker);
+    el.style.display = shouldShow ? '' : 'none';
   });
 }
 
@@ -7003,13 +7083,15 @@ gatepalCalibrateBtn.addEventListener('click', () => {
   gatepalCalibrateBtn.classList.toggle('active', calibrateMode);
   gatepalCalibrateBtn.textContent = calibrateMode ? '🎯 Calibrando... (clique no mapa)' : '🎯 Modo Calibração';
   gatepalCoordReadoutEl.style.display = 'none';
-  if (gatepalCalibMarker && gatepalMapInstance) { gatepalMapInstance.removeLayer(gatepalCalibMarker); gatepalCalibMarker = null; }
+  if (gatepalCalibMarker) { gatepalCalibMarker.remove(); gatepalCalibMarker = null; }
   if (calibrateMode && gatepalAddPinMode) gatepalAddPinBtn.click(); // os dois modos de clique não podem ficar ativos juntos
 });
 
-function gatepalShowCalibrationReadout(pt, latlng) {
-  if (gatepalCalibMarker) gatepalMapInstance.removeLayer(gatepalCalibMarker);
-  gatepalCalibMarker = L.circleMarker(latlng, { radius: 5, color: '#f8d060', weight: 2, fillColor: '#f8d060', fillOpacity: 0.9 }).addTo(gatepalMapInstance);
+function gatepalShowCalibrationReadout(pt, lngLat) {
+  if (gatepalCalibMarker) { gatepalCalibMarker.remove(); gatepalCalibMarker = null; }
+  const dot = document.createElement('div');
+  dot.style.cssText = 'width:11px;height:11px;border-radius:50%;background:#f8d060;border:2px solid #7a5c10;box-shadow:0 0 0 2px rgba(0,0,0,.4);';
+  gatepalCalibMarker = new maplibregl.Marker({ element: dot, anchor: 'center' }).setLngLat(lngLat).addTo(gatepalMapInstance);
   const coordText = `{ x: ${pt.x}, y: ${pt.y} }`;
   gatepalCoordReadoutEl.style.display = 'flex';
   gatepalCoordReadoutEl.innerHTML = `x: ${pt.x} · y: ${pt.y} <button id="gatepalCopyCoord">copiar</button>`;
@@ -7035,13 +7117,13 @@ function gatepalCloseAddPinModal() {
 // ── Clique único no mapa — decide entre calibração, novo pin, ou nada ──
 function gatepalHandleMapClick(e) {
   if (calibrateMode) {
-    const pt = gatepalLatLngToPercent(e.latlng);
-    gatepalShowCalibrationReadout(pt, e.latlng);
+    const pt = gatepalLngLatToPercent(e.lngLat);
+    gatepalShowCalibrationReadout(pt, e.lngLat);
     return;
   }
   const shiftHeld = !!(e.originalEvent && e.originalEvent.shiftKey);
   if (gatepalAddPinMode || shiftHeld) {
-    gatepalOpenAddPinModal(gatepalLatLngToPercent(e.latlng));
+    gatepalOpenAddPinModal(gatepalLngLatToPercent(e.lngLat));
   }
 }
 
@@ -7097,13 +7179,13 @@ document.getElementById('gatepalExportCopy').addEventListener('click', () => {
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).catch(() => {});
 });
 
-// ── Zoom — botões chamam o motor real do Leaflet em vez de reimplementar
-// escala/arrastar/pinça na mão (o próprio Leaflet já cobre scroll, drag e
-// pinça de dois dedos nativamente). ──
-document.getElementById('gpZoomIn').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomIn(0.5); });
-document.getElementById('gpZoomOut').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomOut(0.5); });
+// ── Zoom — botões chamam o motor real do MapLibre GL em vez de
+// reimplementar escala/arrastar/pinça na mão (a própria biblioteca já
+// cobre scroll, drag e pinça de dois dedos nativamente, via GPU). ──
+document.getElementById('gpZoomIn').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomIn({ duration: 200 }); });
+document.getElementById('gpZoomOut').addEventListener('click', () => { if (gatepalMapInstance) gatepalMapInstance.zoomOut({ duration: 200 }); });
 document.getElementById('gpZoomReset').addEventListener('click', () => {
-  if (gatepalMapInstance && gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+  if (gatepalMapInstance && gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds, { padding: 16, animate: false });
 });
 
 // ── Modo Tela Cheia — o mapa cobre a página inteira, sidebar flutua ao
@@ -7131,17 +7213,17 @@ function gatepalSetFullscreen(on) {
     gatepalSidebarEl.classList.remove('open');
   }
   // o container do mapa muda de tamanho ao entrar/sair da tela cheia —
-  // sem isso o Leaflet continua desenhando do jeito que estava antes.
+  // sem isso o MapLibre continua desenhando do jeito que estava antes.
   // Dois requestAnimationFrame em sequência (em vez de um só): o primeiro
   // frame deixa o navegador terminar de pintar a mudança de layout da
-  // tela cheia; só no segundo o Leaflet mede o container e redesenha —
+  // tela cheia; só no segundo o MapLibre mede o container e redesenha —
   // evita medir/redesenhar em cima de um layout que ainda está sendo
   // aplicado, que é o que gerava o soluço perceptível na entrada.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       if (!gatepalMapInstance) return;
-      gatepalMapInstance.invalidateSize();
-      if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds);
+      gatepalMapInstance.resize();
+      if (gatepalCurrentBounds) gatepalMapInstance.fitBounds(gatepalCurrentBounds, { padding: 16, animate: false });
     });
   });
 }
