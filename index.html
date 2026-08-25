@@ -579,6 +579,7 @@
   @keyframes deployScan { 0% { top: 0%; } 100% { top: 100%; } }
   .deploy-hologram-img { width: 76px; height: 76px; object-fit: contain; filter: drop-shadow(0 0 10px var(--green)); position: relative; z-index: 2; }
   .deploy-hologram-fallback { font-size: 52px; position: relative; z-index: 2; filter: drop-shadow(0 0 10px var(--green)); }
+  .deploy-hologram-fallback svg, .deploy-hologram-fallback img { width: 1em; height: 1em; display: block; }
   .deploy-modal-section-title { font-size: var(--fs-xs); color: var(--green); letter-spacing: 1.5px; margin-bottom: 6px; font-weight: bold; }
   .deploy-modal-location { background: var(--cyanDim); border: 1px solid var(--cyan); color: var(--text); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; }
   .deploy-modal-note { background: var(--amberDim); border-left: 2px solid var(--amber); color: var(--amberLt); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; font-style: italic; }
@@ -988,6 +989,7 @@
   .gatepal-cat-row.is-hidden { opacity: 0.4; }
   .gatepal-cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px currentColor; }
   .gatepal-cat-name { flex: 1; font-size: var(--fs-sm); color: var(--text); }
+  .gatepal-cat-name svg, .gatepal-cat-name img { width: 1em; height: 1em; display: inline-block; vertical-align: -2px; }
   .gatepal-cat-count {
     font-size: var(--fs-2xs); color: var(--textMuted); background: rgba(255,255,255,0.04);
     border-radius: 10px; padding: 1px 7px; min-width: 18px; text-align: center;
@@ -1065,26 +1067,30 @@
      sempre, só a peça que reposiciona ele mudou de motor. ── */
   .gatepal-pin-wrap { background: transparent; border: none; }
   .gatepal-pin {
-    width: 28px; height: 30px;
-    clip-path: path('M14,0 C22,0 28,6 28,14 C28,22 21,27 14,30 C7,27 0,22 0,14 C0,6 6,0 14,0 Z');
-    background: currentColor;
-    display: flex; align-items: flex-start; justify-content: center;
-    padding-top: 6px;
+    position: relative;
+    width: 28px; height: 34px;
     cursor: pointer;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55));
+    transform-origin: bottom center;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: transform;
   }
-  .gatepal-pin-icon { font-size: 12px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5)); }
-  .gatepal-pin.is-portal {
-    width: 22px; height: 24px; padding-top: 5px;
-    clip-path: path('M11,0 C17,0 22,4.7 22,11 C22,17.3 16.5,21.2 11,24 C5.5,21.2 0,17.3 0,11 C0,4.7 5,0 11,0 Z');
+  .gatepal-pin-wrap:hover .gatepal-pin { transform: scale(1.22) translateY(-4px); }
+  .gatepal-pin-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
   }
+  .gatepal-pin-svg path { fill: currentColor; stroke: #fff; stroke-width: 2.2; stroke-linejoin: round; }
+  .gatepal-pin-icon {
+    position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
+    width: 70%; text-align: center;
+    font-size: 12px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+  }
+  .gatepal-pin-icon svg, .gatepal-pin-icon img { width: 100%; height: auto; display: block; margin: 0 auto; }
+  .gatepal-pin.is-portal { width: 22px; height: 27px; }
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 10px; }
-  .gatepal-pin.is-personal {
-    width: 17px; height: 18px; padding-top: 4px; opacity: 0.85;
-    clip-path: path('M8.5,0 C13.2,0 17,3.6 17,8.5 C17,13.4 12.8,16.4 8.5,18 C4.2,16.4 0,13.4 0,8.5 C0,3.6 3.9,0 8.5,0 Z');
-  }
+  .gatepal-pin.is-personal { width: 18px; height: 22px; opacity: 0.9; }
   .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 8px; }
-  .gatepal-pin.is-done { opacity: 0.35; filter: grayscale(70%) drop-shadow(0 2px 3px rgba(0,0,0,0.55)); }
+  .gatepal-pin.is-done { opacity: 0.4; filter: grayscale(70%); }
 
   .gatepal-coord-readout {
     display: none; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -1106,6 +1112,19 @@
     opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
   .gatepal-popover-overlay.active { opacity: 1; pointer-events: all; }
+  /* Modo "popup ancorado no pin" (telas maiores): sem fundo escuro cobrindo
+     o mapa — o card flutua perto do pin clicado, com posição calculada em
+     JS (gatepalPositionPopover). Em telas estreitas (≤768px, mesmo ponto de
+     corte já usado no GATEPAL pro layout fullscreen) mantém o comportamento
+     antigo — centralizado com fundo escurecido — porque não sobra espaço
+     de tela pra um popup flutuante funcionar bem no celular. */
+  @media (min-width: 769px) {
+    .gatepal-popover-overlay.is-floating { background: transparent; backdrop-filter: none; }
+    /* Card bem mais compacto que o modal cheio — é pra ser um popup leve
+       ancorado no pin, não uma janela do tamanho do modal de Craft/Química. */
+    .gatepal-popover-overlay.is-floating .deploy-modal { max-width: 300px; padding: 14px; }
+    .gatepal-popover-overlay.is-floating .deploy-hologram { height: 76px; margin-bottom: 8px; }
+  }
   .gatepal-popover-jump-btn {
     width: 100%; margin-top: 4px; padding: 10px; font-family: inherit; font-size: var(--fs-xs);
     letter-spacing: 1px; border: 1px solid var(--purple); background: rgba(160,96,224,0.12);
@@ -1125,6 +1144,15 @@
   }
   .gatepal-poi-del-btn:hover { background: var(--red); color: #fff; }
   #gatepalPoiPopover .deploy-modal { border-radius: 10px; overflow: hidden; box-shadow: 0 14px 44px rgba(0,0,0,0.65); }
+  /* Ícone/imagem do popup do mapa menores que o padrão compartilhado
+     (.deploy-hologram-fallback/-img, usado também no modal de Craft) —
+     escopado só ao popup do GATEPAL pra não afetar os outros usos. */
+  #gatepalPoiPopover .deploy-hologram-fallback { font-size: 34px; }
+  #gatepalPoiPopover .deploy-hologram-img { width: 56px; height: 56px; }
+  /* Ícone dentro do TÍTULO do popup (ex: categoria Portais usa <img>) — sem
+     isso ele herda o width/height gravado no próprio arquivo .svg (ex: 512px)
+     e aparece gigantesco. Trava no tamanho da fonte do título. */
+  #gpPoiTitle svg, #gpPoiTitle img { width: 1em; height: 1em; display: inline-block; vertical-align: -3px; }
 
   /* ── Modal de novo pin pessoal / export JSON — mesmo padrão hazard/CRT
      do resto do painel, formulário simples (título, categoria,
@@ -1184,11 +1212,11 @@
   .map-card-flash { animation: mapCardFlash 1.6s ease; }
 
   @media (max-width: 480px) {
-    .gatepal-pin { width: 24px; height: 26px; padding-top: 5px; }
+    .gatepal-pin { width: 24px; height: 29px; }
     .gatepal-pin-icon { font-size: 11px; }
-    .gatepal-pin.is-portal { width: 19px; height: 21px; padding-top: 4px; }
+    .gatepal-pin.is-portal { width: 19px; height: 23px; }
     .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 9px; }
-    .gatepal-pin.is-personal { width: 15px; height: 16px; padding-top: 3px; }
+    .gatepal-pin.is-personal { width: 15px; height: 18px; }
     .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 7px; }
     .gatepal-mapengine { height: 48vh; height: 48dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
@@ -1227,7 +1255,6 @@
     border: 2px solid var(--border);
     position: relative;
     transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    overflow: hidden;
   }
   .trader-card::after {
     /* scanlines CRT sutis por cima de todo o card, mesmo efeito usado no GATE Terminal de Entidades */
@@ -5939,7 +5966,7 @@ const portaisData = [
     note:"Parte da progressão principal — impossível perder se explorar completamente."
   },
   {
-    icon:"🏔️", name:"Flathill", img:"Images/Portais/flathill.png", universo:"ANTEVERSE 0",
+    icon:"🏔️", name:"Flathill", img:"Images/Portais/Flathill.webp", universo:"ANTEVERSE 0",
     tags:[{l:"SILO 3 — ESCRITÓRIO", c:"#20d0c0"},{l:"Troféu: Os Compositores", c:"#00e060"},{l:"Sinfonista aqui", c:"#e0a020"}],
     how:"Acessado via portal no Silo 3 do Setor Escritório. Ambiente de colinas nevadas. Encontre a Célula de Energia final e mate o Sinfonista para os troféus. Explore completamente antes de sair.",
     colecionavel:"Célula de Energia (final) — necessária pra progressão",
@@ -5948,7 +5975,7 @@ const portaisData = [
     note:"Explore cada canto — a Célula de Energia e o Sinfonista podem estar em locais não óbvios."
   },
   {
-    icon:"🚂", name:"Train World", img:"Images/Portais/train-world.png", universo:"SEM Nº CATALOGADO",
+    icon:"🚂", name:"Train World", img:"Images/Portais/Thetrain.webp", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MANUFACTURING WEST", c:"#e0a020"},{l:"Troféu: Todos a Bordo", c:"#00e060"}],
     how:"Acessado durante o Manufacturing West. Ambiente de ferrovia industrial. Saia pelo portal no final para o troféu.",
     colecionavel:null,
@@ -5956,7 +5983,7 @@ const portaisData = [
     note:"Parte da progressão do Manufacturing — siga os trilhos até o portal de saída."
   },
   {
-    icon:"🛋️", name:"Furniture Store (Helmholtz)", img:"Images/Portais/furniture-store.png", universo:"SEM Nº CATALOGADO",
+    icon:"🛋️", name:"Furniture Store (Helmholtz)", img:"Images/Portais/Furniturestore.webp", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Sem Mais Espaço", c:"#00e060"}],
     how:"Loja de móveis dimensional. Ambiente surreal cheio de móveis empilhados. Saia pelo portal no final.",
     colecionavel:null,
@@ -5964,7 +5991,7 @@ const portaisData = [
     note:null
   },
   {
-    icon:"🍄", name:"Mycofields", img:"Images/Portais/mycofields.png", universo:"ANTEVERSE 2",
+    icon:"🍄", name:"Mycofields", img:"Images/Portais/Themycofields.webp", universo:"ANTEVERSE 2",
     tags:[{l:"CASCADE LABS", c:"#a060e0"},{l:"⚠️ Mushroom Skull AQUI", c:"#e03020"},{l:"Troféu: Campo dos Sonhos", c:"#00e060"}],
     how:"Acessado no Laboratórios Cascata. Ambiente fúngico com Mushroom Peccaries. CRÍTICO: mate e colete o Peccary Skull aqui para o Capacete de Cogumelo. Saia pelo portal para o troféu.",
     colecionavel:"⚠️ Mushroom Peccary Skull — só dropa aqui, necessário pro troféu Micélio sobre o Concílio",
@@ -5973,7 +6000,7 @@ const portaisData = [
     note:"NÃO saia dos Mycofields sem o Mushroom Peccary Skull — necessário para troféu Micélio!"
   },
   {
-    icon:"🌙", name:"Night Realm", img:"Images/Portais/night-realm.png", universo:"SEM Nº CATALOGADO",
+    icon:"🌙", name:"Night Realm", img:"Images/Portais/Thenightrealm.webp", universo:"SEM Nº CATALOGADO",
     tags:[{l:"CASCADE LABS", c:"#a060e0"},{l:"Troféu: Sonâmbulo", c:"#00e060"}],
     how:"Portal acessado no Laboratórios Cascata. Ambiente noturno com Nightspheres. Entre na sala da última Nightsphere para o troféu.",
     colecionavel:null,
@@ -5981,7 +6008,7 @@ const portaisData = [
     note:"Explore o Night Realm completamente — a sala da Nightsphere pode requerer chave ou puzzlê."
   },
   {
-    icon:"🏘️", name:"Vila Den da'ko Yeer", img:"Images/Portais/vila-den-dako-yeer.png", universo:"ANTEVERSE 2",
+    icon:"🏘️", name:"Vila Den da'ko Yeer", img:"Images/Portais/Villagedendakoyeer.webp", universo:"ANTEVERSE 2",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: A Vila", c:"#00e060"},{l:"Anti-Fungal Gelatin", c:"#e0a020"}],
     how:"Portal dos Mundos Portais avançados. Ambiente de vila alienígena. Para abrir o portal de saída, você precisa desbloquear o Anti-Fungal Gelatin. Saia pelo portal que aparece após desbloqueá-lo.",
     colecionavel:"Anti-Fungal Gelatin — necessário pra ativar o portal de saída",
@@ -5990,7 +6017,7 @@ const portaisData = [
     note:"O Anti-Fungal Gelatin é necessário para ativar o portal de saída — explore a vila completamente."
   },
   {
-    icon:"🙏", name:"Canaan", img:"Images/Portais/canaan.png", universo:"SEM Nº CATALOGADO",
+    icon:"🙏", name:"Canaan", img:"Images/Portais/Canaan.webp", universo:"SEM Nº CATALOGADO",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Peso Retirado dos Ombros", c:"#00e060"},{l:"Niketas — Boss", c:"#e03020"}],
     how:"Mundo portal com temática de culto. Encontre e derrote Niketas, o Priest líder do culto de Canaan.",
     colecionavel:null,
@@ -5998,7 +6025,7 @@ const portaisData = [
     note:"Explore o mundo completamente para encontrar Niketas — ele pode estar protegido por cultistas."
   },
   {
-    icon:"⛷️", name:"Voussoir (Mundo de Esqui)", img:"Images/Portais/voussoir.png", universo:"ANTEVERSE 0",
+    icon:"⛷️", name:"Voussoir (Mundo de Esqui)", img:"Images/Portais/Voussoir.webp", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Je Suis Perdu!", c:"#00e060"}],
     how:"Ambiente de estação de esqui. Navegue pelas pistas e estruturas até o portal de saída.",
     colecionavel:null,
@@ -6006,7 +6033,7 @@ const portaisData = [
     note:null
   },
   {
-    icon:"🌑", name:"Shadowgate", img:"Images/Portais/shadowgate.png", universo:"ANTEVERSE 0",
+    icon:"🌑", name:"Shadowgate", img:"Images/Portais/Shadowgate.webp", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Shadowgate", c:"#60a080"},{l:"PRATA", c:"#60a080"}],
     how:"Mundo portal de progressão obrigatória. Complete o Shadowgate seguindo os objetivos do mundo.",
     colecionavel:null,
@@ -6014,7 +6041,7 @@ const portaisData = [
     note:"Parte da progressão principal dos Mundos Portais."
   },
   {
-    icon:"⚔️", name:"Praetorium (The Inquisition)", img:"Images/Portais/praetorium.png", universo:"ANTEVERSE 0",
+    icon:"⚔️", name:"Praetorium (The Inquisition)", img:"Images/Portais/Praetorium.webp", universo:"ANTEVERSE 0",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: A Inquisição", c:"#60a080"},{l:"PRATA", c:"#60a080"}],
     how:"Complete o mundo Praetorium seguindo a progressão da Inquisição.",
     colecionavel:null,
@@ -6022,7 +6049,7 @@ const portaisData = [
     note:null
   },
   {
-    icon:"🧱", name:"GATE Arch Defense Facility", img:"Images/Portais/gate-arch.png", universo:"LOCALIZAÇÃO DESCONHECIDA",
+    icon:"🧱", name:"GATE Arch Defense Facility", img:"Images/Portais/Gatearchdefensefacility.webp", universo:"LOCALIZAÇÃO DESCONHECIDA",
     tags:[{l:"SEGREDO / LORE", c:"#e03020"},{l:"Sem troféu", c:"#808080"}],
     how:"Portal secreto sem posição fixa conhecida na progressão normal — encontrado através de eventos de lore avançada. Ambiente: instalação de defesa numa muralha colossal, ambientada num futuro indeterminado. Uma cápsula no local contém as receitas do Motion Module e do Excursion Suit.",
     colecionavel:null,
@@ -6030,7 +6057,7 @@ const portaisData = [
     note:"Um dos portais mais raros e menos documentados até pela própria comunidade. O relógio de pulso mostra hora distorcida aqui, sinal de que você está no lugar certo."
   },
   {
-    icon:"🐦", name:"Albatross", img:"Images/Portais/albatross.png", universo:"ANTEVERSE 0",
+    icon:"🐦", name:"Albatross", img:"Images/Portais/Albatross.webp", universo:"ANTEVERSE 0",
     tags:[{l:"SETOR RESIDENCIAL — FINAL", c:"#e03020"},{l:"Troféu: Apocalypse Now", c:"#e0a020"},{l:"OURO", c:"#e0a020"}],
     how:"Portal final do jogo, acessado após completar o Setor Residencial. Ilha polar isolada com uma igreja em ruínas (Albert Cahn e Ulrich Thule), um farol, e um círculo ritual. Fale com Cahn e ative a pedra ritual para iniciar a luta final contra IS-0117.",
     colecionavel:"Kylie Muir (Trinket) — se completou a sidequest, ela aparece aqui pra ajudar na luta final",
@@ -6040,7 +6067,7 @@ const portaisData = [
 
   // ═══ OPCIONAIS — MAIORES (exigem item/ação específica ou Keypad Hacker de tier alto) ═══
   {
-    icon:"🏙️", name:"Rise (Rise Facility)", img:"Images/Portais/rise.png", universo:"ANTEVERSE 0 · OPCIONAL MAIOR",
+    icon:"🏙️", name:"Rise (Rise Facility)", img:"Images/Portais/Risefacility.webp", universo:"ANTEVERSE 0 · OPCIONAL MAIOR",
     tags:[{l:"ADJUSTMENT WING — CASCADE LABS", c:"#20d0c0"},{l:"Troféu: A Grande Maçã", c:"#00e060"},{l:"⚠️ Perigoso", c:"#e03020"}],
     how:"Resolva o puzzle do Laser Lab na Adjustment Wing dos Laboratórios Cascata: queime a goo invasora com Antethermite, pegue a receita do Refletor de Laser no quadro branco e monte 2 refletores com armários altos de lados retos. O portal aparece no Lens Epicentre. Um dos mundos mais perigosos do jogo — Order infiltrou o prédio inteiro.",
     colecionavel:"Order Triarii Bobblehead — embaixo do heliponto no telhado, ao lado de uma viga de suporte",
@@ -6049,7 +6076,7 @@ const portaisData = [
     note:"Tem Snipers vigiando o caminho pro escritório do executivo e um Grunt numa metralhadora estacionária no helicóptero do telhado — vá com cuidado."
   },
   {
-    icon:"🎄", name:"North Pole", img:"Images/Portais/north-pole.png", universo:"ANTEVERSE 188 · OPCIONAL MAIOR",
+    icon:"🎄", name:"North Pole", img:"Images/Portais/Northpole.webp", universo:"ANTEVERSE 188 · OPCIONAL MAIOR",
     tags:[{l:"CASCADE LABS — CONTAINMENT DIRAC", c:"#20d0c0"},{l:"Sem troféu", c:"#808080"},{l:"Desbloqueia Winter Cabin", c:"#e0a020"}],
     how:"Encontre o globo de neve IS-0105 numa cela de contenção do IS-0127, no Containment Block Dirac dos Laboratórios Cascata (logo após sair da Furniture Store). Toque o globo pra ser levado até lá. Cidadezinha natalina congelada com uma árvore gigante em chamas no centro — o Boneco de Neve (IS-0127) fica na frente dela; ajuste o chapéu dele pra iniciar o combate.",
     colecionavel:null,
@@ -6057,7 +6084,7 @@ const portaisData = [
     note:"O globo de neve pode ser guardado e levado embora — continua funcionando como portal onde você o largar."
   },
   {
-    icon:"🌲", name:"Dunkeltaler Forest", img:"Images/Portais/dunkeltaler-forest.png", universo:"ANTEVERSE 0 · OPCIONAL MAIOR (CROSSOVER)",
+    icon:"🌲", name:"Dunkeltaler Forest", img:"Images/Portais/Dunkeltalerforest.webp", universo:"ANTEVERSE 0 · OPCIONAL MAIOR (CROSSOVER)",
     tags:[{l:"HYDROPLANT — CAMINHO PRA ROBÓTICA", c:"#20d0c0"},{l:"Sem troféu", c:"#808080"},{l:"Requer Neutrino Mapper", c:"#e0a020"}],
     how:"Portal no caminho pra Robótica, na Hydroplant. Exige o Neutrino Mapper, obtido primeiro em Voussoir. Crossover com o jogo Voices of the Void: floresta suíça com um observatório abandonado (Alpen Signal Observatorium / ASO).",
     colecionavel:null,
@@ -6065,7 +6092,7 @@ const portaisData = [
     note:"Cuidado com os 'wisps' que aparecem na floresta: os vermelhos explodem ao encostar, os verdes te teleportam pra um ponto aleatório do mapa."
   },
   {
-    icon:"👸", name:"Royal Range", img:"Images/Portais/royal-range.png", universo:"OPCIONAL MAIOR",
+    icon:"👸", name:"Royal Range", img:"Images/Portais/Royalrange.webp", universo:"OPCIONAL MAIOR",
     tags:[{l:"CASCADE LABS — CONTAINMENT HELMHOLTZ", c:"#20d0c0"},{l:"Troféu: Briga no Royal Range", c:"#00e060"},{l:"Keypad Hacker T5", c:"#e0a020"}],
     how:"Interaja com a máquina de arcade IS-0083 ('Space Queen'), na Containment Block Helmholtz dos Laboratórios Cascata — exige Keypad Hacker Tier 5 pra abrir a cela. Você é teletransportado pro nível 'Royal Range': cenário nevado estilo jogo retro 3D, onde inimigos só morrem se você pular em cima deles. Colete Royal Crowns pra liberar a saída.",
     colecionavel:"Royal Crowns — necessários pra abrir o portal de saída",
@@ -6075,7 +6102,7 @@ const portaisData = [
 
   // ═══ OPCIONAIS — MENORES (mundos pequenos, conteúdo mínimo) ═══
   {
-    icon:"🏊", name:"The Pool Room", img:"Images/Portais/pool-room.png", universo:"OPCIONAL MENOR",
+    icon:"🏊", name:"The Pool Room", img:"Images/Portais/Thepoolroom.webp", universo:"OPCIONAL MENOR",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Sem Correr", c:"#00e060"},{l:"Cadeira Vermelha", c:"#e0a020"}],
     how:"Ambiente de piscina infinita. Para ativar o portal de saída, sente-se na Cadeira Vermelha encontrada no ambiente. Depois saia pelo portal.",
     colecionavel:"Cadeira Vermelha — gatilho do portal de saída (não é item de inventário, interaja no local)",
@@ -6083,7 +6110,7 @@ const portaisData = [
     note:"A Cadeira Vermelha é o gatilho para o portal de saída — não saia sem sentar nela."
   },
   {
-    icon:"🪞", name:"The World in the Mirror", img:"Images/Portais/world-in-the-mirror.png", universo:"OPCIONAL MENOR",
+    icon:"🪞", name:"The World in the Mirror", img:"Images/Portais/Theworldinthemirror.webp", universo:"OPCIONAL MENOR",
     tags:[{l:"MUNDOS PORTAIS", c:"#a060e0"},{l:"Troféu: Plano Como Panqueca", c:"#00e060"}],
     how:"Mundo espelhado e plano. Simplesmente toque a grama dentro deste mundo para ativar o troféu — não precisa sair.",
     colecionavel:null,
@@ -6091,7 +6118,7 @@ const portaisData = [
     note:"Um dos troféus mais simples — entre, toque o chão gramado, troféu ativa."
   },
   {
-    icon:"🏝️", name:"Some Distant Shore", img:"Images/Portais/some-distant-shore.png", universo:"OPCIONAL MENOR",
+    icon:"🏝️", name:"Some Distant Shore", img:"Images/Portais/Somedistantshore.webp", universo:"OPCIONAL MENOR",
     tags:[{l:"PRIVADA-PORTAL — MECÂNICA ESPECIAL", c:"#e03020"},{l:"Troféu: Orla Distante", c:"#00e060"},{l:"RNG 5-50%", c:"#e0a020"}],
     how:"⚠️ MECÂNICA ESPECIAL — não é um portal fixo no mapa. Sente-se no Privada-Portal (vaso sanitário especial, encontrado no Setor Escritório — Data Farm) com 15% ou menos de continência (barra de necessidade no laranja/vermelho). Há 5% de chance de teletransporte (50% se ainda não tem o troféu). Repita até teletransportar. Basta chegar lá — não precisa completar o mundo.",
     colecionavel:null,
@@ -6447,14 +6474,14 @@ function togglePortal(i) {
 // Coordenadas em % da imagem (mesmo sistema de sempre — use o
 // "🎯 Modo Calibração" pra pegar novas coordenadas clicando no mapa).
 const gatepalSectorPoints = [
-  { x: 10, y: 15 }, // 0 — Tutorial / Pré-Facility (ainda não calibrado)
+  { x: 16.7, y: 13.7 }, // 0 — Tutorial / Pré-Facility
   { x: 40.0, y: 47.4 }, // 1 — Setor Escritório
   { x: 39.1, y: 70.0 }, // 2 — Manufacturing West
   { x: 60.5, y: 59.6 }, // 3 — Cascade Laboratories
   { x: 53.3, y: 38.4 }, // 4 — Setor Segurança
   { x: 45.9, y: 23.3 }, // 5 — Hidroplanta
   { x: 36.1, y: 28.0 }, // 6 — Reatores
-  { x: 80, y: 15 }, // 7 — Mundos Portais (marcador geral, ainda não calibrado)
+  null, // 7 — Mundos Portais: sem pin próprio, não existe como ponto físico no mapa
   { x: 19.4, y: 54.6 }, // 8 — Setor Residencial
 ];
 
@@ -6473,13 +6500,13 @@ const gatepalPortalPoints = [
   { x: 15.3, y: 46.5 }, // 11 — GATE Arch Defense Facility
   { x: 12.8, y: 53.3 }, // 12 — Albatross
   { x: 63.3, y: 51.7 }, // 13 — Rise (Instalação Rise)
-  { x: 74,  y: 85 },    // 14 — North Pole (ainda não calibrado)
-  { x: 79,  y: 85 },    // 15 — Dunkeltaler Forest (ainda não calibrado)
+  null, // 14 — North Pole: sem pin, não existe nesse mapa
+  null, // 15 — Dunkeltaler Forest: sem pin, não existe nesse mapa
   { x: 69.3, y: 64.5 }, // 16 — Royal Range (Cordilheira Real)
-  { x: 89,  y: 85 },    // 17 — The Pool Room (ainda não calibrado)
+  null, // 17 — The Pool Room: sem pin, não existe nesse mapa
   { x: 59.9, y: 68.0 }, // 18 — The World in the Mirror (O Mundo da Janela)
   { x: 7.2,  y: 90.3 }, // 19 — Some Distant Shore (Alguma Costa Distante)
-]; // mesma ordem de portaisData — 17/20 calibrados (North Pole, Dunkeltaler Forest e Pool Room ainda placeholder)
+]; // mesma ordem de portaisData — 16/20 com pin (North Pole, Dunkeltaler Forest e Pool Room excluídos por não existirem nesse mapa)
 
 // ── Mapas disponíveis — hoje só o Geral. Pra adicionar um mapa por setor no
 // futuro, basta um novo objeto aqui { id, name, icon, img } e usar esse
@@ -6496,28 +6523,82 @@ let gatepalCurrentMapId = 'geral';
 // sozinho já diz "isso é comida", "isso é arma", etc. Pins pessoais também
 // podem usar uma dessas categorias (escolhida no formulário de novo pin). ──
 const gatepalCategories = {
-  setor:      { label: 'Setores',    icon: '🧭', color: C.cyan },
-  portal:     { label: 'Portais',    icon: '🌀', color: C.purple },
+  setor:      { label: 'Setores',    icon: '<img src="Images/Icons/SVG/sector.svg">', color: C.green },
+  portal:     { label: 'Portais',    icon: '<img src="Images/Icons/SVG/world.svg">', color: C.purple },
   comida:     { label: 'Comida',     icon: '🍖', color: C.green },
   arma:       { label: 'Armas',      icon: '⚔️', color: C.red },
   npc:        { label: 'NPCs',       icon: '🧑', color: C.amber },
   reciclagem: { label: 'Reciclagem', icon: '♻️', color: C.steel },
 };
 
-// Pins de Setores — mesmos dados de mapsData (já usado na grade de cards
-// abaixo do mapa), agora também virando um pin clicável.
-const gatepalSetorPois = mapsData.map((m, i) => ({
-  id: 'setor-' + i, cat: 'setor', mapId: 'geral', pt: gatepalSectorPoints[i],
-  name: m.name, icon: m.icon, color: m.color, img: '', desc: m.desc,
-  jump: { type: 'sector', i },
-})).filter(p => p.pt);
+// ── Conteúdo independente dos pins do Mapa Geral (popup) ──
+// Este bloco é a ÚNICA fonte de título/imagem/descrição mostrados no popup
+// de cada pin de Setor/Portal. Foi separado de propósito de mapsData/portaisData
+// (usados nas abas Setores/Portais) para que o popup possa ter texto próprio,
+// mais detalhado, com objetos que não fazem sentido nas outras abas, ou
+// totalmente diferente — sem afetar o resto do site.
+// Preenchido abaixo com os textos que já existiam, como ponto de partida —
+// edite livremente cada entrada. Chave = id do pin ('setor-N' / 'portal-N',
+// mesmo N usado em gatepalSectorPoints/gatepalPortalPoints, na mesma ordem
+// de mapsData/portaisData). Campos aceitos: name, img, desc.
+const gatepalPoiContent = {
+  "setor-0": { name: "TUTORIAL / PRÉ-FACILITY", img: "", desc: "Área de introdução abaixo da Facility principal. Contém os primeiros crafts e o primeiro combate. Privada-Portal localizado no Data Farm do Escritório — porta de acesso ao Some Distant Shore." },
+  "setor-1": { name: "SETOR ESCRITÓRIO", img: "", desc: "Primeiro setor completo. Contém: Silos (1, 2, 3), Far Garden (Anteverse 2-A), acesso a Flathill. Hub central inicial com múltiplos andares e salas de escritório conectadas." },
+  "setor-2": { name: "MANUFACTURING WEST", img: "", desc: "Complexo industrial. Contém: Upper Shipping (uniforme!), Minas com torre e portal secreto no topo (Dummy!), Train World. Setor com mais troféus perdíveis — atenção total aqui." },
+  "setor-3": { name: "CASCADE LABORATORIES", img: "", desc: "Laboratório avançado com múltiplas sub-áreas. Contém: Mycofields (Capacete de Cogumelo!), Night Realm portal, diversas caixas especiais espalhadas. Área mais vertical do jogo." },
+  "setor-4": { name: "SETOR SEGURANÇA", img: "", desc: "Setor de controle com múltiplos postos de segurança e câmeras. Contém o portal de acesso ao RISE (orbe azul grande atrás do elevador gigante, perto da entrada). Oportunidade de grind de kills da Ordem." },
+  "setor-5": { name: "HIDROPLANTA", img: "", desc: "Complexo aquático com seção Robótica, 4 reatores e elevador subaquático. Contém: Kylie Muir (Chip Neural!), uniforme no elevador subaquático. Área maior com rotas verticais e horizontais." },
+  "setor-6": { name: "REATORES", img: "", desc: "Zona de alta periculosidade com ambientes radioativos. Boss: Jotun (Troféu: Sjaund). Acesso a Mundos Portais avançados a partir daqui." },
+  "setor-7": { name: "MUNDOS PORTAIS", img: "", desc: "12+ mundos dimensionais acessíveis via portais espalhados pela Facility. Cada portal leva a um ambiente único: vila, floresta, piscina, espaço, esqui, etc. A maioria tem troféus automáticos ao sair." },
+  "setor-8": { name: "SETOR RESIDENCIAL", img: "", desc: "Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar." },
 
-// Pins de Portais — mesmos dados de portaisData (já usado na aba Portais).
-const gatepalPortalPois = portaisData.map((p, i) => ({
-  id: 'portal-' + i, cat: 'portal', mapId: 'geral', pt: gatepalPortalPoints[i],
-  name: p.name, icon: p.icon, img: p.img || '', desc: p.universo || '',
-  jump: { type: 'portal', i },
-})).filter(p => p.pt);
+  "portal-0": { name: "Far Garden (Anteverse 2-A)", img: "Images/Portais/Fargarden.webp", desc: "ANTEVERSE 2" },
+  "portal-1": { name: "Flathill", img: "Images/Portais/Flathill.webp", desc: "ANTEVERSE 0" },
+  "portal-2": { name: "Train World", img: "Images/Portais/Thetrain.webp", desc: "SEM Nº CATALOGADO" },
+  "portal-3": { name: "Furniture Store (Helmholtz)", img: "Images/Portais/Furniturestore.webp", desc: "SEM Nº CATALOGADO" },
+  "portal-4": { name: "Mycofields", img: "Images/Portais/Themycofields.webp", desc: "ANTEVERSE 2" },
+  "portal-5": { name: "Night Realm", img: "Images/Portais/Thenightrealm.webp", desc: "SEM Nº CATALOGADO" },
+  "portal-6": { name: "Vila Den da'ko Yeer", img: "Images/Portais/Villagedendakoyeer.webp", desc: "ANTEVERSE 2" },
+  "portal-7": { name: "Canaan", img: "Images/Portais/Canaan.webp", desc: "SEM Nº CATALOGADO" },
+  "portal-8": { name: "Voussoir (Mundo de Esqui)", img: "Images/Portais/Voussoir.webp", desc: "ANTEVERSE 0" },
+  "portal-9": { name: "Shadowgate", img: "Images/Portais/Shadowgate.webp", desc: "ANTEVERSE 0" },
+  "portal-10": { name: "Praetorium (The Inquisition)", img: "Images/Portais/Praetorium.webp", desc: "ANTEVERSE 0" },
+  "portal-11": { name: "GATE Arch Defense Facility", img: "Images/Portais/Gatearchdefensefacility.webp", desc: "LOCALIZAÇÃO DESCONHECIDA" },
+  "portal-12": { name: "Albatross", img: "Images/Portais/Albatross.webp", desc: "ANTEVERSE 0" },
+  "portal-13": { name: "Rise (Rise Facility)", img: "Images/Portais/Risefacility.webp", desc: "ANTEVERSE 0 · OPCIONAL MAIOR" },
+  "portal-14": { name: "North Pole", img: "Images/Portais/Northpole.webp", desc: "ANTEVERSE 188 · OPCIONAL MAIOR" },
+  "portal-15": { name: "Dunkeltaler Forest", img: "Images/Portais/Dunkeltalerforest.webp", desc: "ANTEVERSE 0 · OPCIONAL MAIOR (CROSSOVER)" },
+  "portal-16": { name: "Royal Range", img: "Images/Portais/Royalrange.webp", desc: "OPCIONAL MAIOR" },
+  "portal-17": { name: "The Pool Room", img: "Images/Portais/Thepoolroom.webp", desc: "OPCIONAL MENOR" },
+  "portal-18": { name: "The World in the Mirror", img: "Images/Portais/Theworldinthemirror.webp", desc: "OPCIONAL MENOR" },
+  "portal-19": { name: "Some Distant Shore", img: "Images/Portais/Somedistantshore.webp", desc: "OPCIONAL MENOR" },
+};
+
+// Pins de Setores — a POSIÇÃO (pt), o ícone/cor do card e o link de "Saiba
+// Mais" (jump) continuam vindo de mapsData/gatepalSectorPoints (mecânica do
+// mapa). Nome/imagem/descrição do POPUP vêm de gatepalPoiContent acima —
+// com fallback pro texto de mapsData só como rede de segurança, caso uma
+// entrada nova seja adicionada em mapsData sem entrada correspondente aqui.
+const gatepalSetorPois = mapsData.map((m, i) => {
+  const c = gatepalPoiContent['setor-' + i] || {};
+  return {
+    id: 'setor-' + i, cat: 'setor', mapId: 'geral', pt: gatepalSectorPoints[i],
+    name: c.name || m.name, icon: m.icon, color: m.color, img: c.img || '', desc: c.desc || m.desc,
+    jump: { type: 'sector', i },
+  };
+}).filter(p => p.pt);
+
+// Pins de Portais — mesma lógica: pt/jump continuam vindo de portaisData/
+// gatepalPortalPoints (mecânica do mapa), nome/imagem/descrição do POPUP
+// vêm de gatepalPoiContent, com fallback pro texto de portaisData.
+const gatepalPortalPois = portaisData.map((p, i) => {
+  const c = gatepalPoiContent['portal-' + i] || {};
+  return {
+    id: 'portal-' + i, cat: 'portal', mapId: 'geral', pt: gatepalPortalPoints[i],
+    name: c.name || p.name, icon: p.icon, img: c.img || p.img || '', desc: c.desc || p.universo || '',
+    jump: { type: 'portal', i },
+  };
+}).filter(p => p.pt);
 
 // Pins de Comida, Armas, NPCs e Reciclagem — AINDA VAZIOS DE PROPÓSITO.
 // Diferente dos Setores/Portais (que já tinham coordenadas do sistema
@@ -6840,7 +6921,6 @@ function gatepalIconFor(poi) {
     if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].icon;
     return '📌';
   }
-  if ((poi.cat === 'setor' || poi.cat === 'portal') && poi.icon) return poi.icon;
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].icon : '📍';
 }
 function gatepalColorFor(poi) {
@@ -6848,7 +6928,6 @@ function gatepalColorFor(poi) {
     if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].color;
     return '#9fb0a8';
   }
-  if (poi.cat === 'setor') return poi.color || C.cyan;
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
 
@@ -6856,6 +6935,8 @@ function gatepalColorFor(poi) {
 // visual), só quem posiciona o elemento na tela muda: antes era o
 // Leaflet reposicionando left/top a cada frame de pan/zoom, agora é o
 // MapLibre via matriz de transform sincronizada com a câmera WebGL. ──
+const GATEPAL_PIN_SVG = '<svg class="gatepal-pin-svg" viewBox="0 0 36 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 1C8.6 1 1 8.6 1 18c0 12.5 17 29 17 29s17-16.5 17-29C35 8.6 27.4 1 18 1z"/></svg>';
+
 function gatepalBuildPinEl(poi) {
   const color = gatepalColorFor(poi);
   const isDone = !!gatepalProgress[poi.id];
@@ -6863,7 +6944,7 @@ function gatepalBuildPinEl(poi) {
   const wrap = document.createElement('div');
   wrap.className = 'gatepal-pin-wrap';
   wrap.title = poi.name;
-  wrap.innerHTML = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
+  wrap.innerHTML = `<div class="${pinClass}" style="color:${color}">${GATEPAL_PIN_SVG}<span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
   return wrap;
 }
 
@@ -6875,7 +6956,7 @@ function renderGatepalPins() {
   const pois = gatepalAllPoisForMap(gatepalCurrentMapId);
   pois.forEach(poi => {
     const el = gatepalBuildPinEl(poi);
-    el.addEventListener('click', (e) => { e.stopPropagation(); openGatepalPoiPopover(poi); });
+    el.addEventListener('click', (e) => { e.stopPropagation(); openGatepalPoiPopover(poi, el); });
     const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
       .setLngLat(gatepalPercentToLngLat(poi.pt))
       .addTo(gatepalMapInstance);
@@ -6896,7 +6977,7 @@ function gatepalUpdatePinDoneState(poi) {
     const color = gatepalColorFor(poi);
     const isDone = !!gatepalProgress[poi.id];
     const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
-    entry.el.innerHTML = `<div class="${pinClass}" style="color:${color}"><span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
+    entry.el.innerHTML = `<div class="${pinClass}" style="color:${color}">${GATEPAL_PIN_SVG}<span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
   }
   gatepalUpdateProgressBarSafe();
 }
@@ -6953,12 +7034,48 @@ function gatepalApplyFilters() {
 const gatepalPoiPopoverEl = document.getElementById('gatepalPoiPopover');
 let gatepalCurrentPoi = null;
 
-function openGatepalPoiPopover(poi) {
+// Posiciona o popup perto do pin clicado (telas ≥769px) em vez de
+// centralizado na tela com fundo escuro. Mede o card já com o conteúdo
+// preenchido (chamado depois de todo texto/imagem já estarem no DOM),
+// tenta encaixar acima do pin primeiro e cai pra baixo se não houver
+// espaço, sempre com clamp pra nunca vazar pra fora da viewport. Em
+// mobile (≤768px) não faz nada — mantém o modal centralizado de sempre.
+function gatepalPositionPopover(anchorEl) {
+  const modal = gatepalPoiPopoverEl.querySelector('.deploy-modal');
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile || !anchorEl) {
+    gatepalPoiPopoverEl.classList.remove('is-floating');
+    modal.style.position = '';
+    modal.style.left = '';
+    modal.style.top = '';
+    modal.style.margin = '';
+    return;
+  }
+  gatepalPoiPopoverEl.classList.add('is-floating');
+  const rect = anchorEl.getBoundingClientRect();
+  const margin = 12;
+  const modalWidth = modal.offsetWidth;
+  const modalHeight = modal.offsetHeight;
+
+  let left = rect.left + rect.width / 2 - modalWidth / 2;
+  let top = rect.top - modalHeight - margin; // tenta encaixar ACIMA do pin primeiro
+  if (top < margin) top = rect.bottom + margin; // sem espaço em cima -> cai pra baixo do pin
+
+  left = Math.max(margin, Math.min(left, window.innerWidth - modalWidth - margin));
+  top = Math.max(margin, Math.min(top, window.innerHeight - modalHeight - margin));
+
+  modal.style.position = 'fixed';
+  modal.style.margin = '0';
+  modal.style.left = left + 'px';
+  modal.style.top = top + 'px';
+}
+
+function openGatepalPoiPopover(poi, anchorEl) {
   gatepalCurrentPoi = poi;
   const isPersonal = !!poi.isPersonal;
   const catInfo = gatepalCategories[poi.cat];
 
-  document.getElementById('gpPoiTitle').textContent = `${gatepalIconFor(poi)} ${poi.name}`;
+  document.getElementById('gpPoiTitle').innerHTML = `${gatepalIconFor(poi)} ${poi.name}`;
   document.getElementById('gpPoiCat').textContent = isPersonal
     ? 'PIN PESSOAL' + (catInfo ? ' · ' + catInfo.label.toUpperCase() : '')
     : (catInfo ? catInfo.label.toUpperCase() : poi.cat.toUpperCase());
@@ -6982,8 +7099,8 @@ function openGatepalPoiPopover(poi) {
     fallback.style.display = 'none';
     img.style.display = 'block';
     img.src = poi.img || '';
-    img.onerror = () => { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = gatepalIconFor(poi); };
-    if (!poi.img) { img.style.display = 'none'; fallback.style.display = 'block'; fallback.textContent = gatepalIconFor(poi); }
+    img.onerror = () => { img.style.display = 'none'; fallback.style.display = 'block'; fallback.innerHTML = gatepalIconFor(poi); };
+    if (!poi.img) { img.style.display = 'none'; fallback.style.display = 'block'; fallback.innerHTML = gatepalIconFor(poi); }
   }
 
   const checkWrap = document.getElementById('gpPoiCheckWrap');
@@ -7023,6 +7140,7 @@ function openGatepalPoiPopover(poi) {
     delBtn.style.display = 'none';
   }
 
+  gatepalPositionPopover(anchorEl);
   gatepalPoiPopoverEl.classList.add('active');
 }
 document.getElementById('gpPoiClose').addEventListener('click', () => gatepalPoiPopoverEl.classList.remove('active'));
@@ -7066,8 +7184,8 @@ function jumpToSector(i) {
 
 // Aviso de "coordenadas ainda não calibradas" — some sozinho assim que
 // alguém editar os arrays acima (deixa de bater com a grade provisória).
-const isDefaultGrid = gatepalSectorPoints.every((pt) => pt.y === 15) &&
-                       gatepalPortalPoints.every((pt) => pt.y === 85 || pt.y === 92);
+const isDefaultGrid = gatepalSectorPoints.filter(Boolean).every((pt) => pt.y === 15) &&
+                       gatepalPortalPoints.filter(Boolean).every((pt) => pt.y === 85 || pt.y === 92);
 if (isDefaultGrid) {
   gatepalNoticeEl.style.display = 'block';
   gatepalNoticeEl.innerHTML = '📍 As posições dos marcadores de Setores/Portais ainda são um placeholder (grade provisória) — use o <b>"🎯 Modo Calibração"</b> pra clicar em cima do mapa real e ajustar cada uma. Depois é só colar as coordenadas no array <code>gatepalSectorPoints</code> / <code>gatepalPortalPoints</code> do código.';
@@ -7131,7 +7249,14 @@ function gatepalHandleMapClick(e) {
 // oficiais + a opção "Pin Genérico", sem categoria específica).
 (function gatepalFillCategorySelect() {
   const sel = document.getElementById('gpNewPinCategory');
-  const opts = Object.keys(gatepalCategories).map(k => `<option value="${k}">${gatepalCategories[k].icon} ${gatepalCategories[k].label}</option>`);
+  // <option> nativo não renderiza HTML/SVG (limitação do navegador, não dá
+  // pra contornar) — se o ícone da categoria for markup (começa com "<"),
+  // mostra só o texto aqui; ícone emoji continua igual a sempre.
+  const opts = Object.keys(gatepalCategories).map(k => {
+    const ic = gatepalCategories[k].icon;
+    const prefix = (typeof ic === 'string' && ic.trim().startsWith('<')) ? '' : ic + ' ';
+    return `<option value="${k}">${prefix}${gatepalCategories[k].label}</option>`;
+  });
   opts.push('<option value="pessoal">📌 Pin Genérico</option>');
   sel.innerHTML = opts.join('');
 })();
@@ -7446,38 +7571,55 @@ const weaponsGrid = document.getElementById('weapons-grid');
 // Dados verificados na Wiki Oficial: https://abioticfactor.wiki.gg/wiki/Chemistry
 // ══════════════════════════════════════════════════════════════════
 const distillationsData = [
+
   { id:"vigorous",    name:"Destilação Vigorosa",     eng:"Vigorous Distillation",    color:"#00e060", icon:"🌱",
-    sources:[{n:"Maçã",q:4},{n:"Batata",q:3},{n:"Cenoura",q:4},{n:"Abóbora",q:12}] },
+    sources:[{n:"Maçã",q:4},{n:"Batata",q:3},{n:"Cenoura",q:2},{n:"Abóbora",q:12},{n:"Ovo",q:3},{n:"Mel",q:3},{n:"Milho Purificado",q:3},{n:"Alface Espacial",q:3},{n:"Anomalia",q:2},{n:"Trigo Anteverso",q:2},{n:"Braço Humano",q:2},{n:"Carne de Larva Crua",q:2},{n:"Filé de Silken Betta Cru",q:2},{n:"Tomate",q:2},{n:"Cera de Abelha",q:1},{n:"Bio Scrap",q:1}] },
+
   { id:"fizzy",       name:"Destilação Efervescente", eng:"Fizzy Distillation",       color:"#20d0c0", icon:"🥤",
-    sources:[{n:"Gem Sugar",q:8},{n:"Sorvete",q:3},{n:"Slushie",q:2},{n:"XETA NRG",q:2}] },
+    sources:[{n:"Gem Sugar",q:8},{n:"Gusto Goo",q:8},{n:"Sugar Crystal",q:8},{n:"Bengala Doce",q:4},{n:"Doznuts",q:3},{n:"Sorvete",q:3},{n:"Jowlers",q:3},{n:"Sorvete Derretido",q:3},{n:"Skip",q:3},{n:"Fizz Bang",q:2},{n:"Pop Snarkle",q:2},{n:"Rootbear",q:2},{n:"Slam",q:2},{n:"Slushie",q:2},{n:"Vit",q:2},{n:"Farm Puffs",q:1},{n:"Saltz",q:1}] },
+
   { id:"alien",       name:"Destilação Alienígena",   eng:"Alien Distillation",       color:"#a060e0", icon:"👽",
-    sources:[{n:"Anti-Fungal Gelatin",q:32},{n:"Peccary Alpha Skull",q:8},{n:"Exor Skull",q:3},{n:"Filé de Portal Fish",q:2}] },
+    sources:[{n:"Anti-Fungal Gelatin",q:32},{n:"Vibrant Exor Arm",q:8},{n:"Raw Exor Heart",q:5},{n:"Exor Arm",q:4},{n:"Exor Skull",q:3},{n:"Super Tomato",q:3},{n:"Xanterium Rice",q:3},{n:"Antejuice Sac",q:2},{n:"Green Fish Liver",q:2},{n:"Peccary Skull",q:2},{n:"Raw Antefish Filet",q:2},{n:"Raw Alien Drumstick",q:2},{n:"Raw Carbuncle",q:2},{n:"Raw Peccary Chop",q:2},{n:"Raw Portal Fish Filet",q:2},{n:"Raw Radfish Filet",q:2},{n:"Raw Stuffed Roast Peccary",q:2},{n:"Sow Skull",q:2},{n:"Anteverse Cheese",q:1},{n:"Raw Pest",q:1},{n:"Raw Pest Rump",q:1}] },
+
   { id:"foggy",       name:"Destilação Nebulosa",     eng:"Foggy Distillation",       color:"#7090a8", icon:"🌫️",
-    sources:[{n:"Órgão (Organ)",q:12},{n:"Cabeça do Sinfonista",q:4},{n:"Porcelain Shards",q:2}] },
+    sources:[{n:"Órgão (Organ)",q:12},{n:"Órgão Parcial (Partial Organ)",q:3},{n:"Cabeça do Sinfonista",q:4},{n:"Porcelain Shards",q:2},{n:"Raw Chordfish Filet",q:2}] },
+
   { id:"brainy",      name:"Destilação Cerebral",     eng:"Brainy Distillation",      color:"#e060a0", icon:"🧠",
     sources:[{n:"Crânio de Yeti",q:12},{n:"Cérebro Humano",q:4},{n:"Crânio de Sniper",q:4}] },
+
   { id:"void",        name:"Destilação do Vazio",     eng:"Void Distillation",        color:"#6020c0", icon:"🕳️",
     sources:[{n:"Anteverse Gem",q:3},{n:"Gem Crab",q:3},{n:"Powdered Crystal",q:4}] },
+
   { id:"mycological", name:"Destilação Micológica",   eng:"Mycological Distillation", color:"#a06020", icon:"🍄",
     sources:[{n:"Carbuncle Mushroom",q:4},{n:"Mushroom Peccary Skull",q:8}] },
+
   { id:"charged",     name:"Destilação Carregada",    eng:"Charged Distillation",     color:"#e0d020", icon:"⚡",
-    sources:[{n:"Capacitor",q:6},{n:"Electrical Organ",q:6},{n:"Transcendium",q:8}] },
-  { id:"boiling",     name:"Destilação Fervente",     eng:"Boiling Distillation",     color:"#e05020", icon:"🔥",
-    sources:[{n:"Anteverse Gel",q:3},{n:"Royal Pepper",q:4}] },
-  { id:"expanding",   name:"Destilação Expansiva",    eng:"Expanding Distillation",   color:"#20a090", icon:"💥",
-    sources:[{n:"Tarasque Ichor",q:12},{n:"Behemoth Skull",q:24},{n:"Tarasque Skull",q:8}] },
+    sources:[{n:"Eel Fat",q:2},{n:"Electrical Organ",q:6},{n:"Kizz Cola",q:3},{n:"Raw Frigid Queenfish Filet",q:2},{n:"Raw Gutfish Eel Filet",q:2},{n:"Liquid Crystal",q:3},{n:"Capacitor",q:6},{n:"Transcendium",q:8},{n:"Reservoir Growth",q:4},{n:"Black Gunk",q:4}] },
+
+  { id:"boiling",     name:"Destilação Fervente",    eng:"Boiling Distillation",      color:"#e05020", icon:"🔥",
+    sources:[{n:"Anteverse Gel",q:3}] },
+
+  { id:"expanding",   name:"Destilação Expansiva",    eng:"Expanding Distillation",    color:"#20a090", icon:"💥",
+    sources:[{n:"Tarasque Ichor",q:12},{n:"Glow Eye",q:2},{n:"Raw Darkwater Fish Filet",q:2},{n:"Behemoth Skull",q:24},{n:"Tarasque Skull",q:8}] },
+
   { id:"unnerving",   name:"Destilação Perturbadora", eng:"Unnerving Distillation",   color:"#c02040", icon:"😨",
-    sources:[{n:"Night Essence",q:12},{n:"Keresphere",q:4},{n:"Black Oil",q:2}] },
+    sources:[{n:"Night Essence",q:12},{n:"Black Oil",q:2},{n:"Corrupted Corn",q:2},{n:"Hexwood",q:2},{n:"Raw Inkfish Filet",q:2}] },
+
   { id:"fleshy",      name:"Destilação Carnal",       eng:"Fleshy Distillation",      color:"#e08070", icon:"🩸",
-    sources:[{n:"Lodestone Fragment",q:6},{n:"Greyeb",q:2},{n:"STOLAS Hard Drive",q:1}] },
+    sources:[{n:"Lodestone Fragment",q:6},{n:"Greyeb",q:2},{n:"Raw IS-0098 Tentacles",q:1}] },
+
   { id:"unstable",    name:"Destilação Instável",     eng:"Unstable Distillation",    color:"#ff2020", icon:"☢️",
-    sources:[{n:"Plutonic Blood",q:4},{n:"Plutonic Carapace",q:2},{n:"Volatile Exor Skull",q:3}] },
-  { id:"occult",      name:"Destilação Oculta",       eng:"Occult Distillation",      color:"#8020a0", icon:"🔮",
-    sources:[{n:"Purported Grimoire",q:5},{n:"Chieftain Skull",q:3},{n:"Witch Skull",q:3}] },
-  { id:"endothermic", name:"Destilação Endotérmica",  eng:"Endothermic Distillation", color:"#40c0e0", icon:"❄️",
+    sources:[{n:"Plutonic Blood",q:4},{n:"Plutonic Carapace",q:2}] },
+
+  { id:"occult",      name:"Destilação Oculta",       eng:"Occult Distillation",       color:"#8020a0", icon:"🔮",
+    sources:[{n:"Purported Grimoire",q:5},{n:"Chieftain Skull",q:3},{n:"Embellished Censer",q:3},{n:"Flickering Eye",q:3},{n:"Head of a Giant",q:3},{n:"Mystagogue's Head",q:3},{n:"Witch Skull",q:3},{n:"Arcane Scrap",q:2},{n:"Raw Penumbra Filet",q:2},{n:"Shadowberries",q:2}] },
+
+  { id:"endothermic", name:"Destilação Endotérmica", eng:"Endothermic Distillation", color:"#40c0e0", icon:"❄️",
     sources:[{n:"Frozen Essence",q:12},{n:"Snow Peccary Skull",q:2}] },
-  { id:"noxious",     name:"Lodo Nocivo",             eng:"Noxious Sludge",           color:"#608020", icon:"☣️",
-    sources:[{n:"Ácido, Alvejante, Pólvora e ~15 outros itens de sucata",q:1}], note:"Resultado indesejado — evite destilar itens de sucata/lixo se não quiser gerar isso." },
+
+  { id:"noxious",     name:"Lodo Nocivo",           eng:"Noxious Sludge",           color:"#608020", icon:"☣️",
+    sources:[{n:"Sucata compatível com Lodo Nocivo",q:1}], note:"Resultado indesejado da destilação de determinados itens. A lista completa de sucatas compatíveis varia conforme os itens aceitos pelo sistema de Química; não há necessidade de alterar esta entrada para uma lista inventada de fontes específicas." },
+
 ];
 const distById = {};
 distillationsData.forEach(d => distById[d.id] = d);
@@ -7492,123 +7634,121 @@ const concoctionsData = [
   // ── REVESTIMENTOS (10) ──
   { id:"acid_coating", name:"Revestimento Ácido", eng:"Acid Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"unstable",q:6},{d:"boiling",q:6},{d:"alien",q:6}],
-    effect:"Dano ácido bônus = 25% do dano da arma, a cada golpe. Efeito visual verde translúcido + respingo de ácido no impacto." },
+    effect:"Adiciona dano ácido aos ataques da arma enquanto o revestimento tiver durabilidade." },
   { id:"bounce_coating", name:"Revestimento de Repulsão", eng:"Bounce Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"mycological",q:8},{d:"fizzy",q:8},{d:"foggy",q:4}],
-    effect:"A arma passa a empurrar (knockback) o inimigo a cada golpe.",
-    note:"Só funciona em armas corpo a corpo — o jogo deixa aplicar em armas à distância, mas o efeito não faz nada nos projéteis." },
+    effect:"Faz os ataques da arma aplicarem um forte efeito de repulsão (knockback) aos inimigos atingidos.",
+    note:"Funciona em armas corpo a corpo. Embora possa ser aplicado em armas à distância, o efeito de repulsão não é aplicado aos projéteis." },
   { id:"disruptor_coating", name:"Revestimento Disruptor", eng:"Disruptor Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"occult",q:8},{d:"charged",q:8},{d:"boiling",q:8}],
-    effect:"Triplica (3x) o dano contra escudos de hardlight. Brilho rosa na ponta da arma." },
+    effect:"Aumenta em 3× o dano causado contra escudos de Hardlight." },
   { id:"electromagnetic_coating", name:"Revestimento Eletromagnético", eng:"Electromagnetic Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"charged",q:8},{d:"fizzy",q:4},{d:"void",q:4}],
-    effect:"Recarrega 1 unidade de carga de baterias no inventário a cada acerto, além de +5% de dano elétrico bônus.",
-    note:"Combo conhecido: aplique numa arma corpo a corpo pra ter bateria praticamente infinita em outros itens." },
+    effect:"Recupera 1 unidade de carga de baterias do inventário a cada acerto e adiciona dano elétrico bônus.",
+    note:"É especialmente útil em armas corpo a corpo para recuperar carga de equipamentos enquanto luta." },
   { id:"foggy_coating", name:"Revestimento Nebuloso", eng:"Foggy Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"foggy",q:8},{d:"vigorous",q:4},{d:"void",q:2}],
-    effect:"A arma ignora resistências de dano do inimigo. Cria neblina no impacto.",
-    note:"Muito útil contra Grunts blindados e outros inimigos com resistência elemental específica." },
+    effect:"Permite que a arma atravesse determinadas resistências de dano dos inimigos e cria um efeito de neblina no impacto.",
+    note:"É especialmente útil contra inimigos que possuem resistências de dano." },
   { id:"holy_coating", name:"Revestimento Sagrado", eng:"\"Holy\" Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"fleshy",q:6},{d:"charged",q:6},{d:"unnerving",q:4}],
-    effect:"Aplica uma queimadura sagrada (3 tiques de 10 de dano) que NÃO escala com o dano da arma.",
-    note:"Pouco eficaz contra os vários inimigos imunes a dano de fogo/sagrado do jogo." },
+    effect:"Adiciona um efeito de dano sagrado/queimadura aos inimigos atingidos enquanto o revestimento estiver ativo.",
+    note:"O comportamento e a eficácia do efeito dependem das resistências do inimigo." },
   { id:"quantum_coating", name:"Revestimento Quântico", eng:"Quantum Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"occult",q:6},{d:"endothermic",q:6},{d:"void",q:6}],
-    effect:"20% de chance de não gastar munição ou recurso a cada uso. Brilho roxo na ponta da arma." },
+    effect:"Concede 20% de chance de não consumir munição ou outro recurso gasto pelo uso da arma." },
   { id:"reforge_coating", name:"Revestimento de Autorreparo", eng:"Reforge Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"fleshy",q:6},{d:"mycological",q:6},{d:"vigorous",q:6}],
-    effect:"Recupera 0.5 de durabilidade a cada 5 segundos, automaticamente, enquanto a arma estiver em mãos." },
+    effect:"Regenera automaticamente a durabilidade da arma enquanto ela estiver sendo utilizada." },
   { id:"somnivorous_coating", name:"Revestimento Somnívoro", eng:"Somnivorous Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"brainy",q:6},{d:"unnerving",q:6},{d:"foggy",q:6}],
-    effect:"Rouba vida: cura você em 20% do dano causado a cada golpe. Efeito visual de gêiser de sangue." },
+    effect:"Rouba vida dos inimigos: cura o usuário em 20% do dano causado. Também produz um efeito visual de gêiser de sangue no impacto." },
   { id:"thermal_coating", name:"Revestimento Térmico", eng:"Thermal Coating", category:"coating", mixTime:"0:15",
     recipe:[{d:"boiling",q:6},{d:"vigorous",q:4},{d:"alien",q:4}],
-    effect:"Dano de fogo bônus = 15% do dano da arma, incendeia o inimigo.",
-    note:"Também aumenta a temperatura ambiente sentida por você em 1 nível (ex.: de Hipotérmico pra Frio) enquanto a arma estiver equipada." },
+    effect:"Adiciona dano de fogo aos ataques da arma e pode incendiar os inimigos atingidos.",
+    note:"Também aumenta em um nível a temperatura ambiente percebida pelo jogador enquanto a arma revestida estiver equipada." },
 
   // ── FRASCOS (12, incl. Frasco Instável) ──
   { id:"blizzard_flask", name:"Frasco Nevasca", eng:"Blizzard Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"endothermic",q:2},{d:"occult",q:2},{d:"fizzy",q:4}],
-    effect:"Cria um vórtice de nevasca que congela e reduz a velocidade dos inimigos em 50% por 8 segundos." },
+    effect:"Cria uma nevasca no ponto de impacto que afeta os inimigos na área, reduzindo sua velocidade e aplicando o efeito de congelamento." },
   { id:"charging_flask", name:"Frasco de Recarga", eng:"Charging Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"charged",q:4},{d:"void",q:2},{d:"alien",q:1}],
-    effect:"Recarrega baterias de itens próximos — 4 frascos recarregam completamente todo o seu equipamento.",
-    note:"Alternativa de campo muito mais eficiente que Field Batteries." },
+    effect:"Recarrega as baterias dos equipamentos próximos.",
+    note:"Uma opção prática para recuperar carga de equipamentos durante a exploração." },
   { id:"concussive_flask", name:"Frasco Concussivo", eng:"Concussive Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"fizzy",q:2},{d:"alien",q:2},{d:"vigorous",q:1}],
-    effect:"Explode causando 50 de dano direto e 16 de dano concussivo em área.",
-    note:"Barato de craftar, mas fraco perto de outras opções — bom só no early/mid game." },
+    effect:"Explode no impacto, causando dano explosivo/concussivo na área." },
   { id:"corrosive_flask", name:"Frasco Corrosivo", eng:"Corrosive Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"unstable",q:2},{d:"boiling",q:2},{d:"fizzy",q:4}],
-    effect:"Espalha ácido que corrói a armadura do alvo, aplicando um debuff que aumenta o dano recebido em 30% por 30 segundos.",
-    note:"Jogue antes de um burst de dano do time pra punir o alvo enfraquecido." },
+    effect:"Libera uma área corrosiva que enfraquece o alvo e aumenta o dano que ele recebe.",
+    note:"Excelente para preparar um inimigo antes de uma sequência de ataques de alto dano." },
   { id:"holy_flask", name:"Frasco Sagrado", eng:"\"Holy\" Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"boiling",q:2},{d:"fleshy",q:2},{d:"unnerving",q:1}],
-    effect:"Efeito de fogo sagrado em área — um dos itens menos documentados do jogo até pela própria comunidade.",
-    note:"Provavelmente similar ao Revestimento Sagrado, mas em formato de explosão em área." },
+    effect:"Produz um efeito de dano sagrado em área no ponto de impacto.",
+    note:"Os detalhes numéricos do efeito não são tão bem documentados quanto os de outros Frascos; por isso, não atribuo valores específicos aqui." },
   { id:"megaton_flask", name:"Frasco Megaton", eng:"Megaton Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"unstable",q:4},{d:"boiling",q:4},{d:"expanding",q:2}],
-    effect:"Explosão que causa até 600 de dano no centro do impacto e no mínimo 50 de dano numa área de 0.5m.",
-    note:"A maior explosão disponível na Química — reserve pra alvos grandes." },
+    effect:"Produz uma explosão de até 600 de dano perto do centro, caindo até um mínimo de 50 de dano na área externa de aproximadamente 0,5 m." },
   { id:"panic_flask", name:"Frasco do Pânico", eng:"Panic Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"unnerving",q:4},{d:"charged",q:2},{d:"brainy",q:1}],
-    effect:"Gás alucinógeno que faz os inimigos entrarem em pânico e atacarem uns aos outros por 30 segundos.",
-    note:"Em jogadores, só reproduz sons de perseguição do Leyak — não causa o mesmo efeito de caos." },
+    effect:"Libera um gás alucinógeno que pode fazer inimigos entrarem em pânico e atacarem uns aos outros.",
+    note:"Em jogadores, o efeito não reproduz o comportamento de pânico dos inimigos." },
   { id:"pheromone_flask", name:"Frasco de Feromônio", eng:"Pheromone Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"alien",q:6},{d:"mycological",q:4},{d:"brainy",q:4}],
-    effect:"Pacifica Pests, Peccaries e Skinks por 45 segundos, deixando-os neutros a você.",
-    note:"Essencial pra domesticação — alimente a criatura pacificada com Trigo Anteverso ou Nachos em seguida." },
+    effect:"Pacifica temporariamente Pests, Peccaries e Skinks, tornando-os neutros ao jogador.",
+    note:"É um dos principais itens utilizados para domesticação de criaturas. Depois de pacificar a criatura, alimente-a conforme o método de domesticação correspondente." },
   { id:"portal_flask", name:"Frasco de Portal", eng:"Portal Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"alien",q:8},{d:"void",q:4},{d:"unstable",q:2}],
-    effect:"Abre uma micro-perfuração que puxa uma criatura hostil aleatória pro seu lado — geralmente um Pest (~35%) ou Peccary (~17.5%).",
-    note:"Use pra criar caos/distração, não como algo previsível — o alvo puxado é sempre aleatório." },
+    effect:"Abre uma microperfuração que puxa uma criatura para perto do jogador.",
+    note:"A criatura puxada é determinada aleatoriamente entre várias possibilidades; portanto, não deve ser tratado como um método previsível de invocar um inimigo específico." },
   { id:"restorative_flask", name:"Frasco Restaurador", eng:"Restorative Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"mycological",q:2},{d:"fizzy",q:2},{d:"vigorous",q:4}],
-    effect:"Nuvem de esporos que cura 60 HP por segundo por 2 segundos (120 HP no total) e estanca sangramento instantaneamente em quem estiver na área.",
-    note:"Funciona em jogadores e pets — jogue onde só seus aliados vão pisar." },
+    effect:"Libera uma nuvem de esporos que cura jogadores e pets em 60 HP por segundo durante 2 segundos, totalizando 120 HP. Também interrompe instantaneamente qualquer nível de sangramento dentro da área.",
+    note:"Funciona em jogadores e pets." },
   { id:"updraft_flask", name:"Frasco de Corrente Ascendente", eng:"Updraft Flask", category:"flask", mixTime:"0:15",
     recipe:[{d:"foggy",q:1},{d:"fizzy",q:2},{d:"void",q:1}],
-    effect:"Cria uma corrente de ar ascendente, como um Jump Pad ou Gaseous Nest.",
-    note:"Jogado bem antes de bater no chão numa queda grande, anula o dano de queda se o timing for certo." },
+    effect:"Cria uma corrente de ar ascendente que impulsiona entidades para cima.",
+    note:"Pode ser usado para ganhar impulso vertical e também para reduzir ou evitar dano de queda quando utilizado corretamente antes do impacto." },
   { id:"unstable_flask", name:"Frasco Instável", eng:"Unstable Flask", category:"flask", mixTime:"0:15", special:true,
     recipe:null,
-    effect:"Efeito completamente imprevisível ao ser arremessado — já foi visto deixando o alvo com mau cheiro até efeitos aleatórios não documentados oficialmente.",
-    note:"Não é craftado de propósito — é o resultado de errar a receita: 3 Destilações na proporção errada, OU 2 Destilações + 1 Lodo Nocivo. Também causa uma pequena explosão com empurrão na própria Bancada de Química." },
+    effect:"Produz um efeito completamente imprevisível quando arremessado.",
+    note:"Não possui uma receita normal própria: misturar 3 Destilações em uma combinação que não corresponda a uma receita válida, ou misturar 2 Destilações com 1 Lodo Nocivo, produz um Frasco Instável. A mistura também provoca uma pequena explosão com empurrão na Bancada de Química." },
 
   // ── TINTURAS (10) ──
   { id:"antiheat_tincture", name:"Tintura Anticalor", eng:"Antiheat Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:4},{d:"endothermic",q:4},{d:"boiling",q:4}],
-    effect:"Imunidade a dano de fogo + 3 de resistência ao calor, por 1 minuto e 30 segundos." },
+    effect:"Concede imunidade a dano de fogo e resistência ao calor por 1 minuto e 30 segundos." },
   { id:"berserker_tincture", name:"Tintura Berserker", eng:"Berserker Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:4},{d:"occult",q:2},{d:"alien",q:4}],
-    effect:"+20% de velocidade de movimento e de dano, e imunidade à maioria das formas de morte, por 1 minuto." },
+    effect:"Aumenta em 20% a velocidade de movimento e o dano do jogador e concede imunidade à morte pela maioria das fontes durante 1 minuto." },
   { id:"brainpower_tincture", name:"Tintura Cerebral", eng:"Brainpower Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:1},{d:"alien",q:2},{d:"brainy",q:2}],
-    effect:"+15% de ganho de experiência (XP) por 10 minutos.",
-    note:"Beba antes de uma sessão planejada de farm de XP." },
+    effect:"Concede +4 de Inteligência e aumenta em 15% o ganho de experiência (XP) durante 10 minutos.",
+    note:"Beba antes de uma sessão planejada de farm de XP para aproveitar o bônus." },
   { id:"curative_tincture", name:"Tintura Curativa", eng:"Curative Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:4},{d:"void",q:4},{d:"mycological",q:4}],
-    effect:"Cura instantaneamente todos os debuffs (exceto o Vírus Estranho) e limpa 40 rads.",
-    note:"NÃO restaura HP — combine com uma Tintura Restauradora se precisar de cura também." },
+    effect:"Remove instantaneamente os debuffs que afetam o jogador e limpa 40 Rads, mas não restaura HP.",
+    note:"Não cura o Vírus Estranho/Strange Virus." },
   { id:"electrifying_tincture", name:"Tintura Eletrizante", eng:"Electrifying Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:4},{d:"charged",q:4},{d:"boiling",q:2}],
-    effect:"Ao receber dano corpo a corpo, libera uma explosão de 35 de dano elétrico num raio de 2.9m (efeito 'espinho'). Só pode disparar 1x a cada 2 segundos. Dura 2 minutos." },
+    effect:"Ao receber dano corpo a corpo, libera uma explosão elétrica que causa 35 de dano de raio em um raio de 2,9 m. O efeito dura 2 minutos e pode disparar no máximo uma vez a cada 2 segundos." },
   { id:"giganto_tincture", name:"Tintura Giganto", eng:"Giganto Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:2},{d:"expanding",q:2},{d:"alien",q:2}],
-    effect:"+20% de tamanho/hitbox, +50% de dano corpo a corpo e +30% de redução de dano, por 1 minuto e 30 segundos.",
-    note:"Curiosidade: alimentar um Peccary (pet) com 3 doses dessa tintura o transforma num Tareccary." },
+    effect:"Aumenta o tamanho e a hitbox do jogador em 20%, aumenta o dano corpo a corpo em 50% e concede 30% de redução de dano durante 1 minuto e 30 segundos.",
+    note:"Alimentar um Peccary domesticado com 3 Tinturas Giganto transforma-o em um Tareccary." },
   { id:"phasing_tincture", name:"Tintura de Fase", eng:"Phasing Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"alien",q:2},{d:"foggy",q:2},{d:"vigorous",q:2}],
-    effect:"35% de chance de ataques atravessarem você sem causar dano, por 45 segundos." },
+    effect:"Faz com que 35% dos ataques recebidos atravessem o jogador sem causar dano durante 45 segundos." },
   { id:"reinforcing_tincture", name:"Tintura de Reforço", eng:"Reinforcing Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:4},{d:"fleshy",q:3},{d:"void",q:3}],
-    effect:"+60 de armadura por 1 minuto e 30 segundos." },
+    effect:"Aumenta a armadura do jogador em 60 durante 1 minuto e 30 segundos." },
   { id:"restorative_tincture", name:"Tintura Restauradora", eng:"Restorative Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:2},{d:"void",q:1},{d:"alien",q:2}],
-    effect:"Regenera 15 HP por segundo por 45 segundos (675 HP no total). O efeito termina cedo se você atingir HP máximo." },
+    effect:"Regenera 15 HP por segundo durante 45 segundos, totalizando 675 HP. O efeito termina antecipadamente quando o jogador atinge o HP máximo." },
   { id:"speedy_tincture", name:"Tintura Veloz", eng:"Speedy Tincture", category:"tincture", mixTime:"0:15",
     recipe:[{d:"vigorous",q:2},{d:"fizzy",q:2},{d:"void",q:1}],
-    effect:"+50% de velocidade de movimento por 1 minuto." },
+    effect:"Aumenta em 50% a velocidade de movimento durante 1 minuto." },
 ];
 
 // ── Render: grid de Destilações (clicável, funciona como filtro) ──
@@ -8022,13 +8162,16 @@ function goHome() {
 
 // ══ TRADERS DATA ══
 const tradersData = [
-  { name:"Warren Bunning",   icon:"🔫", role:"Oficial de Segurança",     img:"Images/Traders/Warren.webp",           type:"FIXO",            typeColor:C.green,  sector:"🏢 Escritório — Plaza perto da Cafeteria",                                   unlock:"Disponível desde o início.",                                                                                                       tip:"Visite frequentemente — inventário atualiza com a progressão. Principal fonte de Gun Repair Kits.",                        vende:"GATE Security Keys, Ligas Magnéticas e Kits de Reparo — em troca de Essências, Sementes raras e itens de portal.", items:["Light Gun Repair Kit","Kit de Reparo de Arma Intermediário","Ammo variada","Night Essence → Magnetic Alloy","GATE Keys"], fala:"Munição, chaves de segurança e kits de reparo de arma — é o que tenho de sobra por aqui. Traga essências raras e eu vejo o que consigo liberar." },
-  { name:"O Ferreiro",   icon:"⚒️", role:"Engenheiro do F.O.R.G.E.",      img:"Images/Traders/Ferreiro.webp",         type:"FIXO",            typeColor:C.green,  sector:"🏭 Manufacturing West — área principal",                                      unlock:"Encontrado explorando o Manufacturing West.",                                                                                       tip:"Tem componentes do Síncrotron — essencial para acessar Laboratórios Cascata. Farme Peccary/Exor para materiais de troca.",        vende:"As três peças do Síncrotron (Optic Lens, Diode, Fibre Optic Cable) por componentes industriais e sucata.", items:["Reinforced Hose","Optic Lens","CPU de Robô de Segurança","Fire Proximity Suit","Cement Bag","Componentes raros"], fala:"Preciso de sucata e componentes industriais. Em troca, libero peças pro seu Síncrotron e equipamento resistente ao calor." },
-  { name:"Grayson",          icon:"🩹", role:"Ex-Militar Ferido",         img:"Images/Traders/Grayson.webp",          type:"ITINERANTE",      typeColor:C.amber,  sector:"🏭 Primeiro encontro: ferido perto do forklift no caminho para Manufacturing", unlock:"⚠️ CRÍTICO: Use um Bandage nele quando ferido. Sem isso ele NÃO se torna trader.",                                            tip:"Primeira fonte renovável de ammo. Visita sua base em dias alternados.",                                                     vende:"Munição diversa e Kits de Reparo de Arma — a primeira fonte renovável de ammo do jogo.", items:["Ammo diversa","Kit de Reparo de Arma Intermediário","Itens militares variados"], fala:"Você me ajudou, agora eu ajudo você. Sempre que eu passar por aqui, trago munição e o que sobrar do meu equipamento militar." },
-  { name:"Marion",           icon:"🎬", role:"Dona da Locadora",          img:"Images/Traders/Marion.webp",           type:"ITINERANTE",      typeColor:C.amber,  sector:"🌀 Flathill (video store) → vaga pela Facility",                              unlock:"Complete Flathill.",                                                                                                                tip:"Único vendedor de Espingarda Antigas e Gravity Dampeners após os originais. Visita Cacophonous Crate scarecrows.",            vende:"Espingarda Antiga, Gravity Dampener e chaves de Cacophonous Crate.", items:["Espingarda Antiga","Gravity Dampener","Cacophonous Crate Keys","Itens de portais"], fala:"Tenho relíquias que ninguém mais vende — armas de outra época, equipamentos de gravidade e as chaves pros meus caixotes barulhentos." },
-  { name:"Dr. Carson",       icon:"🍳", role:"Chef Itinerante",           img:"Images/Traders/Carson.webp",           type:"ITINERANTE",      typeColor:C.amber,  sector:"🔒 Desbloqueada no Setor Segurança. Visita cozinhas e sua base.",              unlock:"Visite o Setor Segurança. Pode precisar de Bancada do Chef na base.",                                                           tip:"Única fonte do Carson Family Cookbook — item placeable que dá buff de área de XP em Cooking.",                             vende:"O Carson Family Cookbook e receitas/ingredientes especiais de cozinha.", items:["Carson Family Cookbook","Receitas especiais","Ingredientes raros"], fala:"Nada como uma boa receita pra manter o moral lá em cima. Trago temperos difíceis de achar e um livro de família que vale a pena guardar." },
-  { name:"Dr. Thule",        icon:"🔬", role:"Cientista de Pós-Jogo",     img:"Images/Traders/Thule.webp",            type:"PÓS-JOGO",        typeColor:C.purple, sector:"🏢 Escritório — Cafeteria (após Albatross)",                                  unlock:"Complete o Albatross Portal World.",                                                                                                tip:"Aparece apenas após o fim da história. Vende itens exclusivos de pós-jogo.",                                               vende:"Itens e upgrades exclusivos, liberados só após o Albatross Portal World.", items:["Itens de pós-jogo","Upgrades avançados","Componentes raros"], fala:"Só converso com quem já viu o outro lado do portal. Tenho upgrades e componentes que não deveriam existir deste lado da realidade." },
-  { name:"Quantum Exchanger", icon:"⚡",role:"Máquina de Troca Automática",img:"Images/Traders/QuantumExchanger.webp",type:"MÁQUINA FIXA",    typeColor:C.cyan,   sector:"📍 Escritório + Flathill (só após Reatores) + Corn Syrup (Anti-Fungal Gelatin)",unlock:"Flathill: após os Reatores. Corn Syrup: requer Anti-Fungal Gelatin de Village Den.",                                          tip:"Drop os itens na calha de entrada. Ótimo para trocar recursos abundantes por escassos de setor específico.",               vende:"Troca automática de recursos abundantes por escassos, por localização — sem diálogo.", items:["Recursos de troca por localização","Purified Corn (Corn Syrup)","Recursos exclusivos de Flathill"], fala:"[TERMINAL AUTOMÁTICO — SEM VOZ] Deposite o excesso na calha. O sistema calcula e devolve o que é escasso nesta localização." },
+  { name:"Warren Bunning", eng:"Warren Bunning", icon:"🔫", role:"Oficial de Segurança", img:"Images/Traders/Warren.webp", type:"FIXO", typeColor:C.green, sector:"🏢 Escritório — Plaza", unlock:"Disponível desde o início.", tip:"Seu estoque é liberado conforme a progressão. É uma fonte importante de chaves de segurança, munição e kits de reparo.", vende:"Munição, GATE Security Keys, Kits de Reparo de Arma, Magnetic Alloy e outros itens em troca de recursos.", items:["Light Gun Repair Kit","Intermediate Gun Repair Kit","Ammo variada","Night Essence → Magnetic Alloy","GATE Security Key"], fala:"Munição, chaves de segurança e kits de reparo de arma — é o que tenho por aqui. Traga os recursos certos e vejo o que consigo liberar." },
+  { name:"O Ferreiro", eng:"The Blacksmith", icon:"⚒️", role:"Engenheiro do F.O.R.G.E.", img:"Images/Traders/Ferreiro.webp", type:"FIXO", typeColor:C.green, sector:"🏭 Manufacturing West", unlock:"Encontrado em Manufacturing West.", tip:"É essencial para a progressão do Síncrotron, pois vende as três peças necessárias para restaurá-lo.", vende:"Peças do Síncrotron, equipamentos e componentes.", items:["Optic Lens","Diode","Fibre Optic Cable","Equipamentos e componentes"], fala:"Preciso de materiais e componentes industriais. Em troca, posso fornecer equipamentos e peças importantes para sua jornada." },
+  { name:"Grayson", eng:"Grayson Isling", icon:"🩹", role:"Engenheiro de Materiais", img:"Images/Traders/Grayson.webp", type:"ITINERANTE", typeColor:C.amber, sector:"🏢 Primeiro encontro no Escritório — depois viaja pela Facility", unlock:"Encontre Grayson ferido e use um Bandage nele. Depois disso, ele se torna um trader itinerante.", tip:"É uma fonte renovável de munição, materiais e outros itens. Seu estoque pode ser reabastecido com o tempo.", vende:"Munição, Kits de Reparo de Arma e diversos materiais.", items:["Ammo diversa","Light Gun Repair Kit","Intermediate Gun Repair Kit","Materiais diversos"], fala:"Você me ajudou, agora eu ajudo você. Sempre que eu passar por aqui, trago algumas coisas que podem ser úteis." },
+  { name:"Marion", eng:"Marion", icon:"🎬", role:"Acólito", img:"Images/Traders/Marion.webp", type:"ITINERANTE", typeColor:C.amber, sector:"🌀 Primeiro encontro em Flathill — depois viaja pela Facility", unlock:"Encontrado inicialmente em Flathill. Torna-se um trader itinerante conforme a progressão.", tip:"Pode aparecer em diferentes pontos da Facility conforme novos setores são liberados.", vende:"Itens, equipamentos e chaves especiais.", items:["Gravity Dampener","Cacophonous Crate Keys","Itens e equipamentos variados"], fala:"Tenho algumas coisas que você não encontra facilmente por aí. Talvez alguma delas seja exatamente o que está procurando." },
+  { name:"Dr. Carson", eng:"Carson", icon:"🍳", role:"Chef", img:"Images/Traders/Carson.webp", type:"ITINERANTE", typeColor:C.amber, sector:"🔒 Primeiro encontro no Setor Segurança — depois viaja pela Facility", unlock:"Torna-se disponível conforme a progressão e aparece inicialmente no Setor Segurança.", tip:"É uma fonte de alimentos, ingredientes e itens especiais de culinária.", vende:"Carson Family Cookbook, alimentos, ingredientes e outros itens relacionados à culinária.", items:["Carson Family Cookbook","Ingredientes","Alimentos especiais","Itens de culinária"], fala:"Nada como uma boa receita para manter o moral lá em cima. Tenho algumas coisas especiais para quem sabe apreciar uma boa cozinha." },
+  { name:"Dr. Thule", eng:"Ulrich Thule", icon:"🔬", role:"Físico", img:"Images/Traders/Thule.webp", type:"PÓS-JOGO", typeColor:C.purple, sector:"🏢 Primeiro encontro no Escritório — depois viaja pela Facility", unlock:"Só fica disponível para comércio depois do fim do jogo.", tip:"É um trader de pós-jogo e possui itens que só ficam disponíveis depois da conclusão da história principal.", vende:"Itens e componentes de pós-jogo.", items:["Itens de pós-jogo","Componentes avançados"], fala:"Você chegou ao fim da jornada. Tenho algumas coisas que só fazem sentido para quem já viu o que existe do outro lado." },
+  { name:"Quantum Exchanger", eng:"Quantum Exchanger", icon:"⚡", role:"Máquina de Troca Automática", img:"Images/Traders/QuantumExchanger.webp", type:"MÁQUINA FIXA", typeColor:C.cyan, sector:"🧪 Cascade Laboratories, Flathill e Reactors", unlock:"Cada Quantum Exchanger fica disponível conforme você alcança sua respectiva área.", tip:"Coloque o item na calha de entrada e retire o resultado na calha de saída. As trocas são específicas para cada localização.", vende:"Trocas automáticas de recursos.", items:["Silver Scrap → Refined Carbon","Anteverse Wheat → Anteverse Gem","Anteverse Gem → Liquid Crystal","Leyak Essence → Greyeb Seed","Corrupted Corn → Purified Corn","Plutonic Carapace → Plutonic Blood"], fala:"[TERMINAL AUTOMÁTICO — SEM VOZ] Deposite o recurso na calha de entrada e retire o resultado na calha de saída." },
+  { name:"Jimmy Sanders", eng:"Jimmy Sanders", icon:"🌮", role:"Vendedor de Tacos", img:"Images/Traders/Jimmy.webp", type:"FIXO", typeColor:C.green, sector:"🏢 Residence Sector — Botanical Wing", unlock:"Fica disponível como trader após a conclusão do objetivo principal.", tip:"É o trader relacionado a alimentos e também a itens cosméticos.", vende:"Comidas e itens cosméticos.", items:["Tacos","Fast Food Worker (M)","Fast Food Worker (F)"], fala:"Você está com fome? Aqui tem taco de sobra. Não sei se tudo isso ainda é comestível, mas isso nunca impediu ninguém por aqui." },
+  { name:"Grande Larva da Colmeia", eng:"Big Hive Larva", icon:"🐛", role:"Comerciante da Colmeia", img:"Images/Traders/BigHiveLarva.webp", type:"FIXO", typeColor:C.green, sector:"🪲 The Encroachment — área da Hive", unlock:"Alcance Manufacturing West e vista o Larva Suit.", tip:"Você precisa estar usando o Larva Suit para conversar e negociar com ela.", vende:"Itens relacionados à Hive e à progressão do crossover.", items:["Big Hive Larva Figurine","Itens de troca da Hive"], fala:"[COMUNICAÇÃO DA COLMEIA] Os cheiros são novos. Os caminhos mudaram. O que você procura?" },
+  { name:"Prateleira dos Desejos", eng:"Wishing Shelf", icon:"🗄️", role:"Objeto de Troca", img:"Images/Traders/WishingShelf.webp", type:"MÁQUINA FIXA", typeColor:C.cyan, sector:"❄️ North Pole", unlock:"Disponível no North Pole Portal World.", tip:"Coloque recursos nos três espaços. Após o reset do Portal World, a prateleira pode devolver uma quantidade multiplicada do item.", vende:"Não vende diretamente — duplica ou multiplica determinados recursos.", items:["Carapace","Anteverse Gel","Exor Quill","Silver Scrap","Magnetic Alloy","Plutonic Blood","Digital Ore","Paper Scrap","Cloth Scrap","Fibre Optic Cable → 1:1","Security Bot CPU → 1:1","Night Essence → 1:1","Motor → 1:1"], fala:"[OBJETO INTERATIVO — SEM VOZ] Deposite recursos e aguarde o próximo reset do Portal World." },
 ];
 
 // Constrói o card de um trader no estilo terminal GATE: hazard-stripe +
@@ -8333,7 +8476,7 @@ const entitiesData = [
   { name:"Exor",                eng:"Exor", img:"Images/Entidades/Exor.webp",             icon:"🦂", type:"CRIATURA",  typeColor:C.amber, sector:"Cascade / Anteverse",  threat:3, weak:"Elétrico",               immune:"—",             loot:"Coração de Exor Cru, Coxa Alienígena Crua, Braço de Exor, Espinho de Exor", tip:"Rajada de 4-6 tiros do Braço-Espinho à distância + melee forte. Corte o corpo com arma afiada pra pegar todo o loot." },
   { name:"Monge Exor",          eng:"Exor Monk", img:"Images/Entidades/ExorMonk.webp",        icon:"🥷", type:"CRIATURA",  typeColor:C.amber, sector:"Cascade / Anteverse",  threat:4, weak:"Rede (impede teleporte)", immune:"—",             loot:"Coração de Exor Cru, Coxa Alienígena Crua",                 tip:"Teleporta após atacar — Redes o impedem de fugir. No Apocalíptico dispara rajada tripla de laser, cuidado redobrado." },
   { name:"Exor Blindado",       eng:"Armored Exor", img:"Images/Entidades/ArmoredExor.webp",     icon:"🛡️", type:"CRIATURA",  typeColor:C.amber, sector:"Hydroplant",           threat:4, weak:"Ácido, Elétrico",        immune:"Alta resistência a armas de fogo", loot:"Coração de Exor Cru, Coxa Alienígena Crua, Braço de Exor", tip:"O dobro de durabilidade e mobilidade de um Exor comum — usa teleporte E disparo de espinhos ao mesmo tempo, além de granadas." },
-  { name:"Robô Corrompido",     eng:"Corrupted Bot", img:"Images/Entidades/CorruptedBot.webp",    icon:"🌿", type:"ROBÔ",      typeColor:C.cyan,  sector:"Facility (áreas dos Gatekeepers)", threat:3, weak:"Sagrado",     immune:"—",             loot:"Heart of Corruption, GATE Defense Rune",                    tip:"Unidade G.E.A.R. tomada pelos Gatekeepers — Lodehammer e outras armas Sagradas fazem MUITO mais dano." },
+  { name:"Robô Corrompido",     eng:"Corrupted Bot", img:"Images/Entidades/Corruptedbot.webp",    icon:"🌿", type:"ROBÔ",      typeColor:C.cyan,  sector:"Facility (áreas dos Gatekeepers)", threat:3, weak:"Sagrado",     immune:"—",             loot:"Heart of Corruption, GATE Defense Rune",                    tip:"Unidade G.E.A.R. tomada pelos Gatekeepers — Lodehammer e outras armas Sagradas fazem MUITO mais dano." },
   { name:"Robô de Defesa",      eng:"Defense Bot", img:"Images/Entidades/DefenseBot.webp",      icon:"🎒", type:"ROBÔ",      typeColor:C.cyan,  sector:"Hydroplant",           threat:4, weak:"Costas (mochila)",       immune:"—",             loot:"Reinforced CPU, Coil Winding (raramente Crânio Humano)",    tip:"Ataque a mochila nas costas — vá por trás (Gravity Cube ajuda solo). Ele recua pra recarregar granadas, aproveite a brecha." },
   { name:"Zumbi",               eng:"Zombie", img:"Images/Entidades/Zombie.webp",          icon:"🧟", type:"CRIATURA",  typeColor:C.amber, sector:"Reatores / Night Realm",threat:1, weak:"Qualquer (é lento)",    immune:"—",             loot:"Sucata Biológica, Crânio Humano",                           tip:"Extremamente lento — a mordida causa infecção, vômito e desidratação. Prioriza devorar corpos antes de perseguir você." },
   { name:"Carbúnculo Contaminado", eng:"Tainted Carbuncle", img:"Images/Entidades/TaintedCarbuncle.webp", icon:"🟣", type:"CRIATURA",  typeColor:C.amber, sector:"Áreas contaminadas",   threat:1, weak:"Agachado = sem ataque",  immune:"—",             loot:"Carbúnculo Cru",                                            tip:"Variante do Carbúnculo comum em zonas de resíduo radioativo — mesmo truque: agache-se perto e ele não ataca." },
@@ -8424,214 +8567,214 @@ renderEntities();
 // ══════════════════════════════════════════════════════════════════
 const petsData = [
   // ── PRAGAS (8) ──
-  { family:"PRAGA", name:"Praga", eng:"Pest", icon:"🦟", img:"Images/Pets/Pest.png",
-    tag:"IS-0178-A", origin:"Captura selvagem",
-    hp:"80 HP no nível 1 (crescimento por nível ainda não documentado)",
+{ family:"PRAGA", name:"Praga", eng:"Pest", icon:"🦟", img:"Images/Pets/Pest.webp",
+    tag:"IS-0173-A", origin:"Captura selvagem",
+    hp:"80 HP no nível 1",
     dmg:"Ataque de salto padrão, sem dano especial",
     tame:"Pest Trap: fica domesticada automaticamente ao ser pega. OU acerte com Frasco de Feromônio e alimente 3x com Trigo Anteverso, Nachos ou Pão.",
-    ability:"Ataque de salto simples contra inimigos, sem efeito elemental.",
-    risk:"Só 80 HP no nível 1 — cai rápido em dificuldades altas. Se não estiver no Slot de Companheiro, pode morrer de vez após 30s caída.",
-    tip:"A porta de entrada do sistema de pets — não exige nenhum progresso em Química pra conseguir a primeira." },
-  { family:"PRAGA", name:"Praga Gaseificada", eng:"Carbonated Pest", icon:"🥤", img:"Images/Pets/PragaGaseificada.png",
-    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Soda",
+    ability:"Ataque de salto simples contra inimigos.",
+    risk:"Possui apenas 80 HP no nível 1 e pode cair rapidamente em dificuldades altas.",
+    tip:"É a forma mais básica de Praga e serve como base para várias mutações e variantes de pet." },
+{ family:"PRAGA", name:"Praga Gaseificada", eng:"Carbonated Pest", icon:"🥤", img:"Images/Pets/Carbonatedpest.webp",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga domesticada com 3x Soda",
     hp:"90 HP no nível 1, +40 HP por nível",
     dmg:"38 de dano no nível 1 (+3/nível) · ataque especial 15 (+5/nível)",
-    tame:"Domestique uma Praga comum primeiro, depois alimente-a com 3x Soda seguidas.",
-    ability:"Chance de causar uma explosão gaseificada ao acertar o inimigo.",
-    risk:"Mesma fragilidade de HP baixo da Praga base nos primeiros níveis.",
-    tip:"Sodas são fáceis de achar ou comprar — uma das mutações mais acessíveis." },
-  { family:"PRAGA", name:"Praga Elétrica", eng:"Electro Pest", icon:"⚡", img:"Images/Pets/PragaEletrica.png",
+    tame:"Domestique uma Praga comum e depois alimente-a com 3x Soda.",
+    ability:"Possui um ataque especial que causa dano adicional ao inimigo.",
+    risk:"Possui pouca vida nos primeiros níveis em comparação com pets mais resistentes.",
+    tip:"Uma das mutações mais simples de obter, pois utiliza Soda como alimento de mutação." },
+{ family:"PRAGA", name:"Praga Elétrica", eng:"Electro Pest", icon:"⚡", img:"Images/Pets/Electropest.webp",
     tag:"IS-0173-B", origin:"Captura selvagem OU craft do item",
     hp:"80 HP no nível 1, +30 HP por nível",
     dmg:"40 de dano no nível 1 (+5/nível) · ataque especial 35 (+5/nível)",
-    tame:"Capture um Electro-Pest selvagem (Laboratórios Cascata) com Pest Trap, OU crafte o item Electro Pest em bancada.",
-    ability:"Chance de causar uma explosão elétrica ao acertar — ótima contra Robôs.",
-    risk:"É lenta pra se mover — carregar ela até sua base pode ser demorado.",
-    tip:"Considerada um dos pets mais fortes em grupos de 3+ pra limpar salas dos Laboratórios Cascata." },
-  { family:"PRAGA", name:"Praga Iluminada", eng:"Enlightened Pest", icon:"💡", img:"Images/Pets/PragaIluminada.png",
-    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Shadowberry ou fatia de torta de Shadowberry",
-    hp:"70 HP no nível 1 (+20/nível) + Escudo Hardlight de 30 HP",
+    tame:"Capture um Electro-Pest selvagem com Pest Trap, OU fabrique um Electro Pest (Item) e use-o para obter a variante.",
+    ability:"Ocasionalmente causa uma explosão elétrica ao acertar o inimigo.",
+    risk:"Possui apenas 80 HP no nível 1, embora seu crescimento de vida seja superior ao da Praga comum.",
+    tip:"Excelente opção para enfrentar robôs, pois seu ataque especial causa Stun." },
+{ family:"PRAGA", name:"Praga Iluminada", eng:"Enlightened Pest", icon:"💡", img:"Images/Pets/Enlightenedpest.webp",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga domesticada com 3x Shadowberry ou fatia de Torta de Shadowberry",
+    hp:"70 HP no nível 1, +20 HP por nível + Escudo Hardlight de 30 HP",
     dmg:"40 de dano no nível 1 (+5/nível) · disparo de laser 35 (+5/nível)",
-    tame:"Domestique uma Praga comum, depois alimente com 3x Shadowberry ou fatia de torta de Shadowberry.",
-    ability:"Ataca à distância com um disparo de laser em vez do salto padrão.",
-    risk:"Baixo HP base, mas o Escudo Hardlight de 30 HP absorve dano antes dela ser incapacitada.",
-    tip:"A única Praga com ataque 100% à distância — segura no Slot de Companheiro sem correr risco de melee." },
-  { family:"PRAGA", name:"Praga Leyak", eng:"Leyak Pest", icon:"👁️", img:"Images/Pets/PragaLeyak.png",
-    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x fatia de Torta de Carne Assustadora",
+    tame:"Domestique uma Praga comum e depois alimente-a com 3x Shadowberry ou fatia de Torta de Shadowberry.",
+    ability:"Ataca à distância com disparos de laser em vez do salto padrão.",
+    risk:"Possui apenas 70 HP no nível 1, mas conta com um Escudo Hardlight de 30 HP.",
+    tip:"A combinação de ataque à distância e Escudo Hardlight torna a Praga Iluminada uma opção segura para manter como companheira." },
+{ family:"PRAGA", name:"Praga Leyak", eng:"Leyak Pest", icon:"👁️", img:"Images/Pets/Leyak.webp",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga domesticada com 3x fatias de Torta de Carne Assustadora",
     hp:"150 HP no nível 1, +30 HP por nível",
     dmg:"33 de dano no nível 1, +3/nível",
-    tame:"Domestique uma Praga comum, depois alimente com 3x fatias de Torta de Carne Assustadora.",
-    ability:"Ataca com tentáculos rápidos como o Leyak selvagem — no nível 3 já derruba um Robô de Segurança sozinha. Atordoada (não repelida) pela Torre de Raio-X.",
-    risk:"Se comporta como se estivesse sempre observando você (efeito parecido com o Companheiro Sensorial).",
-    tip:"Uma das Pragas de maior dano total do jogo — vale o esforço de conseguir a Torta de Carne Assustadora." },
-  { family:"PRAGA", name:"Praga de Magma", eng:"Magma Pest", icon:"🌋", img:"Images/Pets/PragaDeMagma.png",
-    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga com 3x Destilação Fervente",
+    tame:"Domestique uma Praga comum e depois alimente-a com 3x fatias de Torta de Carne Assustadora.",
+    ability:"Ataca com tentáculos e se comporta de maneira semelhante ao Leyak. Também é afetada pela Torre de Raio-X, que a atordoa momentaneamente.",
+    risk:"Seu comportamento faz com que ela seja tratada como se o jogador estivesse constantemente observando o Leyak.",
+    tip:"É uma das variantes de Praga mais resistentes, começando com 150 HP no nível 1." },
+{ family:"PRAGA", name:"Praga de Magma", eng:"Magma Pest", icon:"🌋", img:"Images/Pets/Magmapest.webp",
+    tag:"Mutação de Praga", origin:"Mutação — alimente uma Praga domesticada com 3x Destilação Fervente",
     hp:"80 HP no nível 1, +30 HP por nível",
     dmg:"43 de dano no nível 1 (+8/nível) · ataque especial 35 (+5/nível)",
-    tame:"Domestique uma Praga comum, depois alimente com 3x Destilação Fervente (precisa da Bancada de Química).",
-    ability:"Chance de incendiar o inimigo e criar uma pequena explosão de fogo ao acertar. Aumenta passivamente a temperatura ambiente, como um Aquecedor.",
-    risk:"Ela aumenta sua temperatura ambiente o tempo todo — cuidado em áreas já quentes.",
-    tip:"Maior crescimento de dano por nível entre todas as Pragas (+8/nível) — vale muito investir XP nela." },
-  { family:"PRAGA", name:"Rattus Pestis", eng:"Rattus Pestis", icon:"🐀", img:"Images/Pets/RattusPestis.png",
-    tag:"Craft (vestido sobre uma Praga)", origin:"Craftável — não é mutação por comida nem captura selvagem",
+    tame:"Domestique uma Praga comum e depois alimente-a com 3x Destilação Fervente.",
+    ability:"Pode incendiar inimigos e produzir uma explosão de fogo ao atacar. Também aumenta passivamente a temperatura ambiente, funcionando de maneira semelhante a um Aquecedor.",
+    risk:"Aumenta continuamente a temperatura ambiente, o que pode ser inconveniente em áreas que já possuem temperaturas elevadas.",
+    tip:"Possui um dos maiores crescimentos de dano entre as variantes de Praga, com +8 de dano por nível." },
+{ family:"PRAGA", name:"Rattus Pestis", eng:"Rattus Pestis", icon:"🐀", img:"Images/Pets/Rattuspestis.webp",
+    tag:"Craft", origin:"Craftável — variante obtida através de item específico",
     hp:"76 HP no nível 1, +26 HP por nível",
     dmg:"33 de dano no nível 1, +3/nível",
-    tame:"Crafte o item Rattus Pestis em bancada e vista numa Praga já domesticada. Receita exata de crafting ainda pouco documentada pela comunidade.",
-    ability:"Chance de ROUBAR um item do inimigo que está atacando e derrubá-lo no chão (ex: soda de Robôs de Segurança, Munição 9mm de Grunts da Order) — sem remover o loot normal de quando o inimigo morre.",
-    risk:"É a Praga mais complexa de conseguir — depende de uma receita de crafting pouco clara ainda.",
-    tip:"Ótima pra 'duplo loot' de inimigos duros — o item roubado é bônus puro, não substitui o loot normal." },
-  { family:"PRAGA", name:"Praga da Neve", eng:"Snow Pest", icon:"❄️", img:"Images/Pets/PragaDaNeve.png",
-    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga com 3x Essência Congelada",
+    tame:"Fabrique o Rattus Pestis (Item) para obter a variante de pet.",
+    ability:"Pode roubar itens dos inimigos durante o combate e deixá-los no chão. O item roubado não é removido do saque normal do inimigo.",
+    risk:"Sua obtenção depende de crafting, sendo mais específica do que a das variantes obtidas por alimentação ou captura direta.",
+    tip:"Seu efeito de roubo pode gerar itens adicionais durante os combates, complementando o saque normal dos inimigos." },
+{ family:"PRAGA", name:"Praga da Neve", eng:"Snow Pest", icon:"❄️", img:"Images/Pets/Winterpest.webp",
+    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga domesticada com 3x Essência Congelada",
     hp:"80 HP no nível 1, +30 HP por nível",
     dmg:"40 de dano no nível 1, +5/nível",
-    tame:"Capture uma Snow Pest selvagem com Pest Trap, OU alimente uma Praga comum com 3x Essência Congelada.",
-    ability:"Comportamento idêntico à Praga comum, sem efeito elemental adicional confirmado em combate.",
-    risk:"Nenhum risco elemental documentado além da fragilidade padrão das Pragas.",
-    tip:"Boa pra farmar Essência Congelada aos poucos — só precisa de 3 pra mutar." },
-  { family:"PRAGA", name:"Praga Volátil", eng:"Volatile Pest", icon:"☢️", img:"Images/Pets/PragaVolatil.png",
-    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga com 3x Sangue Plutônico",
+    tame:"Capture uma Snow Pest selvagem com Pest Trap, OU domestique uma Praga comum e alimente-a com 3x Essência Congelada.",
+    ability:"Comportamento idêntico ao da Praga comum em combate.",
+    risk:"Não possui um ataque especial ofensivo documentado; seu comportamento de combate é semelhante ao da Praga comum.",
+    tip:"Pode ser obtida tanto por captura de uma Snow Pest quanto pela mutação de uma Praga com 3x Essência Congelada." },
+{ family:"PRAGA", name:"Praga Volátil", eng:"Volatile Pest", icon:"☢️", img:"Images/Pets/Volatilepest.webp",
+    tag:"Mutação de Praga", origin:"Captura selvagem OU mutação — alimente uma Praga domesticada com 3x Sangue Plutônico",
     hp:"70 HP no nível 1, +20 HP por nível",
     dmg:"40 de dano no nível 1 (+5/nível) · ataque especial 26 (+6/nível)",
-    tame:"Capture uma Volatile Pest selvagem com Pest Trap, OU alimente uma Praga comum com 3x Sangue Plutônico.",
-    ability:"Chance de causar uma explosão de queimadura ácida ao acertar o inimigo.",
-    risk:"Sangue Plutônico é material de fim de jogo — mutação chega tarde na progressão.",
-    tip:"Boa contra inimigos com muita resistência física — o dano ácido complementa bem." },
+    tame:"Capture uma Volatile Pest selvagem com Pest Trap, OU domestique uma Praga comum e alimente-a com 3x Sangue Plutônico.",
+    ability:"Ocasionalmente causa uma explosão de queimadura ácida ao acertar o inimigo.",
+    risk:"Sangue Plutônico é um recurso associado a uma etapa avançada da progressão, tornando sua mutação mais tardia.",
+    tip:"O Acid Burn adiciona dano ao longo do tempo e complementa bem o dano físico da Praga." },
 
   // ── PECARIS (8) ──
-  { family:"PECARI", name:"Pecari", eng:"Peccary", icon:"🐗", img:"Images/Pets/Pecari.png",
-    tag:"Captura selvagem", origin:"Frasco de Feromônio + 3x Trigo Anteverso",
+{ family:"PECARI", name:"Pecari", eng:"Peccary", icon:"🐗", img:"Images/Pets/Peccary.webp",
+    tag:"IS-0178-A", origin:"Captura selvagem",
     hp:"402 HP total no nível 1 (cabeça 170+50/nível, tronco 170+50/nível, cada braço/perna 31+16/nível)",
-    dmg:"53 de dano no nível 1, +3/nível",
-    tame:"Jogue um Frasco de Feromônio nele, depois alimente com 3x Trigo Anteverso.",
-    ability:"Mordidas, garras, investida e um ataque de carga que precisa de uma pequena animação de preparo antes de disparar em linha reta.",
-    risk:"Exige a Química desbloqueada (Bancada de Destilação/Química) — não dá pra domesticar Pecaris no dia 1.",
-    tip:"O primeiro pet 'de verdade' com dano de combate sério — vale a pena assim que tiver o Frasco de Feromônio." },
-  { family:"PECARI", name:"Pecari Elétrico", eng:"Electro Peccary", icon:"⚡", img:"Images/Pets/PecariEletrico.png",
-    tag:"Craft", origin:"Craftável — não é mutação nem captura selvagem",
-    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
+    dmg:"53 de dano no nível 1, +3/nível · ataque especial 155 (+5/nível)",
+    tame:"Jogue um Frasco de Feromônio no Pecari e depois alimente-o com 3x Trigo Anteverso, Nachos ou Pão.",
+    ability:"Ataque corpo a corpo e ataque de cabeçada. A cabeçada causa 155 de dano no nível 1 e aumenta +5 por nível.",
+    risk:"Precisa de um Frasco de Feromônio e de alimento adequado para ser domesticado.",
+    tip:"É o Pecari base e serve como ponto de partida para várias mutações e variantes de pet." },
+{ family:"PECARI", name:"Pecari Elétrico", eng:"Electro Peccary", icon:"⚡", img:"Images/Pets/Electropeccary.webp",
+    tag:"Craft", origin:"Craftável — variante obtida por item",
+    hp:"402 HP total no nível 1 (cabeça 170+50/nível, tronco 170+50/nível, cada braço/perna 31+16/nível)",
     dmg:"53 de dano no nível 1 (+3/nível) · ataque especial 155 (+5/nível)",
-    tame:"Crafte o item Electro Peccary em bancada.",
-    ability:"Efeito de raio em cadeia — o relâmpago salta até 5m pra atingir outro inimigo com o mesmo dano do ataque base.",
-    risk:"Nenhum risco elemental especial documentado.",
-    tip:"O ataque especial de 155 de dano é o maior entre os Pecaris não-mutados — ótimo contra grupos." },
-  { family:"PECARI", name:"Pecari-Cogumelo", eng:"Mushroom Peccary", icon:"🍄", img:"Images/Pets/PecariCogumelo.png",
-    tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Carbuncle Mushroom ou Sopa de Cogumelo Grudento",
-    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
-    dmg:"53 de dano no nível 1, +3/nível",
-    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso, OU mute um Pecari alimentando com 3x Carbuncle Mushroom/Sopa de Cogumelo Grudento.",
-    ability:"Cultiva um Carbuncle Mushroom sobre si mesmo a cada 5 dias in-game — colha apertando interagir quando aparecer o prompt 'Colher' (funciona solto OU numa cama de pet).",
-    risk:"Precisa ficar visível/acessível pra você conseguir colher.",
-    tip:"Um pet-fazenda de verdade — deixe numa cama perto da base e colha Carbuncle de graça a cada 5 dias." },
-  { family:"PECARI", name:"Pecari Alfa", eng:"Peccary Alpha", icon:"👑", img:"Images/Pets/PecariAlfa.png",
-    tag:"Captura selvagem", origin:"Frasco de Feromônio + 3x Trigo Anteverso (spawn raro)",
-    hp:"430 HP total no nível 1 (cabeça 180+60/nível, tronco 180+60/nível, cada braço/perna 35+20/nível)",
+    tame:"Fabrique o item Electro Peccary e use-o para pegar e transportar um Electro Peccary já existente.",
+    ability:"Possui um sistema de armas elétricas integrado e pode atingir inimigos com ataques elétricos.",
+    risk:"A variante depende do item Electro Peccary para ser transportada, e o item é obtido por crafting.",
+    tip:"Mantém os mesmos atributos básicos do Pecari, mas adiciona seu sistema de armas elétricas." },
+{ family:"PECARI", name:"Pecari-Cogumelo", eng:"Mushroom Peccary", icon:"🍄", img:"Images/Pets/Mushroompeccary.webp",
+    tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Cogumelo Carbúnculo ou Sopa de Cogumelo Grudento",
+    hp:"432 HP total no nível 1 (cabeça 185, tronco 185, cada braço/perna 31)",
+    dmg:"42 de dano no nível 1",
+    tame:"Jogue um Frasco de Feromônio em um Pecari-Cogumelo selvagem e alimente-o com 3x Trigo Anteverso, Nachos ou Pão, OU mute um Pecari alimentando-o com 3x Cogumelo Carbúnculo ou Sopa de Cogumelo Grudento.",
+    ability:"Pode criar uma nuvem de esporos ao atacar. Também fornece o efeito Mycobuddy, que aumenta em cerca de 33% a cura recebida por jogadores próximos, e possui uma aura de cura.",
+    risk:"Para aproveitar sua função de suporte e colheita, ele precisa estar ativo no Slot de Companheiro ou em uma cama de pet adequada.",
+    tip:"Além de combater, funciona como pet de suporte e produz 1 Cogumelo Carbúnculo após 5 dias dentro do jogo, que pode ser colhido quando o prompt de coleta aparecer." },
+{ family:"PECARI", name:"Pecari Alfa", eng:"Peccary Alpha", icon:"👑", img:"Images/Pets/Alphapeccary.webp",
+    tag:"Captura selvagem", origin:"Captura selvagem — variante rara de Pecari",
+    hp:"430 HP total no nível 1",
     dmg:"54 de dano no nível 1, +4/nível",
-    tame:"Jogue um Frasco de Feromônio no Pecari Alfa (spawn raro no lugar de um Pecari Fêmea), depois alimente com 3x Trigo Anteverso.",
-    ability:"Mesmo padrão de combate do Pecari comum — vantagem é o HP e dano levemente maiores.",
-    risk:"Raro de encontrar — chance baixa de aparecer no lugar de um Pecari Fêmea.",
-    tip:"Se ver um Pecari maior/mais robusto num spot de Pecari Fêmea, é o Alfa — vale domesticar na hora." },
-  { family:"PECARI", name:"Pecari Fêmea", eng:"Peccary Sow", icon:"🥛", img:"Images/Pets/PecariFemea.png",
+    tame:"Jogue um Frasco de Feromônio no Pecari Alfa e depois alimente-o com 3x Trigo Anteverso.",
+    ability:"Mantém o padrão de combate do Pecari, com atributos superiores aos da variante comum.",
+    risk:"É uma variante rara encontrada no lugar de um Pecari comum em determinados spawns.",
+    tip:"Se encontrar um Pecari Alfa, vale a pena domesticá-lo, pois possui mais vida e dano que o Pecari comum." },
+{ family:"PECARI", name:"Pecari Fêmea", eng:"Peccary Sow", icon:"🥛", img:"Images/Pets/Sowpeccary.webp",
     tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Alface Espacial",
-    hp:"412 HP total no nível 1 (cabeça/tronco 175+55/nível cada, braços/pernas 31+16/nível cada)",
-    dmg:"52.5 de dano no nível 1, +2.5/nível",
-    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso/Nachos/Pão, OU mute um Pecari com 3x Alface Espacial.",
-    ability:"Depois de domesticada/mutada, espere ~8h in-game: segure um Tubo de Ensaio e interaja pra produzir 1 Frasco de Leite.",
-    risk:"Precisa segurar Tubo de Ensaio especificamente — outro item de coleta não funciona.",
-    tip:"A única fonte de Leite do jogo — essencial se sua base usa receitas de culinária com leite." },
-  { family:"PECARI", name:"Pecari da Neve", eng:"Snow Peccary", icon:"🥶", img:"Images/Pets/PecariDaNeve.png",
+    hp:"412 HP total no nível 1",
+    dmg:"52,5 de dano no nível 1, +2,5/nível",
+    tame:"Jogue um Frasco de Feromônio e alimente-a com 3x Trigo Anteverso, Nachos ou Pão, OU mute um Pecari alimentando-o com 3x Alface Espacial.",
+    ability:"Depois de domesticada, pode produzir Leite quando o jogador interage com ela usando um Tubo de Ensaio após o período necessário.",
+    risk:"A coleta do Leite exige o Tubo de Ensaio como ferramenta de interação.",
+    tip:"É uma fonte de Leite e pode ser mantida na base para produção contínua." },
+{ family:"PECARI", name:"Pecari da Neve", eng:"Snow Peccary", icon:"🥶", img:"Images/Pets/Winterpeccary.webp",
     tag:"Captura selvagem / Mutação", origin:"Captura selvagem OU mutação — alimente um Pecari com 3x Essência Congelada",
-    hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
-    dmg:"53 de dano no nível 1, +3/nível",
-    tame:"Jogue Frasco de Feromônio e alimente com 3x Trigo Anteverso, OU mute um Pecari com 3x Essência Congelada.",
-    ability:"Mantém o debuff Congelado (Frosted) em ataques de cauda à distância e de carga — pode até congelar você se ficar perto demais do alvo do ataque.",
-    risk:"O próprio efeito de congelamento pode acertar você (jogador) sem querer, deixando-o deslizar ou vulnerável.",
-    tip:"Mantenha distância do alvo dos ataques dele em combate por segurança." },
-  { family:"PECARI", name:"Tarecari", eng:"Tareccary", icon:"💪", img:"Images/Pets/Tarecari.png",
+    hp:"402 HP total no nível 1 (cabeça 170+50/nível, tronco 170+50/nível, cada braço/perna 31+16/nível)",
+    dmg:"53 de dano no nível 1, +3/nível · ataque especial 155 (+5/nível)",
+    tame:"Jogue um Frasco de Feromônio em um Pecari da Neve e alimente-o com 3x Trigo Anteverso, Nachos ou Pão, OU mute um Pecari alimentando-o com 3x Essência Congelada.",
+    ability:"Mantém os atributos e ataques básicos do Pecari, com seu comportamento e efeitos associados à variante de neve.",
+    risk:"Os efeitos relacionados ao frio podem tornar o posicionamento em combate mais importante.",
+    tip:"É a variante de neve do Pecari e pode ser obtida tanto por captura quanto por mutação." },
+{ family:"PECARI", name:"Tarecari", eng:"Tareccary", icon:"💪", img:"Images/Pets/Tarecarry.webp",
     tag:"Mutação", origin:"Mutação — alimente um Pecari com 3x Tintura Giganto",
-    hp:"990 HP total no nível 1 — o DOBRO de um Pecari comum (cabeça/tronco 435+75/nível cada, braços/pernas 60+20/nível cada)",
-    dmg:"38 de dano no nível 1, +3/nível (menor que o base, compensado pelo roubo de vida)",
-    tame:"Domestique um Pecari comum, depois alimente com 3x Tintura Giganto (precisa da Química avançada).",
-    ability:"Sem ataque de carga elétrico, mas garras causam mais dano com chance de Sangramento, além de um ataque exclusivo de roubo de vida que cura uma pequena quantia.",
-    risk:"Exige 3 Tinturas Giganto — um dos requisitos de mutação mais caros do jogo.",
-    tip:"O pet com mais HP bruto do jogo inteiro — praticamente um tanque ambulante pro seu time." },
-  { family:"PECARI", name:"Pecari Volátil", eng:"Volatile Peccary", icon:"☢️", img:"Images/Pets/PecariVolatil.png",
-    tag:"Mutação", origin:"Mutação — alimente um Pecari com 3x Sangue Plutônico (sem versão selvagem)",
+    hp:"990 HP total no nível 1 — cabeça e tronco com 435+75/nível cada, braços e pernas com 60+20/nível cada",
+    dmg:"38 de dano no nível 1, +3/nível",
+    tame:"Domestique um Pecari e depois alimente-o com 3x Tintura Giganto.",
+    ability:"Possui enorme quantidade de vida e ataques próprios da variante Tarecari.",
+    risk:"Sua mutação exige 3 Tinturas Giganto, tornando a obtenção mais cara e avançada.",
+    tip:"É disparado o Pecari com maior quantidade de HP inicial, funcionando como uma opção extremamente resistente para combate." },
+{ family:"PECARI", name:"Pecari Volátil", eng:"Volatile Peccary", icon:"☢️", img:"Images/Pets/Volatilepeccary.webp",
+    tag:"Mutação", origin:"Mutação — alimente um Pecari com 3x Sangue Plutônico",
     hp:"402 HP total no nível 1 (mesma distribuição do Pecari base)",
-    dmg:"53 de dano no nível 1, +3/nível",
-    tame:"Domestique um Pecari comum, depois alimente com 3x Sangue Plutônico.",
-    ability:"Chance de causar uma explosão de queimadura ácida ao acertar, igual à Praga Volátil.",
-    risk:"Sangue Plutônico é material de fim de jogo — mutação tardia na progressão.",
-    tip:"Junto com a Praga Volátil, forma a dupla 'ácida' do jogo — bom contra inimigos de armadura pesada." },
+    dmg:"53 de dano no nível 1, +3/nível · ataque especial 155 (+5/nível)",
+    tame:"Domestique um Pecari e depois alimente-o com 3x Sangue Plutônico.",
+    ability:"Possui ataques associados ao efeito Volátil, incluindo dano de natureza ácida.",
+    risk:"A mutação exige Sangue Plutônico, um recurso associado à progressão avançada.",
+    tip:"É a variante Volátil do Pecari e adiciona efeitos de dano ácido ao conjunto de ataques do pet." },
 
-  // ── LAGARTOS / SKINKS (3) ──
-  { family:"LAGARTO", name:"Lagarto", eng:"Skink", icon:"🦎", img:"Images/Pets/Lagarto.png",
-    tag:"Captura selvagem", origin:"5 acertos de Lançador de Rede, Rede arremessada, ou Pest Trap",
+// ── LAGARTOS / SKINKS (3) ──
+{ family:"LAGARTO", name:"Lagarto", eng:"Skink", icon:"🦎", img:"Images/Pets/Skink.webp",
+    tag:"Captura selvagem", origin:"Captura no Reator de Nuvem",
     hp:"300 HP no nível 1, +20 HP por nível",
     dmg:"40 de dano à distância no nível 1, +2/nível",
-    tame:"Acerte 5 vezes com o Lançador de Rede (domesticação automática), OU arremesse uma Rede pra atordoar e domesticar com pouco HP, OU capture com Pest Trap.",
-    ability:"Ataque de ácido à distância eficaz de curta a média distância. Se craftado na versão arma, pode ser empunhado como canhão biológico com munição.",
-    risk:"Fogo amigo pode acertá-lo se estiver ativo em combate caótico.",
-    tip:"Encontrado perto do Reator de Nuvem — leve uma Rede pra domesticar sem gastar munição de verdade." },
-  { family:"LAGARTO", name:"Lagarto de Magma", eng:"Magma Skink", icon:"🌋", img:"Images/Pets/LagartoDeMagma.png",
+    tame:"Acerte o Lagarto 5 vezes com o Lançador de Rede para domesticá-lo automaticamente, OU capture-o com uma Pest Trap e depois alimente-o com 3x Trigo Anteverso, Nachos ou Pão.",
+    ability:"Ataque de ácido à distância, eficaz de curta a média distância. Quando transformado em arma, pode ser usado como um canhão biológico durante o combate.",
+    risk:"Com Fogo Amigo ativado, jogadores também podem causar dano ao Lagarto.",
+    tip:"É encontrado no Reator de Nuvem, próximo às áreas de resíduos radioativos. O Lançador de Rede é uma das formas mais diretas de domesticá-lo." },
+{ family:"LAGARTO", name:"Lagarto de Magma", eng:"Magma Skink", icon:"🌋", img:"Images/Pets/Magmaskink.webp",
     tag:"Mutação", origin:"Mutação — alimente um Lagarto com 3x Destilação Fervente",
     hp:"300 HP no nível 1, +20 HP por nível",
     dmg:"40 de dano à distância no nível 1, +2/nível",
-    tame:"Domestique um Lagarto comum, depois alimente com 3x Destilação Fervente.",
-    ability:"Causa dano de fogo ao acertar. Na versão arma, usa Material Fundido como munição (gasta 250 unidades por recarga, independente de quanto sobrou).",
-    risk:"O nível do Lagarto NÃO afeta o dano quando usado como arma — nível só importa como pet ativo.",
-    tip:"Drene o Lagarto de munição por completo antes de recarregar — mais eficiente que reabastecer aos poucos." },
-  { family:"LAGARTO", name:"Lagarto Verdejante", eng:"Verdant Skink", icon:"💚", img:"Images/Pets/LagartoVerdejante.png",
-    tag:"Mutação", origin:"Mutação — alimente um Lagarto com 3x Carbuncle Mushroom",
-    hp:"300 HP no nível 1, +20 HP por nível (mesma base do Lagarto comum)",
-    dmg:"Não causa dano — os projéteis curam em vez de ferir",
-    tame:"Domestique um Lagarto comum, depois alimente com 3x Carbuncle Mushroom.",
-    ability:"Dispara projéteis de cura em vez de ácido — na versão arma, carregar o disparo aumenta o alcance da cura em área. Também cultiva Carbuncle Mushroom sobre si mesmo, colhível como o Pecari-Cogumelo.",
-    risk:"Não serve pra combate ofensivo — é 100% suporte.",
-    tip:"Combine com o Pecari-Cogumelo — dois produtores de Carbuncle Mushroom de graça na base." },
+    tame:"Domestique um Lagarto comum, depois alimente-o com 3x Destilação Fervente.",
+    ability:"Mantém o comportamento do Lagarto comum, mas seus ataques passam a causar dano de fogo.",
+    risk:"A variante mantém os mesmos valores iniciais de vida e dano do Lagarto comum.",
+    tip:"É a variante elemental de fogo do Lagarto e uma das mutações mais simples da família." },
+{ family:"LAGARTO", name:"Lagarto Verdejante", eng:"Verdant Skink", icon:"💚", img:"Images/Pets/Mushroomskink.webp",
+    tag:"Mutação", origin:"Mutação — alimente um Lagarto com 3x Cogumelo Carbúnculo",
+    hp:"Ainda não documentado publicamente",
+    dmg:"Não causa dano — seus projéteis curam em vez de ferir",
+    tame:"Domestique um Lagarto comum, depois alimente-o com 3x Cogumelo Carbúnculo.",
+    ability:"Dispara projéteis de cura em vez de ácido. Na versão arma, o disparo pode ser carregado para aumentar a cura e a área de efeito. Também cultiva Cogumelos Carbúnculo sobre si mesmo, que podem ser colhidos.",
+    risk:"Não causa dano ofensivo; sua função é exclusivamente de suporte e cura.",
+    tip:"Funciona como um excelente pet de suporte e também produz Cogumelos Carbúnculo, de forma semelhante ao Pecari-Cogumelo." },
 
-  // ── LAMOGI (3) — família mais nova, documentação ainda incompleta na wiki ──
-  { family:"LAMOGI", name:"Lamogi", eng:"Lamogi", icon:"🎮", img:"Images/Pets/Lamogi.png",
-    tag:"Documentação incompleta (WIP)", origin:"Cultivado — plante um Cartucho de Lamogi num Canteiro Digital",
+    // ── LAMOGI (3) — documentação ainda incompleta na wiki ──
+{ family:"LAMOGI", name:"Lamogi", eng:"Lamogi", icon:"🎮", img:"Images/Pets/Lamogi.webp",
+    tag:"Cultivo", origin:"Cultivado — plante um Cartucho de Lamogi em um Canteiro Digital",
     hp:"Ainda não documentado publicamente",
     dmg:"Ainda não documentado publicamente",
-    tame:"Plante um Lamogi Cartridge (Cartucho de Lamogi) num Digital Garden Plot (Canteiro Digital) e espere crescer.",
-    ability:"Comportamento em combate ainda pouco documentado pela comunidade.",
-    risk:"A versão selvagem (em Royal Range) é imune a quase toda arma, só morre com pulo na cabeça — não está confirmado se isso vale pra versão pet.",
-    tip:"Família mais nova e menos documentada do sistema — espere atualizações de dados em breve." },
-  { family:"LAMOGI", name:"Sir Ogi", eng:"Sir Ogi", icon:"🛡️", img:"Images/Pets/SirOgi.png",
-    tag:"Craft", origin:"Craftável — não é mutação nem cultivo direto",
+    tame:"Plante um Cartucho de Lamogi (Lamogi Cartridge) em um Canteiro Digital (Digital Garden Plot) e espere o Lamogi crescer.",
+    ability:"Comportamento e combate da versão pet ainda não estão documentados de forma suficiente na Wiki.",
+    risk:"A versão selvagem encontrada em Royal Range é extremamente resistente a armas convencionais e pode ser morta ao pular sobre sua cabeça; não há confirmação de que esse comportamento se aplique ao pet.",
+    tip:"É a forma base da família Lamogi e serve como ponto de partida para as mutações Sir Ogi e Speedogi." },
+{ family:"LAMOGI", name:"Sir Ogi", eng:"Sir Ogi", icon:"🛡️", img:"Images/Pets/Sirogi.webp",
+    tag:"Mutação", origin:"Mutação de Lamogi",
     hp:"Ainda não documentado publicamente",
     dmg:"Ainda não documentado publicamente",
-    tame:"Crafte o item Sir Ogi em bancada e vista sobre um Lamogi já domesticado.",
-    ability:"Comportamento em combate ainda pouco documentado pela comunidade.",
-    risk:"Dados de combate insuficientes — trate como experimental até mais informação surgir.",
-    tip:"Nome sugere uma versão 'blindada' do Lamogi — visual de armadura confirmado, stats ainda não." },
-  { family:"LAMOGI", name:"Speedogi", eng:"Speedogi", icon:"💨", img:"Images/Pets/Speedogi.png",
+    tame:"Obtenha um Lamogi como pet e utilize o método de mutação específico de Sir Ogi.",
+    ability:"Comportamento e combate ainda não estão documentados de forma suficiente na Wiki.",
+    risk:"A página oficial ainda está marcada como WIP e não fornece dados confiáveis de combate ou progressão.",
+    tip:"É uma variante da família Lamogi, mas seus atributos e método detalhado de mutação ainda precisam de documentação adicional." },
+{ family:"LAMOGI", name:"Speedogi", eng:"Speedogi", icon:"💨", img:"Images/Pets/Speedogi.webp",
     tag:"Mutação", origin:"Mutação — alimente um Lamogi com 3x Caneca de Café ou Tintura Veloz",
     hp:"Ainda não documentado publicamente",
     dmg:"Ainda não documentado publicamente",
-    tame:"Domestique um Lamogi primeiro, depois alimente com 3x Caneca de Café ou 3x Tintura Veloz.",
-    ability:"Nome sugere bônus de velocidade — comportamento exato ainda pouco documentado.",
-    risk:"Dados de combate insuficientes — trate como experimental até mais informação surgir.",
-    tip:"Uma das mutações mais baratas da família — só precisa de café, fácil de conseguir cedo." },
+    tame:"Domestique um Lamogi primeiro, depois alimente-o com 3x Caneca de Café ou 3x Tintura Veloz.",
+    ability:"O comportamento e os atributos de combate ainda não estão documentados de forma suficiente na Wiki.",
+    risk:"Os dados públicos de combate ainda são incompletos, portanto não é seguro classificá-lo como uma variante especificamente ofensiva ou defensiva.",
+    tip:"A mutação é confirmada e requer 3 Canecas de Café ou 3 Tinturas Velozes." },
 
-  // ── INVOCAÇÕES DE SET DE ARMADURA (2) — não são domesticáveis ──
-  { family:"INVOCAÇÃO", name:"Espírito Exor", eng:"Exor Spirit", icon:"👻", img:"Images/Pets/EspiritoExor.png",
-    tag:"Não é domesticável", origin:"Automático — vista o Set de Armadura Exor completo (4 peças)",
-    hp:"Extremamente durável, mas não invencível — sofre dano e efeitos de status normalmente",
-    dmg:"Lançadas de curto alcance + disparos de energia à distância",
-    tame:"Não precisa domesticar nada — vista as 4 peças do Set de Armadura Exor e o buff 'Espírito do Exor' o invoca automaticamente ao entrar em combate.",
-    ability:"Luta como um Chefe Exor fantasma — combina lança corpo a corpo e disparos de energia à distância, mas não teleporta como o inimigo real.",
-    risk:"Pode sofrer fogo amigo dos seus próprios disparos à distância. Pode se separar de você em terrenos irregulares.",
-    tip:"O Trinket Companheiro Central (Core Companion) também buffa ele em +50% de vida e dano, igual aos pets de verdade." },
-  { family:"INVOCAÇÃO", name:"Drone Mystagogue", eng:"Mystagogue Drone", icon:"🔮", img:"Images/Pets/DroneMystagogue.png",
-    tag:"Não é domesticável", origin:"Automático — vista o Set de Armadura Mystagogue completo (4 peças)",
-    hp:"HP não publicado — comunidade reporta baixíssimo dano de saída (~1-2 por disparo sem buffs)",
-    dmg:"Disparo de energia fraco comparado ao Espírito Exor",
-    tame:"Não precisa domesticar nada — vista as 4 peças do Set de Armadura Mystagogue e o buff 'Olhar do Mystagogue' invoca o drone automaticamente ao entrar em combate.",
-    ability:"Serve mais como distração do que dano real — pode ficar preso lutando com um inimigo fora de alcance, impedindo-o de ajudar em outro lugar.",
-    risk:"Considerado fraco pela comunidade mesmo com buffs — não conte com ele como fonte de dano principal.",
-    tip:"Tire e vista de novo uma peça da armadura pra dispensar e re-invocar o drone perto de você, se ele ficar preso longe." },
+// ── INVocações DE SET DE ARMADURA (2) — SUMMONS ──
+{ family:"INVOCAÇÃO", name:"Espírito Exor", eng:"Exor Spirit", icon:"👻", img:"Images/Pets/Exorspirit.webp",
+    tag:"Invocação de Armadura", origin:"Automático — vista o Set de Armadura Exor completo (4 peças)",
+    hp:"Extremamente durável, mas não invencível; sofre dano e efeitos de status normalmente",
+    dmg:"Ataques de lança de curto alcance e disparos de energia à distância",
+    tame:"Não precisa ser domesticado. Ao vestir as 4 peças do Set de Armadura Exor, o buff Espírito do Exor invoca automaticamente o Espírito Exor ao entrar em combate.",
+    ability:"Luta de maneira semelhante a um Exor Chefe fantasma, combinando golpes de lança de perto e disparos de energia à distância. Não pode se teleportar como o Exor inimigo.",
+    risk:"Pode sofrer Fogo Amigo dos jogadores, pode se separar do jogador em terrenos irregulares e desaparece quando sofre dano demais. Também pode ficar preso atacando inimigos inacessíveis.",
+    tip:"É considerado um pet pelo sistema e recebe os bônus de vida e dano do Trinket Companheiro Central (Core Companion)." },
+{ family:"INVOCAÇÃO", name:"Drone Mystagogue", eng:"Mystagogue Drone", icon:"🔮", img:"Images/Pets/Mystagoguedrone.webp",
+    tag:"Invocação de Armadura", origin:"Automático — vista o Set de Armadura Mystagogue completo (4 peças)",
+    hp:"300 HP",
+    dmg:"1 de dano por disparo de laser",
+    tame:"Não precisa ser domesticado. Ao vestir as 4 peças do Set de Armadura Mystagogue, o buff Olhar do Mystagogue (Mystagogue's Gaze) invoca automaticamente o drone.",
+    ability:"Segue o jogador e auxilia no combate com um feixe de laser contínuo, normalmente concentrando-se em um único inimigo enquanto circula ao redor dele.",
+    risk:"Pode ficar preso combatendo inimigos inacessíveis e deixar de ajudar em outras áreas. Remover e recolocar uma peça da Armadura Mystagogue o dispensa e permite invocá-lo novamente perto do jogador.",
+    tip:"É considerado um pet pelo sistema e pode receber bônus de vida e dano do Trinket Companheiro Central (Core Companion)." },
 ];
 
 let petFilter = 'TODOS';
