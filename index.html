@@ -522,7 +522,7 @@
     border-left: 3px solid var(--green);
     padding: 12px;
     display: grid;
-    grid-template-columns: 66px 1fr;
+    grid-template-columns: 84px 1fr;
     gap: 10px;
     align-items: start;
     transition: border-color 0.15s, transform 0.15s;
@@ -530,11 +530,12 @@
   .deploy-card:hover { border-color: var(--green); transform: translateY(-2px); }
   .deploy-card-thumb {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-    background: var(--bg); border: 1px solid var(--border);
-    padding: 6px; height: 66px;
+    background: radial-gradient(circle, rgba(0,224,96,0.10) 0%, rgba(0,20,10,0.45) 100%);
+    border: 1px solid var(--border);
+    padding: 6px; height: 84px;
   }
-  .deploy-card-thumb img { width: 40px; height: 40px; object-fit: contain; }
-  .deploy-card-thumb .deploy-fallback-icon { font-size: 26px; }
+  .deploy-card-thumb img { width: 56px; height: 56px; object-fit: contain; }
+  .deploy-card-thumb .deploy-fallback-icon { font-size: 34px; }
   .deploy-power-badge { font-size: 8px; letter-spacing: 0.5px; padding: 1px 4px; text-align: center; width: 100%; text-transform: uppercase; }
   .deploy-power-req  { background: var(--amberDim); color: var(--amberLt); border: 1px solid var(--amber); }
   .deploy-power-gen  { background: var(--cyanDim);  color: var(--cyan);    border: 1px solid var(--cyan); }
@@ -661,9 +662,9 @@
   #panel-chemistry .chem-modal-effect { background: rgba(255,255,255,0.02); border-left: 2px solid var(--cyan); padding: 8px 10px; font-size: var(--fs-sm); color: var(--text); line-height: 1.6; margin-bottom: 12px; }
 
   @media (max-width: 480px) {
-    .deploy-card { grid-template-columns: 56px 1fr; }
-    .deploy-card-thumb { height: 56px; }
-    .deploy-card-thumb img { width: 32px; height: 32px; }
+    .deploy-card { grid-template-columns: 68px 1fr; }
+    .deploy-card-thumb { height: 68px; }
+    .deploy-card-thumb img { width: 44px; height: 44px; }
   }
 
   /* ── TROPHY LIST PANEL ── */
@@ -2247,27 +2248,35 @@
   }
 
 
-  /* ── FAQ PANEL (inside tips) — perguntas e respostas rápidas pra iniciante,
-     card expansível reaproveitando a mesma animação de abrir/fechar do
-     .tips-cat-toggle/.tips-cat-panel (initTipsCardToggle), só sem a caixa
-     de imagem — aqui a pergunta já ocupa o lugar do título. ── */
+  /* ── FAQ INICIANTES (Dicas → antes de Skills) ──
+     Perguntas gerais tipo "o que eu faço com X" que qualquer um pergunta
+     jogando — acordeão simples, uma pergunta por vez, sem precisar ler
+     tudo pra achar a resposta que importa agora. */
   .faq-section { margin-bottom: 20px; }
-  .faq-title { font-size: var(--fs-xs); color: var(--purple); letter-spacing: 3px; margin-bottom: 12px; }
-  .faq-notice-box { background: rgba(160,96,224,0.08); border-left: 3px solid var(--purple); color: var(--textDim); padding: 10px 12px; font-size: var(--fs-sm); line-height: 1.6; margin-bottom: 12px; }
-  .faq-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
-  .faq-card {
-    background: var(--bgCard);
-    border: 1px solid var(--border);
-    border-left: 2px solid rgba(160,96,224,0.4);
-    border-radius: 8px;
-    overflow: hidden;
+  .faq-title { font-size: var(--fs-xs); color: var(--cyan); letter-spacing: 3px; margin-bottom: 4px; }
+  .faq-desc { font-size: var(--fs-sm); color: var(--textDim); margin-bottom: 12px; }
+  .faq-list { display: flex; flex-direction: column; gap: 8px; }
+  .faq-item { background: var(--bgCard); border: 1px solid var(--border); border-left: 3px solid var(--purple); }
+  .faq-q-btn {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: none; border: none; text-align: left; cursor: pointer;
+    padding: 12px 14px; font-family: inherit;
   }
-  .faq-card .tips-cat-toggle { border-top: none; }
-  .faq-q { display: flex; align-items: baseline; gap: 8px; flex: 1; }
-  .faq-q-mark { color: var(--purple); flex-shrink: 0; }
-  .faq-q-text { color: var(--text); }
-  .faq-answer { font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7; }
-  .faq-empty { color: var(--textMuted); font-size: var(--fs-sm); padding: 10px 0; }
+  .faq-q-btn:hover { background: rgba(160,96,224,0.06); }
+  .faq-q-icon { color: var(--purple); font-size: var(--fs-md); flex-shrink: 0; }
+  .faq-q-text { flex: 1; font-size: var(--fs-md); color: var(--text); font-weight: 600; }
+  .faq-arrow { color: var(--textDim); flex-shrink: 0; transition: transform 0.15s; }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  .faq-a-body {
+    display: none; padding: 0 14px 14px 38px;
+    font-size: var(--fs-sm); color: var(--textDim); line-height: 1.7;
+  }
+  .faq-item.open .faq-a-body { display: block; }
+  .faq-more-btn {
+    width: 100%; margin-top: 4px; padding: 10px; font-family: inherit; font-size: var(--fs-xs); letter-spacing: 1px;
+    background: none; border: 1px dashed var(--purple); color: var(--purple); cursor: pointer; transition: all 0.15s;
+  }
+  .faq-more-btn:hover { background: rgba(160,96,224,0.08); }
 
   /* ── SKILLS PANEL (inside tips) ── */
   .skills-section { margin-bottom: 20px; }
@@ -2535,7 +2544,7 @@
     transition: transform 0.15s, box-shadow 0.15s;
   }
   .xpbuff-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
-  .xpbuff-card .deploy-card-thumb { width: 60px; height: 60px; margin: 0 auto 8px; }
+  .xpbuff-card .deploy-card-thumb { width: 76px; height: 76px; margin: 0 auto 8px; }
   .xpbuff-name { font-size: var(--fs-sm); color: var(--platinumLt); font-weight: bold; margin-bottom: 2px; }
   .xpbuff-eng { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; margin-bottom: 8px; }
   .xpbuff-recipe-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-bottom: 8px; }
@@ -3564,19 +3573,16 @@
         Combinando estratégias de sobrevivência, crafting e otimização para uma jogatina de platina eficiente.
       </div>
     </div>
-
-    <!-- FAQ -->
+    <!-- FAQ INICIANTES -->
     <div class="faq-section">
-      <div class="faq-title">// PERGUNTAS E RESPOSTAS — DÚVIDAS COMUNS DE INICIANTE</div>
-      <div class="faq-notice-box">
-        ℹ️ <strong>LISTA EM CONSTRUÇÃO:</strong> as perguntas abaixo são um conjunto inicial e serão ampliadas ao longo do tempo — não é uma cobertura completa de todas as dúvidas possíveis. Novas perguntas passam por verificação em fontes confiáveis (Wiki oficial e guias especializados) antes de entrarem aqui, mas para decisões importantes de jogatina vale sempre confirmar também na Wiki oficial ou dentro do próprio jogo.
-      </div>
-      <div class="deploy-search-box">
+      <div class="faq-title">// PERGUNTAS E RESPOSTAS — DÚVIDAS DE INICIANTE</div>
+      <div class="faq-desc">Aquelas perguntas gerais que todo mundo faz jogando — sem precisar vasculhar o guia inteiro atrás da resposta.</div>
+      <div class="deploy-search-box" style="margin-bottom:10px">
         <span class="deploy-search-icon">🔍</span>
-        <input type="text" id="faq-search" class="deploy-search-input" placeholder="Buscar por palavra-chave na pergunta ou resposta...">
+        <input type="text" id="faq-search" class="deploy-search-input" placeholder="Buscar por palavra-chave (ex: água, robô, portal)..." oninput="renderFaq()">
       </div>
-      <div class="faq-grid" id="faq-grid"></div>
-      <div class="faq-empty" id="faq-empty" style="display:none">Nenhuma pergunta encontrada com esse termo.</div>
+      <div class="faq-list" id="faq-list"></div>
+      <button id="faq-more-btn" class="faq-more-btn" style="display:none" onclick="faqShowMore()"></button>
     </div>
 
     <!-- SKILLS -->
@@ -5586,7 +5592,7 @@ const craftPriority = [
     why:"Permite disparar redes eletrificadas a distância, prendendo e atordoando criaturas maiores. É especialmente útil para captura de criaturas e para situações em que uma rede arremessada manualmente não oferece alcance ou controle suficiente.",
     critical:false },
 
-  { n:"05", icon:"🎣", name:"Vara de Pescar", eng:"Fishing Rod", img:"Images/Craft/Fishingord.webp",
+  { n:"05", icon:"🎣", name:"Vara de Pescar", eng:"Fishing Rod", img:"Images/Craft/Fishingrod.webp",
     recipe:[{n:"Grampeador",q:1},{n:"Telefone de Mesa",q:2},{n:"Sucata Plástica",q:4},{n:"Tábua de Madeira",q:2}],
     why:"Permite pescar nos corpos de água do jogo e é necessária para obter diversos peixes, incluindo espécies raras. Também abre acesso às receitas de iscas conforme você descobre novos peixes.",
     critical:false },
@@ -5640,13 +5646,13 @@ const craftFarmMethods = [
 const xpBuffsData = [
   { name:"Ensopado Balanceado", eng:"Balanced Stew", img:"Images/Craft/Balancedstew.webp", icon:"🍲",
     recipe:[{n:"Panela Cheia de Água",q:1},{n:"Carbúnculo Cru",q:1},{n:"Cogumelo Carbúnculo",q:1},{n:"Sal",q:1}],
-    effect:"Dá o buff Big Brain: +10% de XP de Crafting e Construction por 10 minutos. Cozinhe e coma logo antes de começar a farmar." },
+    effect:"Dá o buff Big Brain: +10% de XP de Crafting E Construção por 10 minutos. Cozinhe e coma logo antes de começar a farmar." },
   { name:"Cérebro Humano", eng:"Human Brain", img:"Images/Craft/Humanbrain.webp", icon:"🧠",
     recipe:[{n:"Cérebro Humano",q:1}],
-    effect:"Dá o buff Brain Drain: +15% de ganho de XP por tempo limitado. Obtido ao desmontar Crânios Humanos na Estação de Reparo e Descarte." },
+    effect:"+15% de XP adicional (empilha com o Ensopado Balanceado) por tempo limitado. Obtido ao desmembrar corpos humanos encontrados pela Facility." },
   { name:"Pedra de Estimação", eng:"Pet Rock", img:"Images/Craft/Petrock.webp", icon:"🪨",
     recipe:null, obtain:"Encontrada nos Laboratórios Cascade",
-    effect:"Aumenta em 5% o ganho de XP da sua skill de nível MAIS BAIXO. Equipe como acessório para manter o bônus ativo." },
+    effect:"Aumenta o ganho de XP especificamente na sua skill de nível MAIS BAIXO. Equipe como acessório permanente — passiva, não gasta nada por uso." },
 ];
 
 const enhancementExamples = [
@@ -5667,7 +5673,7 @@ function renderCraftPriority() {
     div.style.cssText = `display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start`;
     div.innerHTML = `
       <span style="font-size:var(--fs-2xs);min-width:26px;flex-shrink:0;color:var(--green);border:1px solid var(--green)44;padding:2px 4px;text-align:center;background:var(--greenDim);align-self:flex-start">${p.n}</span>
-      <div class="deploy-card-thumb" style="flex-shrink:0;width:66px">
+      <div class="deploy-card-thumb" style="flex-shrink:0;width:84px">
         <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
         <span class="deploy-fallback-icon" style="display:none">${p.icon}</span>
       </div>
@@ -5949,7 +5955,7 @@ const deployablesData = [
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Coração de Exor Bruto",q:1},{n:"Tijolo de Memória",q:1},{n:"Teclado",q:1},{n:"Telefone de Mesa",q:1}],
     note:"A carga zera 100% a cada uso — tenha uma bateria carregada antes de contar com ele em emergência." },
-  { id:"trav06", name:"Plataforma de Salto", eng:"Jump Pad", cat:"transporte", icon:"🚀", img:"Images/Craft/Jumprad.webp",
+  { id:"trav06", name:"Plataforma de Salto", eng:"Jump Pad", cat:"transporte", icon:"🚀", img:"Images/Craft/Jumppad.webp",
     power:"none", desc:"Impulsiona você pra cima ao pisar — e protege contra dano de queda logo depois do salto.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Ninho Gasoso",q:1},{n:"Mangueira Reforçada",q:1},{n:"Tijolo de Energia",q:1},{n:"Eletrônicos Militares",q:2}],
@@ -5981,56 +5987,56 @@ const deployablesData = [
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Tábua de Madeira",q:4},{n:"Corda de Pano",q:4},{n:"Sucata Plástica",q:4},{n:"Telefone de Mesa",q:2}],
     note:null },
-  { id:"util06", name:"Aquário Grande", eng:"Large Aquarium", cat:"utilidades", icon:"🐟", img:"Images/Craft/Largeaquarium.webp",
+  { id:"util06", name:"Aquário Grande", eng:"Large Aquarium", cat:"utilidades", icon:"🐟", img:"Images/Craft/Aquariumlarge.webp",
     power:"req", desc:"Armazena até 6 peixes vivos, mantendo-os perfeitamente preservados enquanto ligado à energia.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Vidro Quântico",q:4},{n:"Tijolo de Energia",q:1},{n:"Bomba Rotativa",q:2},{n:"Saco de Terra",q:4}],
     note:null },
 
   // ── ARMAZENAMENTO (continuação) ──
-  { id:"stor08", name:"Geladeira de Risco", eng:"Hazard Fridge", cat:"armazenamento", icon:"☣️", img:"Images/Craft/GeladeiraDeRisco.webp",
+  { id:"stor08", name:"Geladeira de Risco", eng:"Hazard Fridge", cat:"armazenamento", icon:"☣️", img:"Images/Craft/Hazardfridge.webp",
     power:"req", desc:"Versão da geladeira com 24 slots que bloqueia COMPLETAMENTE o vazamento de radiação — 6 slots a menos que a geladeira comum, mas sem vazamento.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (upgrade de uma Geladeira já fabricada).",
     recipe:[{n:"Geladeira",q:1},{n:"Caixote de Risco",q:1},{n:"Placa de Carbono",q:2},{n:"Saco de Cimento",q:4}],
     note:"Melhor opção pra guardar comida perto de áreas radioativas sem se preocupar com vazamento." },
 
   // ── ENERGIA & LUZ (continuação — sistema de lasers e distribuição) ──
-  { id:"pow07", name:"Coletor de Laser", eng:"Laser Collector", cat:"energia", icon:"🔺", img:"Images/Craft/ColetorDeLaser.webp",
+  { id:"pow07", name:"Coletor de Laser", eng:"Laser Collector", cat:"energia", icon:"🔺", img:"Images/Craft/Lasercollector.webp",
     power:"gen", desc:"Capta feixes de laser e converte em energia utilizável pela rede da base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (itens de mid/late-game).",
     recipe:[{n:"Receptor de Fóton",q:2},{n:"Matriz de Projeção",q:2},{n:"Tijolo de Memória",q:1},{n:"Essência Noturna",q:1}],
     note:"Parte do sistema de lasers — combine com Emissor, Prisma e Refletor pra montar redes de energia solar-like." },
-  { id:"pow08", name:"Emissor de Laser", eng:"Laser Emitter", cat:"energia", icon:"🔺", img:"Images/Craft/EmissorDeLaser.webp",
+  { id:"pow08", name:"Emissor de Laser", eng:"Laser Emitter", cat:"energia", icon:"🔺", img:"Images/Craft/Laseremitter.webp",
     power:"none", desc:"Emite um feixe de laser contínuo, usado tanto em sistemas de energia quanto em armadilhas.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Receptor de Fóton",q:1},{n:"Lente Óptica",q:1},{n:"Matriz de Projeção",q:1},{n:"Tijolo de Energia",q:1}],
     note:"Também usado pra alimentar a Privada-Portal — aponte o feixe pra parte de trás dela." },
-  { id:"pow09", name:"Conversor de Energia a Laser", eng:"Laser Power Converter", cat:"energia", icon:"🔺", img:"Images/Craft/ConversorDeLaser.webp",
+  { id:"pow09", name:"Conversor de Energia a Laser", eng:"Laser Power Converter", cat:"energia", icon:"🔺", img:"Images/Craft/Laserpowerconverter.webp",
     power:"gen", desc:"Converte a energia de um feixe de laser recebido em eletricidade pra rede da base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Receptor de Fóton",q:1},{n:"Lente Óptica",q:1},{n:"Célula de Energia",q:1},{n:"Sucata Tecnológica",q:4}],
     note:null },
-  { id:"pow10", name:"Prisma de Laser", eng:"Laser Prism", cat:"energia", icon:"🔺", img:"Images/Craft/PrismaDeLaser.webp",
+  { id:"pow10", name:"Prisma de Laser", eng:"Laser Prism", cat:"energia", icon:"🔺", img:"Images/Craft/Laserprism.webp",
     power:"none", desc:"Divide um único feixe de laser em múltiplos feixes — permite ramificar a rede de lasers da base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Receptor de Fóton",q:1},{n:"Lente Óptica",q:3},{n:"Vidro Quântico",q:3},{n:"Matriz de Projeção",q:1}],
     note:null },
-  { id:"pow11", name:"Refletor de Laser", eng:"Laser Reflector", cat:"energia", icon:"🔺", img:"Images/Craft/RefletorDeLaser.webp",
+  { id:"pow11", name:"Refletor de Laser", eng:"Laser Reflector", cat:"energia", icon:"🔺", img:"Images/Craft/Laserreflector.webp",
     power:"none", desc:"Redireciona um feixe de laser em outra direção — útil pra contornar obstáculos na rede.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Lente Óptica",q:1},{n:"Vidro Quântico",q:1},{n:"Sucata Metálica",q:2}],
     note:null },
-  { id:"pow12", name:"Placa de Distribuição Elétrica", eng:"Plug Board", cat:"energia", icon:"🔌", img:"Images/Craft/PlacaDeDistribuicao.webp",
+  { id:"pow12", name:"Placa de Distribuição Elétrica", eng:"Plug Board", cat:"energia", icon:"🔌", img:"Images/Craft/Plugboard.webp",
     power:"gen", desc:"Central de distribuição elétrica com múltiplas saídas — organiza a fiação de bases grandes.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (itens de mid-game).",
     recipe:[{n:"Unidade de Fonte de Energia",q:2},{n:"Bobina",q:3},{n:"Capacitor",q:2},{n:"Sucata Metálica",q:4},{n:"Cano de Metal",q:3},{n:"Vidro Quântico",q:1},{n:"Tijolo de Energia",q:1}],
     note:null },
-  { id:"pow13", name:"Plataforma de Distribuição", eng:"Distribution Pad", cat:"energia", icon:"📤", img:"Images/Craft/PlataformaDeDistribuicao.webp",
+  { id:"pow13", name:"Plataforma de Distribuição", eng:"Distribution Pad", cat:"energia", icon:"📤", img:"Images/Craft/Distributionpad.webp",
     power:"req", desc:"Quando energizada, transporta automaticamente itens pra containers próximos que já tenham o mesmo item guardado.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (itens de late-game).",
     recipe:[{n:"Tijolo de Memória",q:1},{n:"Coração de Exor",q:2},{n:"Bobina",q:2},{n:"Tijolo de Energia",q:4}],
     note:"Ótima pra organizar automaticamente loot repetido sem precisar carregar manualmente entre caixotes." },
-  { id:"pow14", name:"Roda de Praga", eng:"Pest Wheel", cat:"energia", icon:"🐹", img:"Images/Craft/RodaDePraga.webp",
+  { id:"pow14", name:"Roda de Praga", eng:"Pest Wheel", cat:"energia", icon:"🐹", img:"Images/Craft/Pestwheel.webp",
     power:"gen", desc:"Gera energia por um tempo curto quando ocupada por uma Praga domesticada alimentada.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Célula de Energia",q:1},{n:"Armadilha de Praga",q:1},{n:"Sucata Metálica",q:8}],
@@ -6042,76 +6048,76 @@ const deployablesData = [
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Tijolo de Energia",q:1},{n:"Cano",q:1},{n:"Sucata Metálica",q:1},{n:"Lata de Óleo",q:1}],
     note:"Posicione perto da estação de carregamento de um bot, ataque a estação pra ativá-lo, e repare entre batalhas — ótimo método de farm de CPUs." },
-  { id:"def12", name:"Emissor de Neutrino", eng:"Neutrino Emitter", cat:"defesa", icon:"📡", img:"Images/Craft/EmissorDeNeutrino.webp",
+  { id:"def12", name:"Emissor de Neutrino", eng:"Neutrino Emitter", cat:"defesa", icon:"📡", img:"Images/Craft/Neutrinoemitter.webp",
     power:"req", desc:"Dispositivo de defesa avançado que usa radiação de neutrino contra ameaças específicas.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (itens de late-game).",
     recipe:[{n:"Mapeador de Neutrino",q:1},{n:"Receptor de Fóton",q:2},{n:"Célula de Energia",q:1},{n:"Cano Hidráulico",q:2}],
     note:null },
 
   // ── TRANSPORTE & MOBILIDADE (continuação) ──
-  { id:"trav07", name:"Corda de Pano", eng:"Cloth Rope", cat:"transporte", icon:"🪢", img:"Images/Craft/CordaDePano.webp",
+  { id:"trav07", name:"Corda de Pano", eng:"Cloth Rope", cat:"transporte", icon:"🪢", img:"Images/Craft/Clothrope.webp",
     power:"none", desc:"Corda básica usada em diversas receitas de construção e mobilidade, incluindo Armadilha de Pesca.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Telefone de Mesa",q:1},{n:"Sucata de Pano",q:2},{n:"Sucata Metálica",q:1}],
     note:null },
-  { id:"trav08", name:"Rampa Grande", eng:"Ramp (Large)", cat:"transporte", icon:"📐", img:"Images/Craft/RampaGrande.webp",
+  { id:"trav08", name:"Rampa Grande", eng:"Ramp (Large)", cat:"transporte", icon:"📐", img:"Images/Craft/Ramplarge.webp",
     power:"none", desc:"Versão maior da rampa, pra vencer desníveis mais altos na construção da base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Caixa de Parafusos",q:2},{n:"Tábua de Madeira Reforçada",q:4}],
     note:null },
-  { id:"trav09", name:"Kit de Ligação Direta (SUV)", eng:"Hotwire Kit (SUV)", cat:"transporte", icon:"🚙", img:"Images/Craft/KitLigacaoSUV.webp",
+  { id:"trav09", name:"Kit de Ligação Direta (SUV)", eng:"Hotwire Kit (SUV)", cat:"transporte", icon:"🚙", img:"Images/Craft/HotwirekitSUV.webp",
     power:"none", desc:"Permite dar partida num SUV abandonado encontrado pela Facility sem a chave original.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (itens de mid-game).",
     recipe:[{n:"Carregador de Bateria de Carro",q:1},{n:"Cano Hidráulico",q:2},{n:"Bobina Reforçada",q:4},{n:"Gel do Anteverso",q:4}],
     note:null },
-  { id:"trav10", name:"Kit de Ligação Direta (Carrinho de Segurança)", eng:"Hotwire Kit (Security Cart)", cat:"transporte", icon:"🛺", img:"Images/Craft/KitLigacaoCarrinho.webp",
+  { id:"trav10", name:"Kit de Ligação Direta (Carrinho de Segurança)", eng:"Hotwire Kit (Security Cart)", cat:"transporte", icon:"🛺", img:"Images/Craft/Hotwirekitsecuritycart.webp",
     power:"none", desc:"Permite dar partida num Carrinho de Segurança abandonado sem a chave original.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Carregador de Bateria de Carro",q:1},{n:"Compressor de Ar",q:1},{n:"Célula de Energia",q:1},{n:"Capacitor",q:2}],
     note:null },
-  { id:"trav11", name:"Almofada de Pouso", eng:"Landing Cushion", cat:"transporte", icon:"🛬", img:"Images/Craft/AlmofadaDePouso.webp",
+  { id:"trav11", name:"Almofada de Pouso", eng:"Landing Cushion", cat:"transporte", icon:"🛬", img:"Images/Craft/Landingcushion.webp",
     power:"none", desc:"Amortece quedas de grandes alturas — posicione embaixo de saltos arriscados.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Fita Adesiva",q:2},{n:"Sucata de Pano",q:4},{n:"Tábua de Madeira",q:2}],
     note:"Combina bem com a Plataforma de Salto — uma te lança pro alto, a outra amortece a descida em outro ponto." },
 
   // ── UTILIDADES (continuação — camas, decoração, itens de troféu) ──
-  { id:"util07", name:"Balde de Madeira", eng:"Wooden Bucket", cat:"utilidades", icon:"🪣", img:"Images/Craft/BaldeDeMadeira.webp",
+  { id:"util07", name:"Balde de Madeira", eng:"Wooden Bucket", cat:"utilidades", icon:"🪣", img:"Images/Craft/Woodenbucket.webp",
     power:"none", desc:"Balde artesanal usado como componente em outras receitas, como o Vaso Sanitário Improvisado.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Hexwood",q:2},{n:"Tábua de Madeira Reforçada",q:2},{n:"Caixa de Parafusos",q:4}],
     note:null },
-  { id:"util08", name:"Placa Pequena", eng:"Small Sign", cat:"utilidades", icon:"🪧", img:"Images/Craft/PlacaPequena.webp",
+  { id:"util08", name:"Placa Pequena", eng:"Small Sign", cat:"utilidades", icon:"🪧", img:"Images/Craft/Smallsign.webp",
     power:"none", desc:"Placa decorativa preta e pequena — útil pra sinalizar áreas da base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Hexwood",q:1},{n:"Cola (qualquer)",q:2},{n:"Caneta",q:1}],
     note:null },
-  { id:"util09", name:"Manequim de Madeira (Feminino)", eng:"Wooden Mannequin (F)", cat:"utilidades", icon:"🧍‍♀️", img:"Images/Craft/ManequimFeminino.webp",
+  { id:"util09", name:"Manequim de Madeira (Feminino)", eng:"Wooden Mannequin (F)", cat:"utilidades", icon:"🧍‍♀️", img:"Images/Craft/Woodenmannequinf.webp",
     power:"none", desc:"Manequim pra exibir roupas e trocar looks salvos na base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Hexwood",q:4},{n:"Grampeador",q:2},{n:"Sucata de Couro",q:2}],
     note:null },
-  { id:"util10", name:"Manequim de Madeira (Masculino)", eng:"Wooden Mannequin (M)", cat:"utilidades", icon:"🧍", img:"Images/Craft/ManequimMasculino.webp",
+  { id:"util10", name:"Manequim de Madeira (Masculino)", eng:"Wooden Mannequin (M)", cat:"utilidades", icon:"🧍", img:"Images/Craft/Woodenmannequinm.webp",
     power:"none", desc:"Versão masculina do manequim, mesma função de exibir e trocar roupas.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Hexwood",q:4},{n:"Grampeador",q:2},{n:"Sucata de Couro",q:2}],
     note:null },
-  { id:"util11", name:"Crânio Humano Polido", eng:"Polished Human Skull", cat:"utilidades", icon:"💀", img:"Images/Craft/CranioPolido.webp",
+  { id:"util11", name:"Crânio Humano Polido", eng:"Polished Human Skull", cat:"utilidades", icon:"💀", img:"Images/Craft/Polishedhumanskull.webp",
     power:"none", desc:"Item decorativo — um crânio humano tratado com alvejante, pra quem gosta de decoração macabra na base.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Crânio Humano",q:1},{n:"Alvejante",q:1}],
     note:null },
-  { id:"util12", name:"Boneco de Prática", eng:"Pest Dummy", cat:"utilidades", icon:"🎯", img:"Images/Craft/BonecoDePratica.webp",
+  { id:"util12", name:"Boneco de Prática", eng:"Pest Dummy", cat:"utilidades", icon:"🎯", img:"Images/Craft/Pestdummy.webp",
     power:"none", desc:"Alvo de treino decorativo — referência ao boneco secreto encontrado nas Minas do Manufacturing West.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Sucata de Couro",q:1},{n:"Sucata Metálica",q:2},{n:"Fita Adesiva",q:2}],
     note:null },
-  { id:"util13", name:"Cama Improvisada", eng:"Makeshift Bed", cat:"utilidades", icon:"🛏️", img:"Images/Craft/CamaImprovisada.webp",
+  { id:"util13", name:"Cama Improvisada", eng:"Makeshift Bed", cat:"utilidades", icon:"🛏️", img:"Images/Craft/Makeshiftbed.webp",
     power:"none", desc:"A primeira cama fabricável do jogo — permite dormir e recuperar fadiga.",
     unlock:"Receita descoberta ao reunir os materiais abaixo.",
     recipe:[{n:"Sucata de Pano",q:6},{n:"Tábua de Madeira",q:4},{n:"Sofá Grande (Empacotado)",q:1}],
     note:null },
-  { id:"util14", name:"Cama de Carbono", eng:"Carbon Bed", cat:"utilidades", icon:"🛏️", img:"Images/Craft/CamaDeCarbono.webp",
+  { id:"util14", name:"Cama de Carbono", eng:"Carbon Bed", cat:"utilidades", icon:"🛏️", img:"Images/Craft/Carbonbed.webp",
     power:"none", desc:"Versão avançada da cama — recupera fadiga mais rápido que a Cama Improvisada.",
     unlock:"Receita descoberta ao reunir os materiais abaixo (upgrade de uma Cama Improvisada já fabricada).",
     recipe:[{n:"Placa de Carbono",q:4},{n:"Sucata de Kevlar",q:4},{n:"Cama Improvisada",q:1}],
@@ -6296,70 +6302,6 @@ function initTipsCardToggle(container) {
 }
 
 initTipsCardToggle(tipsGrid);
-
-// ── FAQ PANEL — perguntas rápidas de iniciante, formato pergunta/resposta.
-// Mesmo card expansível de Dicas/Skills (initTipsCardToggle), só que sem
-// caixa de imagem: a pergunta ocupa o lugar do título no botão de toggle.
-const faqData = [
-  {
-    q: 'Como faço água segura pra beber no começo do jogo?',
-    a: 'Nunca beba água contaminada (Tainted Water) direto — ela mata a sede, mas causa o debuff Sick, que drena a sede de volta rapidamente. O jeito mais simples no início é ferver: coloque a água contaminada numa Panela (Cooking Pot) sobre um fogão e espere ferver. A conversão é 4:1 (1000ml de água contaminada rendem 250ml de água limpa), então quanto mais panelas fervendo ao mesmo tempo, melhor. Mais pra frente, o Filtro de Água (Water Filter) resolve isso de forma passiva e numa proporção de 1:1, mas sua receita só é desbloqueada mais adiante na progressão.'
-  },
-  {
-    q: 'O que eu faço com os robôs de segurança logo no início?',
-    a: 'No Setor Escritório eles ficam inativos dentro da estação de recarga durante o dia e patrulham a área à noite — dá pra evitar boa parte do confronto simplesmente não vagando por perto deles depois que escurece. Eles só têm ataque corpo a corpo (nenhum ataque à distância) e não escalam superfícies, então terrenos elevados já ajudam bastante. Armadilhas como a Shock Trap (não precisa de energia externa, mas recarrega em 30s) ou a Tripwire Mine ajudam a debilitar ou matar um robô sem precisar trocar golpe com ele. Em alguns pontos específicos do Escritório também dá pra atraí-los até poças de água eletrificada e deixar a própria água terminar o serviço.'
-  },
-  {
-    q: 'O que são os Terminais de Check-In e por que preciso deles entre os setores?',
-    a: 'São os pontos de respawn do jogo — cada um fica marcado por um brilho verde característico e placas escritas "Check-In" nas paredes perto deles. Você só pode salvar em UM terminal por vez; ao morrer, o respawn nesse terminal aparece como opção ao lado da sua cama e do ponto inicial. Eles costumam ficar perto do começo ou do fim de cada setor, então vale sempre localizar e ativar o terminal mais recente assim que entrar numa área nova — assim uma morte não te manda de volta lá pro início do setor anterior.'
-  },
-  {
-    q: 'Os recursos dos mundos-portal (Anteversos) somem depois que eu colho tudo?',
-    a: 'Não — cada Anteverso reseta os próprios recursos "naturais" (materiais, itens soltos pelo mapa) num ciclo fixo, atualmente à meia-noite entre terça/quarta e sábado/domingo. Isso permite voltar lá várias vezes pra farmar o mesmo material. O reset NÃO afeta nada que você construiu ou largou lá dentro — por isso é seguro montar uma área de apoio (baú, bancada, cama) dentro de um mundo-portal sem medo de perder o que guardou nele.'
-  },
-  {
-    q: 'Vale a pena montar um "acampamento" antes de entrar em um mundo-portal?',
-    a: 'Sim, principalmente nos mundos que exigem equipamento específico — por exemplo, os Mycofields, onde o calor é tão forte que exige uma Fire Proximity Suit e idealmente uma máscara de laboratório. Deixar um baú ou um manequim de armadura perto do portal, já com esse equipamento trocado, evita ter que carregar o equipamento "normal" junto e faz a troca de gear ser rápida toda vez que for entrar ou sair.'
-  },
-  {
-    q: 'Existe algo que substitua a água contaminada sem precisar ferver?',
-    a: 'Sim — o Traço (Trait) Lead Belly permite beber água contaminada direto, sem o debuff Sick. É um dos traits mais caros do jogo (8 pontos), então normalmente não é a primeira escolha logo no início, mas pode valer a pena numa build que já sobrou pontos de trait, especialmente se a base for longe de uma fonte de água já purificada.'
-  },
-];
-
-const faqGrid = document.getElementById('faq-grid');
-const faqSearchEl = document.getElementById('faq-search');
-const faqEmptyEl = document.getElementById('faq-empty');
-
-// Filtra por termo de busca (pergunta + resposta) e redesenha os cards —
-// mesmo padrão de busca-com-refiltragem já usado em Deployables e Química
-// (renderChemGrid), reaproveitando a caixa de busca .deploy-search-box.
-function renderFaqGrid() {
-  if (!faqGrid) return;
-  const term = (faqSearchEl?.value || '').trim().toLowerCase();
-
-  const filtered = term
-    ? faqData.filter(item => (item.q + ' ' + item.a).toLowerCase().includes(term))
-    : faqData;
-
-  if (faqEmptyEl) faqEmptyEl.style.display = filtered.length ? 'none' : 'block';
-
-  faqGrid.innerHTML = filtered.map(item => `
-    <div class="faq-card">
-      <button class="tips-cat-toggle">
-        <span class="faq-q"><span class="faq-q-mark">❓</span><span class="faq-q-text">${item.q}</span></span>
-        <span class="tc-icon">+</span>
-      </button>
-      <div class="tips-cat-panel">
-        <div class="faq-answer">${item.a}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-renderFaqGrid();
-initTipsCardToggle(faqGrid);
-if (faqSearchEl) faqSearchEl.addEventListener('input', renderFaqGrid);
 
 const tipsSourcesContainer = document.getElementById('tips-sources-container');
 tipsSources.forEach(src => {
@@ -6941,6 +6883,39 @@ const gatepalMaps = [
     tiles: {
       url: 'Images/MUNDO/GATEPAL/{z}/{x}/{y}.webp',
       bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north] — atualizado (mapa melhorado, mais 1 nível de zoom)
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'office1', name: 'Office Sector — Nível 1', icon: '🏢', img: 'Images/MUNDO/Officesectorlevel1/Officesectorlevel1.webp',
+    desc: 'Mapa detalhado do primeiro nível do Office Sector — salas, corredores e pontos de interesse desse andar específico.',
+    tiles: {
+      url: 'Images/MUNDO/Officesectorlevel1/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'office2', name: 'Office Sector — Nível 2', icon: '🏢', img: 'Images/MUNDO/Officesectorlevel2/Officesectorlevel2.webp',
+    desc: 'Mapa detalhado do segundo nível do Office Sector — salas, corredores e pontos de interesse desse andar específico.',
+    tiles: {
+      url: 'Images/MUNDO/Officesectorlevel2/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'office3', name: 'Office Sector — Nível 3', icon: '🏢', img: 'Images/MUNDO/Officesectorlevel3/Officesectorlevel3.webp',
+    desc: 'Mapa detalhado do terceiro nível do Office Sector — salas, corredores e pontos de interesse desse andar específico.',
+    tiles: {
+      url: 'Images/MUNDO/Officesectorlevel3/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
       minzoom: 10,
       maxzoom: 14,
       tileSize: 256,
@@ -7834,6 +7809,97 @@ document.addEventListener('keydown', (e) => {
 gatepalSidebarOpenBtn.addEventListener('click', () => gatepalSidebarEl.classList.add('open'));
 gatepalSidebarCloseBtn.addEventListener('click', () => gatepalSidebarEl.classList.remove('open'));
 
+
+// ── FAQ INICIANTES (Dicas → Perguntas e Respostas) ──
+// Pra adicionar uma pergunta nova: só acrescente um objeto { q: "...", a: "..." }
+// no array abaixo. Não precisa mexer em mais nada — a busca, o limite visual
+// e o "mostrar mais" já lidam com qualquer quantidade de perguntas.
+const faqData = [
+  { q: "Como eu faço água saudável (limpa) pra beber?",
+    a: "No começo, beba direto das pias e Water Coolers (Bebedouros) espalhados pela instalação — eles já dão Água Limpa e reenchem sozinhos com o tempo (bem devagar). Dá pra beber Água Contaminada também (mata a sede), mas ela te deixa com o debuff Enjoado, a menos que você tenha o traço Estômago de Chumbo. A solução definitiva vem mais pra frente: ao chegar nos Laboratórios Cascata e conseguir Carbono Refinado, você crafta o Filtro de Água — ele transforma qualquer quantidade de Água Contaminada em Água Limpa instantaneamente, 1:1. A partir daí, água deixa de ser problema pelo resto do jogo." },
+  { q: "O que eu faço com os Robôs de Segurança logo no início?",
+    a: "No começo do jogo, o ideal é simplesmente EVITAR briga com eles. Eles só patrulham à noite, são imunes a veneno e seus disparos machucam bastante com o equipamento inicial. Se puder, mantenha distância ou use o Night Pass Trinket (deixa você invisível pra eles). Quando estiver mais preparado, arma com dano PEM/Haywire é o ponto fraco deles — ou use armadilhas ambientais (tipo o Choppinator) pra abater com segurança, sem trocar tiro/porrada direto." },
+  { q: "Que segurança eu tenho ao entrar nos mundos-portais (Anteverses)?",
+    a: "Cada portal sempre te leva pro mesmo ponto de entrada, e a maioria já tem um portal de volta logo ali perto — não existe 'ponto de save' no meio do mundo-portal. Desde a atualização 0.8.2, dá pra construir estruturas permanentes lá dentro (mesas, camas, defesas) sem elas serem resetadas, então é seguro montar uma base avançada num mundo-portal que você visita bastante. Só os recursos NATIVOS (loot, plantas, inimigos) resetam automaticamente duas vezes por semana (meia-noite de terça pra quarta e de sábado pro domingo) — e só se ninguém estiver dentro na hora do reset. Na prática: leve comida, água e cura antes de entrar, porque não tem como sair de emergência além do portal de volta." },
+  { q: "O que acontece quando eu morro? Vou perder tudo?",
+    a: "Não perde tudo, mas dói um pouco. Os itens da sua mochila (inventário principal) caem soltos dentro do seu corpo, mas o que está na hotbar (barra de atalhos) e o que você tem equipado ficam com você — só perdem 10% de durabilidade. Um ícone na tela mostra onde seu corpo caiu, mesmo atrás de paredes, e é só segurar o botão de interagir nele pra recuperar tudo. Se o corpo cair num lugar impossível de alcançar, saia do jogo e entre de novo (ou reinicie o servidor, se for multiplayer) — depois de um tempo ele é teletransportado automaticamente pro saguão do Setor Escritório, perto do Warren." },
+  { q: "Preciso mesmo dormir? Como funciona a Fadiga?",
+    a: "Sim — ignorar a Fadiga por muito tempo enfraquece o personagem e, no limite, ele desmaia sozinho. Dormir numa cama de verdade (ou Saco de Dormir) enche a barra rápido e ainda define seu ponto de respawn; sentar num sofá ou cadeira recupera bem mais devagar e nunca enche 100%, mas já evita o desmaio numa emergência. Um Café numa Máquina de Café recupera 30 de Fadiga na hora, ótimo como solução rápida. Dica pro início: o Saco de Dormir é a melhor opção — não precisa nem construir, é leve, e por não ter durabilidade nunca quebra." },
+  { q: "Quais Traits eu devo escolher no início?",
+    a: "Traits pesam mais na experiência do que o Job escolhido. Pros primeiros personagens, vale priorizar Fanny Pack (mais espaço de inventário), Wrinkly Brain Meat (qualidade de vida) e Self Defense — e evitar o traço negativo Fear of Violence, que atrapalha bastante no combate. Isso não é regra fixa: a aba Jobs & Traits deste guia tem a lista completa com todos os detalhes, positivos e negativos." },
+  { q: "Qual o melhor lugar pra montar minha primeira base?",
+    a: "O consenso da comunidade é a Security Office (Sala de Segurança) do Nível 2 do Setor Escritório, perto da Cafeteria: bastante espaço, várias tomadas de energia, banheiro ao lado, portas blindadas que travam contra ataques noturnos, e até uma máquina de café — dificilmente dá errado. Uma opção transitória boa também é a sala de observação do Nível 3, perto da cozinha do Break Room com vista pro portal de Flathill — o robô de segurança que patrulha ali não entra na sala. De qualquer forma, o jogo não pune trocar de base depois; é bem comum ter mais de uma pelo caminho." },
+  { q: "O jogo é muito difícil sozinho? Dá pra ajustar isso?",
+    a: "É mais puxado sozinho do que em grupo, já que não tem com quem dividir tarefas nem cobrir vários pontos ao mesmo tempo — mas dá pra ajustar bastante nas Configurações do Mundo, tanto criando um mundo novo quanto num já em andamento. Dá pra baixar o dano recebido de inimigos, aumentar a velocidade de ganho de XP, aumentar o limite de pilha de itens no inventário e mudar a penalidade de morte. Jogando sozinho, baixar o dano dos inimigos e subir XP/pilha de item deixa a experiência bem mais tranquila sem precisar de mods." },
+  { q: "Abiotic Factor tem multiplayer?",
+    a: "Tem sim — cooperativo online para até 6 jogadores, via Steam. Dá pra hospedar você mesmo direto pelos amigos da Steam, ou rodar um servidor dedicado separado (útil se quiser deixar o mundo rodando salvo mesmo com todo mundo offline). O progresso é compartilhado entre quem joga no mesmo mundo — receitas desbloqueadas, portais abertos e o avanço da história valem pra todo o grupo." },
+  { q: "A tigela de sopa fica com a sopa quente sempre ou precisa de geladeira pra isso?",
+    a: "Não precisa de geladeira — sopa é a única comida do jogo que NÃO estraga e não esquenta nem esfria, seja dentro da panela ou já numa tigela. Diferente de carne e vegetais (que degradam com o tempo, mostrando aquela barra amarela até virar comida podre), a sopa fica boa pra sempre onde estiver, mesmo fora da geladeira e sem fogo aceso embaixo. Isso faz dela a reserva alimentar mais confiável do jogo — o único porém é que cada tigela ocupa 1 slot de inventário e guarda no máximo 2 porções, então não dá pra empilhar muito." },
+  { q: "Como explorar de noite com segurança?",
+    a: "Leve sempre uma Lanterna Improvisada carregada — sem ela você não enxerga quase nada nos setores sem energia. O maior perigo são os Robôs de Segurança, que só saem das estações de carregamento à noite e passam a patrulhar o setor; eles têm só ataque corpo a corpo, então manter distância e usar algo de longo alcance já resolve boa parte do problema. Pra evitar contato de vez, o Night Pass Trinket (tem unidades espalhadas pela Instalação, incluindo uma no saguão do Nível 1) faz Robôs de Segurança, de Defesa e de Contenção te ignorarem completamente. Outra dica que ajuda mais do que parece: plante iluminação (luminárias, abajures) em corredores escuros, escadas e perto do tram — cair no escuro sem querer mata tanto quanto os próprios robôs." },
+  { q: "Como eu conserto uma arma quebrada?",
+    a: "Depende do tipo de arma. Pras que você mesmo craftou na Bancada, abra o inventário, clique com o botão direito no item e escolha a opção de reparo — geralmente pede 1 unidade do material principal da receita dela (por exemplo, Fita Adesiva) direto no seu inventário. Já armas de fábrica encontradas prontas (tipo a pistola de segurança) exigem a Estação de Reparo e Descarte (Repair & Salvage Station) e um Kit de Reparo de Arma específico pra ela. Importante: uma arma com durabilidade zerada ('quebrada') ainda pode ser usada, só que causa bem menos dano até ser reparada — ela não vira sucata sozinha nem some do inventário." },
+  { q: "Onde farmar itens ou não tem isso de farmar?",
+    a: "Na Instalação principal (fora dos portais), a maior parte do loot NÃO reaparece por padrão — o que você pega de uma sala geralmente é definitivo, então o jogo empurra você a sempre explorar mais longe em vez de voltar no mesmo lugar. Duas exceções valem ouro: inimigos sempre reaparecem, então bater repetidamente em Robôs de Segurança é uma fonte praticamente infinita de sucata; e os Mundos-Portais resetam periodicamente (loot, plantas e inimigos voltam do zero), o que os transforma nos únicos pontos de farm renovável de verdade no jogo. Far Garden (cedo, direto no Setor Escritório) e Flathill (bom pra Power Cells) são os dois loops de farm mais recomendados no início." },
+];
+
+let faqShowAll = false;
+const faqOpen = new Set();
+const FAQ_VISIBLE_LIMIT = 5;
+
+function faqNormalize(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function renderFaq() {
+  const searchEl = document.getElementById('faq-search');
+  const rawQuery = searchEl ? searchEl.value.trim() : '';
+  const nq = faqNormalize(rawQuery);
+
+  const filtered = faqData
+    .map((item, idx) => ({ ...item, idx }))
+    .filter(item => !nq || faqNormalize(item.q).includes(nq) || faqNormalize(item.a).includes(nq));
+
+  // O limite visual só entra em modo "navegando" (sem busca ativa) — se o
+  // usuário está buscando, mostra todos os resultados que baterem, senão
+  // não faria sentido "limitar" uma busca.
+  const capped = (!nq && !faqShowAll) ? filtered.slice(0, FAQ_VISIBLE_LIMIT) : filtered;
+
+  const listEl = document.getElementById('faq-list');
+  listEl.innerHTML = capped.length
+    ? capped.map(item => `
+        <div class="faq-item ${faqOpen.has(item.idx) ? 'open' : ''}">
+          <button class="faq-q-btn" onclick="toggleFaq(${item.idx})">
+            <span class="faq-q-icon">❓</span>
+            <span class="faq-q-text">${item.q}</span>
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a-body">${item.a}</div>
+        </div>
+      `).join('')
+    : `<div style="font-size:var(--fs-sm);color:var(--textMuted);padding:10px 4px">Nenhuma pergunta encontrada pra "${rawQuery}".</div>`;
+
+  const moreBtn = document.getElementById('faq-more-btn');
+  const hiddenCount = filtered.length - FAQ_VISIBLE_LIMIT;
+  if (!nq && !faqShowAll && hiddenCount > 0) {
+    moreBtn.style.display = 'block';
+    moreBtn.textContent = `+ Mostrar mais ${hiddenCount} pergunta${hiddenCount > 1 ? 's' : ''}`;
+  } else {
+    moreBtn.style.display = 'none';
+  }
+}
+
+function toggleFaq(idx) {
+  if (faqOpen.has(idx)) faqOpen.delete(idx); else faqOpen.add(idx);
+  renderFaq();
+}
+
+function faqShowMore() {
+  faqShowAll = true;
+  renderFaq();
+}
+
+renderFaq();
 
 const skillsGrid = document.getElementById('skills-grid');
 skillsData.forEach(s => {
