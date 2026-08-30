@@ -592,11 +592,26 @@
   .deploy-scanline {
     position: absolute; width: 100%; height: 2px; background: var(--green);
     opacity: 0.6; box-shadow: 0 0 8px var(--green); animation: deployScan 2.5s linear infinite;
+    z-index: 5; /* sempre por cima da imagem/ícone, senão a varredura fica escondida atrás */
   }
   @keyframes deployScan { 0% { top: 0%; } 100% { top: 100%; } }
   .deploy-hologram-img { width: 76px; height: 76px; object-fit: contain; filter: drop-shadow(0 0 10px var(--green)); position: relative; z-index: 2; }
   .deploy-hologram-fallback { font-size: 52px; position: relative; z-index: 2; filter: drop-shadow(0 0 10px var(--green)); }
   .deploy-hologram-fallback svg, .deploy-hologram-fallback img { width: 1em; height: 1em; display: block; }
+
+  /* Modo "foto" do holograma — pro pin de Setor/Portal, que mostra uma
+     foto real do local (não um ícone pequeno e transparente de item).
+     A foto cobre o retângulo inteiro, e a linha de scanner varre por
+     cima dela — efeito de câmera de segurança, não ícone flutuando numa
+     moldura vazia. */
+  .deploy-hologram.is-photo .deploy-hologram-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; filter: none; z-index: 1;
+  }
+  .deploy-hologram.is-photo::after {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,20,10,0.1) 0%, rgba(0,10,6,0.55) 100%);
+  }
   .deploy-modal-section-title { font-size: var(--fs-xs); color: var(--green); letter-spacing: 1.5px; margin-bottom: 6px; font-weight: bold; }
   .deploy-modal-location { background: var(--cyanDim); border: 1px solid var(--cyan); color: var(--text); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; }
   .deploy-modal-note { background: var(--amberDim); border-left: 2px solid var(--amber); color: var(--amberLt); padding: 8px 10px; font-size: var(--fs-xs); line-height: 1.6; margin-bottom: 12px; font-style: italic; }
@@ -951,32 +966,92 @@
   }
   .gatepal-fullscreen-btn:hover { background: var(--greenDim); }
 
-  .gatepal-mapselect-label { font-size: var(--fs-2xs); letter-spacing: 1.5px; color: var(--greenLt); font-weight: bold; margin: 4px 16px 6px; }
-  .gatepal-mapselect-tabs { padding: 0 16px; }
-  .gatepal-mapselect-tabs .deploy-tab-btn { font-size: var(--fs-sm); padding: 9px 16px; font-weight: 600; }
-
-  /* ── Info do mapa atual — o que ESTE mapa específico mostra (hoje só o
-     Mapa Geral existe, mas fica pronto pra quando cada setor ganhar o
-     próprio mapa detalhado: a descrição troca sozinha por mapa). ── */
-  .gatepal-map-info {
-    margin: 10px 16px 0;
-    background: var(--bgCard);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--cyan);
-    padding: 10px 12px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
+  /* ── Área do mapa: TUDO flutua sobre o canvas — seletor de mapa,
+     ícones de categoria e gaveta de filtros/ferramentas — em vez de
+     empilhado como blocos separados acima/abaixo. Esse é o padrão que
+     sites de mapa interativo de verdade usam (ex: interactivemap.app):
+     a moldura "gruda" no mapa em vez de sobrar espaço desconectado. ──
+     Motor real por baixo continua MapLibre GL JS (canvas/WebGL). */
+  .gatepal-maparea { position: relative; margin: 0 16px 18px; }
+  .gatepal-mapengine {
+    width: 100%; height: 68vh; height: 68dvh;
+    background: #000; border: 1px solid var(--border);
   }
-  .gatepal-map-info-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
-  .gatepal-map-info-title { font-size: var(--fs-sm); color: var(--cyan); font-weight: bold; letter-spacing: 0.5px; margin-bottom: 3px; }
-  .gatepal-map-info-desc { font-size: var(--fs-xs); color: var(--textDim); line-height: 1.6; }
+  @media (min-width: 769px) { .gatepal-mapengine { height: 74vh; height: 74dvh; } }
+  .gatepal-img-fallback {
+    display: none; position: absolute; inset: 0; width: 100%; height: 100%; background: var(--bgCard);
+    color: var(--textMuted); font-size: 40px; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px; text-align: center; z-index: 3;
+  }
+  .gatepal-img-fallback span { font-size: var(--fs-xs); letter-spacing: 0.5px; }
 
-  .gatepal-body { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
-  .gatepal-sidebar { display: flex; flex-direction: column; gap: 10px; }
-  .gatepal-sidebar-close, .gatepal-sidebar-open { display: none; }
+  /* Seletor de mapa — botão flutuante que expande numa lista (não mais
+     uma faixa de abas full-width). */
+  .gatepal-map-toolbar {
+    position: absolute; top: 10px; left: 10px; right: 10px; z-index: 402;
+    display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px;
+    pointer-events: none; /* deixa cliques passarem pro mapa nos vãos vazios da barra */
+  }
+  .gatepal-map-toolbar > * { pointer-events: auto; }
+  .gatepal-mapselect { position: relative; max-width: 100%; }
+  .gatepal-mapselect-btn {
+    display: flex; align-items: center; gap: 7px; max-width: 100%;
+    font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 600;
+    padding: 8px 12px; background: rgba(4,12,8,0.92); border: 1px solid var(--green); color: var(--greenLt);
+    cursor: pointer; white-space: nowrap; transition: background 0.15s;
+  }
+  .gatepal-mapselect-btn:hover { background: var(--greenDim); }
+  .gatepal-mapselect-name { overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
+  .gatepal-mapselect-arrow { flex-shrink: 0; font-size: 10px; transition: transform 0.15s; }
+  .gatepal-mapselect.open .gatepal-mapselect-arrow { transform: rotate(180deg); }
+  .gatepal-mapselect-list {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0; width: max-content; min-width: 240px; max-width: 88vw;
+    background: rgba(4,10,7,0.98); border: 1px solid var(--green); max-height: 55vh; overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .gatepal-mapselect.open .gatepal-mapselect-list { display: block; }
+  .gatepal-mapselect-item { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  .gatepal-mapselect-item:last-child { border-bottom: none; }
+  .gatepal-mapselect-item:hover { background: rgba(0,224,96,0.08); }
+  .gatepal-mapselect-item.active { background: rgba(0,224,96,0.14); border-left: 3px solid var(--green); }
+  .gatepal-mapselect-item-icon { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
+  .gatepal-mapselect-item-name { font-size: var(--fs-sm); color: var(--text); font-weight: 600; margin-bottom: 2px; }
+  .gatepal-mapselect-item-desc { font-size: var(--fs-2xs); color: var(--textMuted); line-height: 1.5; }
 
-  .gatepal-progress-pin {
+  /* Filtros por categoria — ícones clicáveis, cada um liga/desliga a
+     categoria na hora (sem precisar abrir lista nenhuma). */
+  .gatepal-cat-icons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 100%; }
+  .gatepal-cat-icon-btn {
+    position: relative; width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(4,12,8,0.92); border: 1.5px solid var(--border); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .gatepal-cat-icon-btn img { width: 16px; height: 16px; }
+  .gatepal-cat-icon-btn.is-active { box-shadow: 0 0 0 1px currentColor, 0 0 10px currentColor; }
+  .gatepal-cat-icon-btn.is-hidden { opacity: 0.32; filter: grayscale(85%); }
+  .gatepal-cat-icon-count {
+    position: absolute; bottom: -4px; right: -4px; min-width: 15px; height: 15px; border-radius: 8px;
+    background: var(--bgSection); border: 1px solid var(--border); font-size: 8px; color: var(--textMuted);
+    display: flex; align-items: center; justify-content: center; padding: 0 3px; font-family: var(--font-mono);
+  }
+
+  /* Gaveta inferior — colapsada por padrão (só a abinha central), expande
+     por cima do mapa quando tocada. Busca + progresso + ações rápidas +
+     pin pessoal + export + calibração ficam todos aqui dentro. */
+  .gatepal-drawer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 403; display: flex; flex-direction: column; align-items: center; }
+  .gatepal-drawer-handle {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 1px; font-weight: bold;
+    padding: 8px 16px; background: rgba(4,12,8,0.96); border: 1px solid var(--green); border-bottom: none;
+    color: var(--greenLt); cursor: pointer; white-space: nowrap;
+  }
+  .gatepal-drawer-badge { background: var(--green); color: #04120a; border-radius: 10px; padding: 1px 7px; font-size: 9px; }
+  .gatepal-drawer-body {
+    display: none; flex-direction: column; gap: 10px; width: 100%; max-height: 52vh; overflow-y: auto;
+    background: rgba(4,10,7,0.97); border-top: 1px solid var(--green); padding: 12px;
+  }
+  .gatepal-drawer.open .gatepal-drawer-body { display: flex; }
     background: var(--bgCard); border: 1px solid var(--border); border-left: 3px solid var(--green);
     padding: 10px 12px;
   }
@@ -993,25 +1068,6 @@
   }
   .gatepal-quick-btn:hover { color: var(--text); border-color: var(--green); }
   .gatepal-quick-btn.active { background: var(--amberDim); border-color: var(--amber); color: var(--amberLt); }
-
-  /* ── Sidebar de categorias — cada linha liga/desliga por conta
-     própria (multi-toggle, não aba exclusiva), com contagem ao lado. ── */
-  .gatepal-cat-groups { display: flex; flex-direction: column; max-height: 320px; overflow-y: auto; border: 1px solid var(--border); }
-  .gatepal-cat-row {
-    display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer; user-select: none;
-    border-bottom: 1px solid var(--border); background: var(--bgCard); transition: background 0.15s;
-  }
-  .gatepal-cat-row:last-child { border-bottom: none; }
-  .gatepal-cat-row:hover { background: rgba(255,255,255,0.03); }
-  .gatepal-cat-row.is-hidden { opacity: 0.4; }
-  .gatepal-cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px currentColor; }
-  .gatepal-cat-name { flex: 1; font-size: var(--fs-sm); color: var(--text); }
-  .gatepal-cat-name svg, .gatepal-cat-name img { width: 1em; height: 1em; display: inline-block; vertical-align: -2px; }
-  .gatepal-cat-count {
-    font-size: var(--fs-2xs); color: var(--textMuted); background: rgba(255,255,255,0.04);
-    border-radius: 10px; padding: 1px 7px; min-width: 18px; text-align: center;
-  }
-  .gatepal-cat-eye { font-size: var(--fs-sm); flex-shrink: 0; width: 20px; text-align: center; }
 
   .gatepal-addpin-btn, .gatepal-export-btn {
     font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.5px; padding: 8px 10px;
@@ -1041,27 +1097,6 @@
     font-size: var(--fs-xs); line-height: 1.6; padding: 8px 10px;
   }
   .gatepal-notice code { background: rgba(0,0,0,0.3); padding: 1px 5px; font-family: var(--font-mono); }
-
-  /* ── Área do mapa real (MapLibre GL — renderiza em canvas/WebGL,
-     aceleração de hardware é o comportamento padrão da biblioteca, não
-     algo que se liga/desliga por CSS) ── */
-  .gatepal-maparea { position: relative; }
-  .gatepal-mapengine {
-    width: 100%; height: 62vh; height: 62dvh;
-    background: #000; border: 1px solid var(--border);
-  }
-  .gatepal-img-fallback {
-    display: none; position: absolute; inset: 0; width: 100%; height: 100%; background: var(--bgCard);
-    color: var(--textMuted); font-size: 40px; flex-direction: column; align-items: center;
-    justify-content: center; gap: 8px; text-align: center; z-index: 3;
-  }
-  .gatepal-img-fallback span { font-size: var(--fs-xs); letter-spacing: 0.5px; }
-
-  .gatepal-sidebar-open {
-    position: absolute; top: 10px; left: 10px; z-index: 401;
-    font-family: var(--font-mono); font-size: var(--fs-2xs); padding: 7px 12px;
-    background: rgba(4,12,8,0.9); border: 1px solid var(--green); color: var(--greenLt); cursor: pointer;
-  }
 
   /* Zoom flutuante — MapLibre GL já tem o próprio motor de zoom, então
      estes botões viram um atalho estilizado que chama map.zoomIn()/Out(),
@@ -1174,6 +1209,10 @@
     #gatepalPoiPopover .deploy-hologram-img { width: 76px; height: 76px; }
     #gatepalPoiPopover .deploy-hologram-fallback { font-size: 46px; }
   }
+  #gatepalPoiPopover .deploy-hologram.is-photo .deploy-hologram-img,
+  #gatepalPoiPopover .gatepal-popover-overlay.is-floating .deploy-hologram.is-photo .deploy-hologram-img {
+    width: 100% !important; height: 100% !important;
+  }
   /* Ícone dentro do TÍTULO do popup (ex: categoria Portais usa <img>) — sem
      isso ele herda o width/height gravado no próprio arquivo .svg (ex: 512px)
      e aparece gigantesco. Trava no tamanho da fonte do título. */
@@ -1218,15 +1257,18 @@
      por isso não há nenhum tema de controle nativo a sobrescrever aqui,
      diferente de quando isso era Leaflet. ── */
 
-  /* ── Modo Tela Cheia ── */
+  /* ── Modo Tela Cheia — bem mais simples agora: sem sidebar off-canvas
+     pra alternar por breakpoint, o .gatepal-maparea já é a única coisa
+     que precisa esticar (os controles são todos overlays sobre ele,
+     então funcionam idênticos em tela cheia ou não). Isso também
+     elimina o bug de tela cheia no celular que vinha dessa troca de
+     layout column/row + sidebar deslizante por transform. ── */
   .gatepal-frame.is-fullscreen {
     position: fixed; inset: 0; z-index: 900; background: var(--bg, #050a06);
     display: flex; flex-direction: column; overflow: hidden; border: none;
   }
   .gatepal-frame.is-fullscreen .gatepal-frame-corner { display: none; }
-  .gatepal-frame.is-fullscreen .gatepal-body { flex: 1; min-height: 0; flex-direction: row; padding: 12px 12px 12px; }
-  .gatepal-frame.is-fullscreen .gatepal-sidebar { width: 300px; flex-shrink: 0; overflow-y: auto; padding-right: 4px; }
-  .gatepal-frame.is-fullscreen .gatepal-maparea { flex: 1; min-width: 0; }
+  .gatepal-frame.is-fullscreen .gatepal-maparea { flex: 1; min-height: 0; margin: 12px; }
   .gatepal-frame.is-fullscreen .gatepal-mapengine { height: 100%; }
   body.gatepal-fs-lock { position: fixed; left: 0; right: 0; overflow: hidden; }
 
@@ -1243,19 +1285,10 @@
     .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 9px; }
     .gatepal-pin.is-personal { width: 15px; height: 18px; }
     .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 7px; }
-    .gatepal-mapengine { height: 48vh; height: 48dvh; }
+    .gatepal-mapengine { height: 58vh; height: 58dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
-  }
-  @media (max-width: 768px) {
-    .gatepal-frame.is-fullscreen .gatepal-body { flex-direction: column; }
-    .gatepal-frame.is-fullscreen .gatepal-sidebar {
-      position: fixed; inset: 0; width: auto; z-index: 20; background: var(--bg, #050a06);
-      padding: 16px; transform: translateX(-100%); transition: transform 0.25s ease; overflow-y: auto;
-    }
-    .gatepal-frame.is-fullscreen .gatepal-sidebar.open { transform: translateX(0); }
-    .gatepal-frame.is-fullscreen .gatepal-sidebar-close { display: block; position: absolute; top: 10px; right: 10px; background: none; border: 1px solid var(--border); color: var(--text); font-size: 18px; width: 32px; height: 32px; cursor: pointer; }
-    .gatepal-frame.is-fullscreen .gatepal-sidebar-open { display: block; }
-    .gatepal-frame.is-fullscreen .gatepal-maparea { flex: 1; min-height: 0; }
+    .gatepal-mapselect-name { max-width: 34vw; }
+    .gatepal-cat-icon-btn { width: 30px; height: 30px; font-size: 13px; }
   }
 
 
@@ -3188,64 +3221,70 @@
         <button class="gatepal-fullscreen-btn" id="gatepalFullscreenBtn" type="button">⛶ Tela Cheia</button>
       </div>
 
-      <div class="gatepal-mapselect-label">🗺️ ESCOLHER MAPA</div>
-      <div class="deploy-tabs-wrap"><div class="deploy-tabs gatepal-mapselect-tabs" id="gatepalMapTabs"></div></div>
+      <div class="gatepal-maparea" id="gatepalMapArea">
+        <div class="gatepal-mapengine" id="gatepalMapEl"></div>
+        <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
 
-      <div class="gatepal-map-info" id="gatepalMapInfo">
-        <span class="gatepal-map-info-icon" id="gatepalMapInfoIcon">🗺️</span>
-        <div>
-          <div class="gatepal-map-info-title" id="gatepalMapInfoTitle"></div>
-          <div class="gatepal-map-info-desc" id="gatepalMapInfoDesc"></div>
-        </div>
-      </div>
-
-      <div class="gatepal-body" id="gatepalBody">
-        <div class="gatepal-sidebar" id="gatepalSidebar">
-          <button class="gatepal-sidebar-close" id="gatepalSidebarClose" type="button">✕</button>
-
-          <div class="gatepal-progress-pin">
-            <div class="gatepal-progress-count" id="gatepalProgressCount">0 / 0</div>
-            <div class="gatepal-progress-label">PROGRESSO DE DESCOBERTA</div>
-            <div class="gatepal-progress-track"><div class="gatepal-progress-fill" id="gatepalProgressFill" style="width:0%"></div></div>
+        <!-- Barra superior flutuante: seletor de mapa + ícones de categoria
+             num único container flex, pra nunca se sobreporem — em telas
+             estreitas o wrap empurra os ícones pra uma segunda linha em
+             vez de ficarem por cima do seletor. -->
+        <div class="gatepal-map-toolbar">
+          <div class="gatepal-mapselect" id="gatepalMapSelect">
+            <button class="gatepal-mapselect-btn" id="gatepalMapSelectBtn" type="button">
+              <span id="gatepalMapSelectIcon">🗺️</span>
+              <span class="gatepal-mapselect-name" id="gatepalMapSelectName">Mapa Geral</span>
+              <span class="gatepal-mapselect-arrow">▾</span>
+            </button>
+            <div class="gatepal-mapselect-list" id="gatepalMapSelectList"></div>
           </div>
 
-          <div class="deploy-search-box">
-            <span class="deploy-search-icon">🔍</span>
-            <input type="text" id="gatepalSearch" class="deploy-search-input" placeholder="Buscar pin por nome...">
-          </div>
-
-          <div class="gatepal-quickrow">
-            <button class="gatepal-quick-btn" id="gatepalHideBtn" type="button">👁 Ocultar Todos</button>
-            <button class="gatepal-quick-btn" id="gatepalPendingBtn" type="button">⬜ Só Não Encontrados</button>
-          </div>
-
-          <div class="gatepal-cat-groups" id="gatepalCatGroups"></div>
-
-          <button class="gatepal-addpin-btn" id="gatepalAddPinBtn" type="button">📌 Adicionar Pin Pessoal</button>
-          <div class="gatepal-addpin-notice" id="gatepalAddPinNotice">📌 Modo pin pessoal ativo — toque em qualquer ponto do mapa (ou Shift+clique no PC) pra abrir o formulário de novo marcador. Toque no botão de novo pra sair do modo.</div>
-          <button class="gatepal-export-btn" id="gatepalExportBtn" type="button">💾 Exportar Pins (JSON)</button>
-
-          <div class="gatepal-toolbar">
-            <button class="gatepal-calibrate-btn" id="gatepalCalibrateBtn" type="button">🎯 Modo Calibração</button>
-          </div>
-          <div class="gatepal-notice" id="gatepalNotice"></div>
+          <!-- Filtros de categoria — ícones clicáveis, liga/desliga na hora -->
+          <div class="gatepal-cat-icons" id="gatepalCatIcons"></div>
         </div>
 
-        <div class="gatepal-maparea">
-          <button class="gatepal-sidebar-open" id="gatepalSidebarOpen" type="button">☰ Filtros</button>
-
-          <div class="gatepal-mapengine" id="gatepalMapEl"></div>
-          <div class="gatepal-img-fallback" id="gatepalImgFallback">🗺️<span>Images/MUNDO/GATEPAL.webp não encontrada ainda</span></div>
-
-          <div class="gatepal-zoom-controls">
-            <button id="gpZoomIn" title="Aumentar zoom" type="button">＋</button>
-            <span id="gpZoomLevel">100%</span>
-            <button id="gpZoomOut" title="Diminuir zoom" type="button">－</button>
-            <button id="gpZoomReset" title="Redefinir zoom" type="button">↺</button>
-          </div>
-
-          <div class="gatepal-coord-readout" id="gatepalCoordReadout"></div>
+        <div class="gatepal-zoom-controls">
+          <button id="gpZoomIn" title="Aumentar zoom" type="button">＋</button>
+          <span id="gpZoomLevel">100%</span>
+          <button id="gpZoomOut" title="Diminuir zoom" type="button">－</button>
+          <button id="gpZoomReset" title="Redefinir zoom" type="button">↺</button>
         </div>
+
+        <!-- Gaveta inferior — colapsada por padrão, expande sobre o mapa -->
+        <div class="gatepal-drawer" id="gatepalDrawer">
+          <button class="gatepal-drawer-handle" id="gatepalDrawerHandle" type="button">
+            <span id="gatepalDrawerHandleText">▲ FILTROS E FERRAMENTAS</span>
+            <span class="gatepal-drawer-badge" id="gatepalDrawerBadge">0/0</span>
+          </button>
+          <div class="gatepal-drawer-body" id="gatepalDrawerBody">
+            <div class="gatepal-progress-pin">
+              <div class="gatepal-progress-count" id="gatepalProgressCount">0 / 0</div>
+              <div class="gatepal-progress-label">PROGRESSO DE DESCOBERTA</div>
+              <div class="gatepal-progress-track"><div class="gatepal-progress-fill" id="gatepalProgressFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="deploy-search-box" style="margin-bottom:0">
+              <span class="deploy-search-icon">🔍</span>
+              <input type="text" id="gatepalSearch" class="deploy-search-input" placeholder="Buscar pin por nome...">
+            </div>
+
+            <div class="gatepal-quickrow">
+              <button class="gatepal-quick-btn" id="gatepalHideBtn" type="button">👁 Ocultar Todos</button>
+              <button class="gatepal-quick-btn" id="gatepalPendingBtn" type="button">⬜ Só Não Encontrados</button>
+            </div>
+
+            <button class="gatepal-addpin-btn" id="gatepalAddPinBtn" type="button">📌 Adicionar Pin Pessoal</button>
+            <div class="gatepal-addpin-notice" id="gatepalAddPinNotice">📌 Modo pin pessoal ativo — toque em qualquer ponto do mapa (ou Shift+clique no PC) pra abrir o formulário de novo marcador. Toque no botão de novo pra sair do modo.</div>
+            <button class="gatepal-export-btn" id="gatepalExportBtn" type="button">💾 Exportar Pins (JSON)</button>
+
+            <div class="gatepal-toolbar">
+              <button class="gatepal-calibrate-btn" id="gatepalCalibrateBtn" type="button">🎯 Modo Calibração</button>
+            </div>
+            <div class="gatepal-notice" id="gatepalNotice"></div>
+          </div>
+        </div>
+
+        <div class="gatepal-coord-readout" id="gatepalCoordReadout"></div>
       </div>
     </div>
 
@@ -6947,36 +6986,36 @@ const gatepalCategories = {
 // mesmo N usado em gatepalSectorPoints/gatepalPortalPoints, na mesma ordem
 // de mapsData/portaisData). Campos aceitos: name, img, desc.
 const gatepalPoiContent = {
-  "setor-0": { name: "TUTORIAL / PRÉ-FACILITY", img: "", desc: "Área de introdução abaixo da Facility principal. Contém os primeiros crafts e o primeiro combate. Privada-Portal localizado no Data Farm do Escritório — porta de acesso ao Some Distant Shore." },
-  "setor-1": { name: "SETOR ESCRITÓRIO", img: "", desc: "Primeiro setor completo. Contém: Silos (1, 2, 3), Far Garden (Anteverse 2-A), acesso a Flathill. Hub central inicial com múltiplos andares e salas de escritório conectadas." },
-  "setor-2": { name: "MANUFACTURING WEST", img: "", desc: "Complexo industrial. Contém: Upper Shipping (uniforme!), Minas com torre e portal secreto no topo (Dummy!), Train World. Setor com mais troféus perdíveis — atenção total aqui." },
-  "setor-3": { name: "CASCADE LABORATORIES", img: "", desc: "Laboratório avançado com múltiplas sub-áreas. Contém: Mycofields (Capacete de Cogumelo!), Night Realm portal, diversas caixas especiais espalhadas. Área mais vertical do jogo." },
-  "setor-4": { name: "SETOR SEGURANÇA", img: "", desc: "Setor de controle com múltiplos postos de segurança e câmeras. Contém o portal de acesso ao RISE (orbe azul grande atrás do elevador gigante, perto da entrada). Oportunidade de grind de kills da Ordem." },
-  "setor-5": { name: "HIDROPLANTA", img: "", desc: "Complexo aquático com seção Robótica, 4 reatores e elevador subaquático. Contém: Kylie Muir (Chip Neural!), uniforme no elevador subaquático. Área maior com rotas verticais e horizontais." },
-  "setor-6": { name: "REATORES", img: "", desc: "Zona de alta periculosidade com ambientes radioativos. Boss: Jotun (Troféu: Sjaund). Acesso a Mundos Portais avançados a partir daqui." },
-  "setor-7": { name: "MUNDOS PORTAIS", img: "", desc: "12+ mundos dimensionais acessíveis via portais espalhados pela Facility. Cada portal leva a um ambiente único: vila, floresta, piscina, espaço, esqui, etc. A maioria tem troféus automáticos ao sair." },
-  "setor-8": { name: "SETOR RESIDENCIAL", img: "", desc: "Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar." },
+  "setor-0": { name: "TUTORIAL / PRÉ-FACILITY", img: "Images/MUNDO/GIFeIMAGENS/Initial.webp", desc: "Área de introdução abaixo da Facility principal. Contém os primeiros crafts e o primeiro combate. Privada-Portal localizado no Data Farm do Escritório — porta de acesso ao Some Distant Shore." },
+  "setor-1": { name: "SETOR ESCRITÓRIO", img: "Images/MUNDO/GIFeIMAGENS/Setorescritório.webp", desc: "Primeiro setor completo. Contém: Silos (1, 2, 3), Far Garden (Anteverse 2-A), acesso a Flathill. Hub central inicial com múltiplos andares e salas de escritório conectadas." },
+  "setor-2": { name: "MANUFACTURING WEST", img: "Images/MUNDO/GIFeIMAGENS/Manufacturingwest.webp", desc: "Complexo industrial. Contém: Upper Shipping (uniforme!), Minas com torre e portal secreto no topo (Dummy!), Train World. Setor com mais troféus perdíveis — atenção total aqui." },
+  "setor-3": { name: "CASCADE LABORATORIES", img: "Images/MUNDO/GIFeIMAGENS/Cascadelaboratories.webp", desc: "Laboratório avançado com múltiplas sub-áreas. Contém: Mycofields (Capacete de Cogumelo!), Night Realm portal, diversas caixas especiais espalhadas. Área mais vertical do jogo." },
+  "setor-4": { name: "SETOR SEGURANÇA", img: "Images/MUNDO/GIFeIMAGENS/Setordesegurança.webp", desc: "Setor de controle com múltiplos postos de segurança e câmeras. Contém o portal de acesso ao RISE (orbe azul grande atrás do elevador gigante, perto da entrada). Oportunidade de grind de kills da Ordem." },
+  "setor-5": { name: "HIDROPLANTA", img: "Images/MUNDO/GIFeIMAGENS/Hidroplanta.webp", desc: "Complexo aquático com seção Robótica, 4 reatores e elevador subaquático. Contém: Kylie Muir (Chip Neural!), uniforme no elevador subaquático. Área maior com rotas verticais e horizontais." },
+  "setor-6": { name: "REATORES", img: "Images/MUNDO/GIFeIMAGENS/Reactors.webp", desc: "Zona de alta periculosidade com ambientes radioativos. Boss: Jotun (Troféu: Sjaund). Acesso a Mundos Portais avançados a partir daqui." },
+  "setor-7": { name: "MUNDOS PORTAIS", img: "Images/MUNDO/GIFeIMAGENS/", desc: "12+ mundos dimensionais acessíveis via portais espalhados pela Facility. Cada portal leva a um ambiente único: vila, floresta, piscina, espaço, esqui, etc. A maioria tem troféus automáticos ao sair." },
+  "setor-8": { name: "SETOR RESIDENCIAL", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar." },
 
-  "portal-0": { name: "Far Garden (Anteverse 2-A)", img: "Images/Portais/Fargarden.webp", desc: "Jardim alienígena acessado no Setor Escritório. Saia pelo portal no final para o troféu automático ‘Daqui em Diante Fica Tudo Mais Estranho’ — impossível perder na progressão principal." },
-  "portal-1": { name: "Flathill", img: "Images/Portais/Flathill.webp", desc: "Colinas nevadas via Silo 3 do Escritório. Pegue a Célula de Energia (necessária pra progressão) e enfrente o Sinfonista pros troféus ‘Os Compositores’ e ‘Sorte Cega’." },
-  "portal-2": { name: "Train World", img: "Images/Portais/Thetrain.webp", desc: "Ferrovia industrial do Manufacturing West. Siga os trilhos até o portal de saída para o troféu ‘Todos a Bordo’." },
-  "portal-3": { name: "Furniture Store (Helmholtz)", img: "Images/Portais/Furniturestore.webp", desc: "Loja de móveis dimensional surreal, cheia de móveis empilhados. Saia pelo portal no final para o troféu ‘Não Há Mais Espaço em Helmholtz’." },
-  "portal-4": { name: "Mycofields", img: "Images/Portais/Themycofields.webp", desc: "Ambiente fúngico nos Laboratórios Cascade. CRÍTICO: mate o Mushroom Peccary e pegue o Skull aqui (só dropa aqui) antes de sair — necessário pro troféu Micélio Sobre o Concílio." },
-  "portal-5": { name: "Night Realm", img: "Images/Portais/Thenightrealm.webp", desc: "Ambiente noturno com Nightspheres, nos Laboratórios Cascade. Entre na sala da última Nightsphere para o troféu ‘Sonambulismo’." },
-  "portal-6": { name: "Vila Den da'ko Yeer", img: "Images/Portais/Villagedendakoyeer.webp", desc: "Vila alienígena dos Mundos Portais avançados. Desbloqueie o Anti-Fungal Gelatin pra abrir o portal de saída e ganhar o troféu ‘A Vila’." },
-  "portal-7": { name: "Canaan", img: "Images/Portais/Canaan.webp", desc: "Mundo com temática de culto. Encontre e derrote Niketas, o Priest líder do culto, para o troféu ‘Uma Carga da Minha Mente’." },
-  "portal-8": { name: "Voussoir (Mundo de Esqui)", img: "Images/Portais/Voussoir.webp", desc: "Estação de esqui. Navegue pelas pistas até o portal de saída para o troféu ‘Je Suis Perdu!’." },
-  "portal-9": { name: "Shadowgate", img: "Images/Portais/Shadowgate.webp", desc: "Mundo de progressão obrigatória dos Mundos Portais. Complete os objetivos para o troféu de Prata ‘Shadowgate’." },
-  "portal-10": { name: "Praetorium (The Inquisition)", img: "Images/Portais/Praetorium.webp", desc: "Mundo de progressão da Inquisição. Complete para o troféu de Prata ‘A Inquisição’." },
-  "portal-11": { name: "GATE Arch Defense Facility", img: "Images/Portais/Gatearchdefensefacility.webp", desc: "Portal secreto sem posição fixa, ligado a lore avançada. Instalação de defesa numa muralha colossal com as receitas do Motion Module e do Excursion Suit. Sem troféu — um dos locais mais raros do jogo." },
-  "portal-12": { name: "Albatross", img: "Images/Portais/Albatross.webp", desc: "Portal final do jogo, liberado após o Setor Residencial. Fale com Cahn e ative a pedra ritual para a luta final contra IS-0117 — troféu de Ouro ‘Apocalíptico’. Não é opcional." },
-  "portal-13": { name: "Rise (Rise Facility)", img: "Images/Portais/Risefacility.webp", desc: "Um dos mundos mais perigosos — a Order infiltrou o prédio inteiro. Resolva o puzzle do Laser Lab na Adjustment Wing (Cascade) para abrir o portal; cuidado com snipers pro troféu ‘A Grande Maçã’." },
-  "portal-14": { name: "North Pole", img: "Images/Portais/Northpole.webp", desc: "Cidadezinha natalina congelada, acessada por um globo de neve no Containment Dirac (Cascade). Derrote o Boneco de Neve pra desbloquear Winter Cabin como Home World — sem troféu específico." },
-  "portal-15": { name: "Dunkeltaler Forest", img: "Images/Portais/Dunkeltalerforest.webp", desc: "Crossover com Voices of the Void: floresta suíça com observatório abandonado, na Hydroplant (exige o Neutrino Mapper). Cuidado com os wisps — vermelhos explodem, verdes teleportam você." },
-  "portal-16": { name: "Royal Range", img: "Images/Portais/Royalrange.webp", desc: "Nível retro 3D nevado via arcade ‘Space Queen’ (Containment Helmholtz, exige Keypad Hacker T5). Pule nos inimigos e colete Royal Crowns pro troféu ‘Conflito na Cordilheira Real’." },
-  "portal-17": { name: "The Pool Room", img: "Images/Portais/Thepoolroom.webp", desc: "Piscina infinita. Sente-se na Cadeira Vermelha do ambiente para ativar o portal de saída e o troféu ‘Não Corra’." },
-  "portal-18": { name: "The World in the Mirror", img: "Images/Portais/Theworldinthemirror.webp", desc: "Mundo espelhado e plano. Só toque a grama para o troféu ‘Chato Igual Panqueca’ — nem precisa sair pelo portal." },
-  "portal-19": { name: "Some Distant Shore", img: "Images/Portais/Somedistantshore.webp", desc: "Mecânica especial, não é um portal fixo: sente-se no Privada-Portal (Data Farm do Escritório) com pouca continência pra ter chance de teletransporte. Chegar lá já garante o troféu ‘Não Se Fala Daquele Lugar’." },
+  "portal-0": { name: "Far Garden (Anteverse 2-A)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Jardim alienígena acessado no Setor Escritório. Saia pelo portal no final para o troféu automático ‘Daqui em Diante Fica Tudo Mais Estranho’ — impossível perder na progressão principal." },
+  "portal-1": { name: "Flathill", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Colinas nevadas via Silo 3 do Escritório. Pegue a Célula de Energia (necessária pra progressão) e enfrente o Sinfonista pros troféus ‘Os Compositores’ e ‘Sorte Cega’." },
+  "portal-2": { name: "Train World", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ferrovia industrial do Manufacturing West. Siga os trilhos até o portal de saída para o troféu ‘Todos a Bordo’." },
+  "portal-3": { name: "Furniture Store (Helmholtz)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Loja de móveis dimensional surreal, cheia de móveis empilhados. Saia pelo portal no final para o troféu ‘Não Há Mais Espaço em Helmholtz’." },
+  "portal-4": { name: "Mycofields", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ambiente fúngico nos Laboratórios Cascade. CRÍTICO: mate o Mushroom Peccary e pegue o Skull aqui (só dropa aqui) antes de sair — necessário pro troféu Micélio Sobre o Concílio." },
+  "portal-5": { name: "Night Realm", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ambiente noturno com Nightspheres, nos Laboratórios Cascade. Entre na sala da última Nightsphere para o troféu ‘Sonambulismo’." },
+  "portal-6": { name: "Vila Den da'ko Yeer", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Vila alienígena dos Mundos Portais avançados. Desbloqueie o Anti-Fungal Gelatin pra abrir o portal de saída e ganhar o troféu ‘A Vila’." },
+  "portal-7": { name: "Canaan", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo com temática de culto. Encontre e derrote Niketas, o Priest líder do culto, para o troféu ‘Uma Carga da Minha Mente’." },
+  "portal-8": { name: "Voussoir (Mundo de Esqui)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Estação de esqui. Navegue pelas pistas até o portal de saída para o troféu ‘Je Suis Perdu!’." },
+  "portal-9": { name: "Shadowgate", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo de progressão obrigatória dos Mundos Portais. Complete os objetivos para o troféu de Prata ‘Shadowgate’." },
+  "portal-10": { name: "Praetorium (The Inquisition)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo de progressão da Inquisição. Complete para o troféu de Prata ‘A Inquisição’." },
+  "portal-11": { name: "GATE Arch Defense Facility", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Portal secreto sem posição fixa, ligado a lore avançada. Instalação de defesa numa muralha colossal com as receitas do Motion Module e do Excursion Suit. Sem troféu — um dos locais mais raros do jogo." },
+  "portal-12": { name: "Albatross", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Portal final do jogo, liberado após o Setor Residencial. Fale com Cahn e ative a pedra ritual para a luta final contra IS-0117 — troféu de Ouro ‘Apocalíptico’. Não é opcional." },
+  "portal-13": { name: "Rise (Rise Facility)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Um dos mundos mais perigosos — a Order infiltrou o prédio inteiro. Resolva o puzzle do Laser Lab na Adjustment Wing (Cascade) para abrir o portal; cuidado com snipers pro troféu ‘A Grande Maçã’." },
+  "portal-14": { name: "North Pole", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Cidadezinha natalina congelada, acessada por um globo de neve no Containment Dirac (Cascade). Derrote o Boneco de Neve pra desbloquear Winter Cabin como Home World — sem troféu específico." },
+  "portal-15": { name: "Dunkeltaler Forest", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Crossover com Voices of the Void: floresta suíça com observatório abandonado, na Hydroplant (exige o Neutrino Mapper). Cuidado com os wisps — vermelhos explodem, verdes teleportam você." },
+  "portal-16": { name: "Royal Range", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Nível retro 3D nevado via arcade ‘Space Queen’ (Containment Helmholtz, exige Keypad Hacker T5). Pule nos inimigos e colete Royal Crowns pro troféu ‘Conflito na Cordilheira Real’." },
+  "portal-17": { name: "The Pool Room", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Piscina infinita. Sente-se na Cadeira Vermelha do ambiente para ativar o portal de saída e o troféu ‘Não Corra’." },
+  "portal-18": { name: "The World in the Mirror", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo espelhado e plano. Só toque a grama para o troféu ‘Chato Igual Panqueca’ — nem precisa sair pelo portal." },
+  "portal-19": { name: "Some Distant Shore", img: "Images/MUNDO/GIFeIMAGENS/Images/Portais/Somedistantshore.webp", desc: "Mecânica especial, não é um portal fixo: sente-se no Privada-Portal (Data Farm do Escritório) com pouca continência pra ter chance de teletransporte. Chegar lá já garante o troféu ‘Não Se Fala Daquele Lugar’." },
 };
 
 // Pins de Setores — a POSIÇÃO (pt), o ícone/cor do card e o link de "Saiba
@@ -7062,8 +7101,7 @@ function gatepalAllPoisForMap(mapId) {
 
 // ── Elementos ──
 const gatepalNoticeEl = document.getElementById('gatepalNotice');
-const gatepalMapTabsEl = document.getElementById('gatepalMapTabs');
-const gatepalCatGroupsEl = document.getElementById('gatepalCatGroups');
+const gatepalCatIconsEl = document.getElementById('gatepalCatIcons');
 const gatepalSearchEl = document.getElementById('gatepalSearch');
 const gatepalHideBtn = document.getElementById('gatepalHideBtn');
 const gatepalPendingBtn = document.getElementById('gatepalPendingBtn');
@@ -7073,9 +7111,14 @@ const gatepalProgressCountEl = document.getElementById('gatepalProgressCount');
 const gatepalProgressFillEl = document.getElementById('gatepalProgressFill');
 const gatepalImgFallbackEl = document.getElementById('gatepalImgFallback');
 const gatepalMapTitleEl = document.getElementById('gatepalMapTitle');
-const gatepalMapInfoIconEl = document.getElementById('gatepalMapInfoIcon');
-const gatepalMapInfoTitleEl = document.getElementById('gatepalMapInfoTitle');
-const gatepalMapInfoDescEl = document.getElementById('gatepalMapInfoDesc');
+const gatepalMapSelectEl = document.getElementById('gatepalMapSelect');
+const gatepalMapSelectBtnEl = document.getElementById('gatepalMapSelectBtn');
+const gatepalMapSelectIconEl = document.getElementById('gatepalMapSelectIcon');
+const gatepalMapSelectNameEl = document.getElementById('gatepalMapSelectName');
+const gatepalMapSelectListEl = document.getElementById('gatepalMapSelectList');
+const gatepalDrawerEl = document.getElementById('gatepalDrawer');
+const gatepalDrawerHandleBtn = document.getElementById('gatepalDrawerHandle');
+const gatepalDrawerHandleTextEl = document.getElementById('gatepalDrawerHandleText');
 
 // Filtro por categoria é multi-toggle (cada categoria liga/desliga por
 // conta própria — igual ao painel do WAND), não uma aba de seleção única.
@@ -7125,17 +7168,35 @@ function gatepalLngLatToPercent(lngLat) {
   };
 }
 
-// ── Seletor de mapa (hoje só 1 opção, pronto pra crescer) ──
-gatepalMaps.forEach((m) => {
-  const btn = document.createElement('button');
-  btn.className = 'deploy-tab-btn' + (m.id === gatepalCurrentMapId ? ' active' : '');
-  btn.textContent = `${m.icon} ${m.name}`;
-  btn.addEventListener('click', () => {
-    gatepalMapTabsEl.querySelectorAll('.deploy-tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    gatepalLoadMap(m.id);
+// ── Seletor de mapa — dropdown flutuante (substitui a antiga faixa de
+// abas full-width). Cada item mostra ícone + nome + descrição; clicar
+// troca de mapa e fecha o dropdown sozinho. ──
+function renderGatepalMapSelectList() {
+  gatepalMapSelectListEl.innerHTML = '';
+  gatepalMaps.forEach((m) => {
+    const item = document.createElement('div');
+    item.className = 'gatepal-mapselect-item' + (m.id === gatepalCurrentMapId ? ' active' : '');
+    item.innerHTML = `
+      <span class="gatepal-mapselect-item-icon">${m.icon}</span>
+      <div>
+        <div class="gatepal-mapselect-item-name">${m.name}</div>
+        <div class="gatepal-mapselect-item-desc">${m.desc || ''}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => {
+      gatepalMapSelectEl.classList.remove('open');
+      if (m.id !== gatepalCurrentMapId) gatepalLoadMap(m.id);
+    });
+    gatepalMapSelectListEl.appendChild(item);
   });
-  gatepalMapTabsEl.appendChild(btn);
+}
+renderGatepalMapSelectList();
+gatepalMapSelectBtnEl.addEventListener('click', (e) => {
+  e.stopPropagation();
+  gatepalMapSelectEl.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!gatepalMapSelectEl.contains(e.target)) gatepalMapSelectEl.classList.remove('open');
 });
 
 // ── Carrega o mapa (id) — descobre as dimensões reais da imagem antes de
@@ -7147,17 +7208,11 @@ function gatepalLoadMap(mapId) {
   gatepalMapTitleEl.textContent = mapId === 'geral' ? 'GATE FACILITY' : (cfg ? cfg.name : 'GATE FACILITY');
   gatepalImgFallbackEl.style.display = 'none';
 
-  // Bloco de info do mapa — descreve O QUE este mapa específico mostra.
-  // As contagens de setores/portais vêm sempre dos dados de verdade
-  // (mapsData/portaisData), nunca de um número fixo escrito na mão.
-  gatepalMapInfoIconEl.textContent = cfg ? cfg.icon : '🗺️';
-  gatepalMapInfoTitleEl.textContent = cfg ? cfg.name : '';
-  const sectorCount = gatepalSetorPois.filter(p => p.mapId === mapId).length;
-  const portalCount = gatepalPortalPois.filter(p => p.mapId === mapId).length;
-  const countsLine = mapId === 'geral'
-    ? ` Mapeando atualmente ${sectorCount} setores e ${portalCount} portais de mundos.`
-    : '';
-  gatepalMapInfoDescEl.textContent = (cfg && cfg.desc ? cfg.desc : '') + countsLine;
+  // Botão do seletor mostra o mapa atual; a lista destaca qual está ativo.
+  gatepalMapSelectIconEl.textContent = cfg ? cfg.icon : '🗺️';
+  gatepalMapSelectNameEl.textContent = cfg ? cfg.name : 'Mapa';
+  gatepalMapSelectNameEl.title = cfg ? cfg.name : '';
+  renderGatepalMapSelectList();
 
   const probe = new Image();
   probe.onload = () => {
@@ -7196,13 +7251,26 @@ function gatepalUpdateZoomLabel() {
 function gatepalFitToImage() {
   gatepalMapInstance.fitBounds(gatepalCurrentBounds, { padding: 16, animate: false });
   gatepalInitialZoom = gatepalMapInstance.getZoom();
-  gatepalMapInstance.setMinZoom(gatepalInitialZoom - 1);
-  gatepalMapInstance.setMaxZoom(gatepalInitialZoom + 4);
-  const { west, south, east, north } = gatepalBoundsWSEN;
-  const padLng = (east - west) * 0.2, padLat = (north - south) * 0.2; // = antigo halfLng*0.4/halfLat*0.4, só generalizado pra bounds não-simétricos
+  gatepalMapInstance.setMinZoom(gatepalInitialZoom - 2);
+  gatepalMapInstance.setMaxZoom(gatepalInitialZoom + 5);
+
+  // O limite de arraste (maxBounds) precisa vir do enquadramento REAL que
+  // o fitBounds gerou na tela (map.getBounds()), não do tamanho "cru" do
+  // mapa/tile. Isso importa porque a proporção da tela muda o quanto
+  // sobra de espaço livre: um mapa largo dentro de uma tela de celular
+  // (retrato, mais alta que larga) sobra bastante vertical — se o limite
+  // for calculado só a partir da altura "crua" do mapa, ele fica menor
+  // do que o espaço que já está visível na tela, e o arraste trava
+  // exatamente no eixo que sobra mais (vertical, no caso do celular).
+  // Usando os bounds já ajustados à tela + uma folga generosa, o arraste
+  // funciona igual pros dois lados em qualquer formato de tela.
+  const fitted = gatepalMapInstance.getBounds();
+  const w = fitted.getEast() - fitted.getWest();
+  const h = fitted.getNorth() - fitted.getSouth();
+  const padLng = w * 0.8, padLat = h * 0.8;
   gatepalMapInstance.setMaxBounds([
-    [west - padLng, south - padLat],
-    [east + padLng, north + padLat],
+    [fitted.getWest() - padLng, fitted.getSouth() - padLat],
+    [fitted.getEast() + padLng, fitted.getNorth() + padLat],
   ]);
   gatepalUpdateZoomLabel();
 }
@@ -7317,7 +7385,7 @@ window.addEventListener('resize', () => { if (gatepalMapInstance) gatepalMapInst
 
 // Renderiza a sidebar de categorias mesmo antes do mapa existir, já que
 // ela só depende dos dados (não do motor do mapa em si).
-renderGatepalCatGroups();
+renderGatepalCatIcons();
 gatepalUpdateProgressBarSafe();
 function gatepalUpdateProgressBarSafe() {
   const officialOnMap = gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId);
@@ -7326,6 +7394,8 @@ function gatepalUpdateProgressBarSafe() {
   const pct = total ? Math.round((done / total) * 100) : 0;
   gatepalProgressFillEl.style.width = pct + '%';
   gatepalProgressCountEl.textContent = `${done} / ${total}`;
+  const badge = document.getElementById('gatepalDrawerBadge');
+  if (badge) badge.textContent = `${done}/${total}`;
 }
 
 // ── Busca por nome — com debounce leve: em vez de recalcular o filtro de
@@ -7437,27 +7507,28 @@ function gatepalCatCount(cat) {
   return gatepalOficialPois.filter(p => p.mapId === gatepalCurrentMapId && p.cat === cat).length;
 }
 
-function renderGatepalCatGroups() {
-  gatepalCatGroupsEl.innerHTML = '';
+function renderGatepalCatIcons() {
+  gatepalCatIconsEl.innerHTML = '';
   const cats = [...Object.keys(gatepalCategories), 'pessoal'];
   cats.forEach(cat => {
     const info = cat === 'pessoal' ? { label: 'Pins Pessoais', icon: '📌', color: '#9fb0a8' } : gatepalCategories[cat];
-    const row = document.createElement('div');
-    row.className = 'gatepal-cat-row' + (gatepalHiddenCats.has(cat) ? ' is-hidden' : '');
-    row.dataset.cat = cat;
-    row.innerHTML = `
-      <span class="gatepal-cat-dot" style="background:${info.color};color:${info.color}"></span>
-      <span class="gatepal-cat-name">${info.icon} ${info.label}</span>
-      <span class="gatepal-cat-count">${gatepalCatCount(cat)}</span>
-      <span class="gatepal-cat-eye">${gatepalHiddenCats.has(cat) ? '🚫' : '👁'}</span>
-    `;
-    row.addEventListener('click', () => {
+    const isHidden = gatepalHiddenCats.has(cat);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gatepal-cat-icon-btn' + (isHidden ? ' is-hidden' : ' is-active');
+    btn.style.color = info.color;
+    btn.title = `${info.label} (${gatepalCatCount(cat)}) — clique pra ${isHidden ? 'mostrar' : 'ocultar'}`;
+    btn.dataset.cat = cat;
+    btn.innerHTML = `${info.icon}<span class="gatepal-cat-icon-count">${gatepalCatCount(cat)}</span>`;
+    btn.addEventListener('click', () => {
       if (gatepalHiddenCats.has(cat)) gatepalHiddenCats.delete(cat); else gatepalHiddenCats.add(cat);
-      row.classList.toggle('is-hidden');
-      row.querySelector('.gatepal-cat-eye').textContent = gatepalHiddenCats.has(cat) ? '🚫' : '👁';
+      const nowHidden = gatepalHiddenCats.has(cat);
+      btn.classList.toggle('is-hidden', nowHidden);
+      btn.classList.toggle('is-active', !nowHidden);
+      btn.title = `${info.label} (${gatepalCatCount(cat)}) — clique pra ${nowHidden ? 'mostrar' : 'ocultar'}`;
       gatepalApplyFilters();
     });
-    gatepalCatGroupsEl.appendChild(row);
+    gatepalCatIconsEl.appendChild(btn);
   });
 }
 
@@ -7542,6 +7613,7 @@ function openGatepalPoiPopover(poi, anchorEl) {
     holo.style.display = 'none';
   } else {
     holo.style.display = 'flex';
+    holo.classList.toggle('is-photo', poi.cat === 'setor' || poi.cat === 'portal');
     fallback.style.display = 'none';
     img.style.display = 'block';
     img.src = poi.img || '';
@@ -7580,7 +7652,7 @@ function openGatepalPoiPopover(poi, anchorEl) {
       gatepalSavePersonalPins(gatepalPersonalPins);
       gatepalPoiPopoverEl.classList.remove('active');
       renderGatepalPins();
-      renderGatepalCatGroups();
+      renderGatepalCatIcons();
     };
   } else {
     delBtn.style.display = 'none';
@@ -7729,7 +7801,7 @@ document.getElementById('gpNewPinSave').addEventListener('click', () => {
   gatepalSavePersonalPins(gatepalPersonalPins);
   gatepalCloseAddPinModal();
   renderGatepalPins();
-  renderGatepalCatGroups();
+  renderGatepalCatIcons();
 });
 
 // ── Exportar pins pessoais em JSON ──
@@ -7764,9 +7836,6 @@ document.getElementById('gpZoomReset').addEventListener('click', () => {
 // clicando fora da gaveta, ou tecla Esc. ──
 const gatepalFrameEl = document.getElementById('gatepalFrame');
 const gatepalFullscreenBtn = document.getElementById('gatepalFullscreenBtn');
-const gatepalSidebarEl = document.getElementById('gatepalSidebar');
-const gatepalSidebarOpenBtn = document.getElementById('gatepalSidebarOpen');
-const gatepalSidebarCloseBtn = document.getElementById('gatepalSidebarClose');
 
 let gatepalScrollYBeforeFs = 0;
 
@@ -7781,7 +7850,9 @@ function gatepalSetFullscreen(on) {
     document.body.classList.remove('gatepal-fs-lock');
     document.body.style.top = '';
     window.scrollTo(0, gatepalScrollYBeforeFs);
-    gatepalSidebarEl.classList.remove('open');
+    gatepalDrawerEl.classList.remove('open');
+    gatepalDrawerHandleTextEl.textContent = '▲ FILTROS E FERRAMENTAS';
+    gatepalMapSelectEl.classList.remove('open');
   }
   // o container do mapa muda de tamanho ao entrar/sair da tela cheia —
   // sem isso o MapLibre continua desenhando do jeito que estava antes.
@@ -7806,8 +7877,14 @@ document.addEventListener('keydown', (e) => {
   document.getElementById('gatepalExportModal').classList.remove('active');
   gatepalPoiPopoverEl.classList.remove('active');
 });
-gatepalSidebarOpenBtn.addEventListener('click', () => gatepalSidebarEl.classList.add('open'));
-gatepalSidebarCloseBtn.addEventListener('click', () => gatepalSidebarEl.classList.remove('open'));
+
+// ── Gaveta inferior — colapsada por padrão, expande sobre o mapa ao
+// tocar na abinha. Junta busca/progresso/ações num só lugar, sem
+// disputar espaço com o mapa quando fechada. ──
+gatepalDrawerHandleBtn.addEventListener('click', () => {
+  const nowOpen = gatepalDrawerEl.classList.toggle('open');
+  gatepalDrawerHandleTextEl.textContent = nowOpen ? '▼ FILTROS E FERRAMENTAS' : '▲ FILTROS E FERRAMENTAS';
+});
 
 
 // ── FAQ INICIANTES (Dicas → Perguntas e Respostas) ──
