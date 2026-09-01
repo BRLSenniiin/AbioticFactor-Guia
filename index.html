@@ -987,9 +987,12 @@
 
   /* Seletor de mapa — botão flutuante que expande numa lista (não mais
      uma faixa de abas full-width). */
+  /* Ícones de categoria em cima (enchem a largura), seletor de mapa
+     embaixo (a lista dele abre pra baixo, então fica melhor não competir
+     por espaço vertical com mais nada acima). */
   .gatepal-map-toolbar {
     position: absolute; top: 10px; left: 10px; right: 10px; z-index: 402;
-    display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
     pointer-events: none; /* deixa cliques passarem pro mapa nos vãos vazios da barra */
   }
   .gatepal-map-toolbar > * { pointer-events: auto; }
@@ -1001,7 +1004,7 @@
     cursor: pointer; white-space: nowrap; transition: background 0.15s;
   }
   .gatepal-mapselect-btn:hover { background: var(--greenDim); }
-  .gatepal-mapselect-name { overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
+  .gatepal-mapselect-name { overflow: hidden; text-overflow: ellipsis; max-width: 70vw; }
   .gatepal-mapselect-arrow { flex-shrink: 0; font-size: 10px; transition: transform 0.15s; }
   .gatepal-mapselect.open .gatepal-mapselect-arrow { transform: rotate(180deg); }
   .gatepal-mapselect-list {
@@ -1020,7 +1023,7 @@
 
   /* Filtros por categoria — ícones clicáveis, cada um liga/desliga a
      categoria na hora (sem precisar abrir lista nenhuma). */
-  .gatepal-cat-icons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 100%; }
+  .gatepal-cat-icons { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; max-width: 100%; width: 100%; }
   .gatepal-cat-icon-btn {
     position: relative; width: 34px; height: 34px; border-radius: 50%;
     background: rgba(4,12,8,0.92); border: 1.5px solid var(--border); cursor: pointer;
@@ -1120,7 +1123,7 @@
   .gatepal-pin-wrap { background: transparent; border: none; }
   .gatepal-pin {
     position: relative;
-    width: 28px; height: 34px;
+    width: 32px; height: 39px;
     cursor: pointer;
     transform-origin: bottom center;
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1135,13 +1138,13 @@
   .gatepal-pin-icon {
     position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
     width: 70%; text-align: center;
-    font-size: 12px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+    font-size: 14px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
   }
   .gatepal-pin-icon svg, .gatepal-pin-icon img { width: 100%; height: auto; display: block; margin: 0 auto; }
-  .gatepal-pin.is-portal { width: 22px; height: 27px; }
-  .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 10px; }
-  .gatepal-pin.is-personal { width: 18px; height: 22px; opacity: 0.9; }
-  .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 8px; }
+  .gatepal-pin.is-portal { width: 25px; height: 31px; }
+  .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
+  .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
+  .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
   .gatepal-pin.is-done { opacity: 0.4; filter: grayscale(70%); }
 
   .gatepal-coord-readout {
@@ -1175,7 +1178,7 @@
     /* Card bem mais compacto que o modal cheio — é pra ser um popup leve
        ancorado no pin, não uma janela do tamanho do modal de Craft/Química. */
     .gatepal-popover-overlay.is-floating .deploy-modal { max-width: 300px; padding: 14px; }
-    .gatepal-popover-overlay.is-floating .deploy-hologram { height: 76px; margin-bottom: 8px; }
+    .gatepal-popover-overlay.is-floating .deploy-hologram { height: 88px; margin-bottom: 8px; }
   }
   .gatepal-popover-jump-btn {
     width: 100%; margin-top: 4px; padding: 10px; font-family: inherit; font-size: var(--fs-xs);
@@ -1199,15 +1202,15 @@
   /* Ícone/imagem do popup do mapa menores que o padrão compartilhado
      (.deploy-hologram-fallback/-img, usado também no modal de Craft) —
      escopado só ao popup do GATEPAL pra não afetar os outros usos. */
-  #gatepalPoiPopover .deploy-hologram-fallback { font-size: 34px; }
-  #gatepalPoiPopover .deploy-hologram-img { width: 56px; height: 56px; }
+  #gatepalPoiPopover .deploy-hologram-fallback { font-size: 38px; }
+  #gatepalPoiPopover .deploy-hologram-img { width: 64px; height: 64px; }
   /* Só a imagem/fallback aumentam no PC (pedido original) — o formato do
      scanner (.deploy-hologram) fica como sempre foi, sem virar quadrado.
      Fica DE PROPÓSITO depois da regra global acima: precisa vencer o
      empate de especificidade no desktop sem mexer no celular. */
   @media (min-width: 769px) {
-    #gatepalPoiPopover .deploy-hologram-img { width: 76px; height: 76px; }
-    #gatepalPoiPopover .deploy-hologram-fallback { font-size: 46px; }
+    #gatepalPoiPopover .deploy-hologram-img { width: 88px; height: 88px; }
+    #gatepalPoiPopover .deploy-hologram-fallback { font-size: 54px; }
   }
   #gatepalPoiPopover .deploy-hologram.is-photo .deploy-hologram-img,
   #gatepalPoiPopover .gatepal-popover-overlay.is-floating .deploy-hologram.is-photo .deploy-hologram-img {
@@ -1279,12 +1282,12 @@
   .map-card-flash { animation: mapCardFlash 1.6s ease; }
 
   @media (max-width: 480px) {
-    .gatepal-pin { width: 24px; height: 29px; }
-    .gatepal-pin-icon { font-size: 11px; }
-    .gatepal-pin.is-portal { width: 19px; height: 23px; }
-    .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 9px; }
-    .gatepal-pin.is-personal { width: 15px; height: 18px; }
-    .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 7px; }
+    .gatepal-pin { width: 27px; height: 33px; }
+    .gatepal-pin-icon { font-size: 13px; }
+    .gatepal-pin.is-portal { width: 22px; height: 26px; }
+    .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 10px; }
+    .gatepal-pin.is-personal { width: 17px; height: 21px; }
+    .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 8px; }
     .gatepal-mapengine { height: 58vh; height: 58dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
     .gatepal-mapselect-name { max-width: 34vw; }
@@ -3230,6 +3233,9 @@
              estreitas o wrap empurra os ícones pra uma segunda linha em
              vez de ficarem por cima do seletor. -->
         <div class="gatepal-map-toolbar">
+          <!-- Filtros de categoria — ícones clicáveis, liga/desliga na hora -->
+          <div class="gatepal-cat-icons" id="gatepalCatIcons"></div>
+
           <div class="gatepal-mapselect" id="gatepalMapSelect">
             <button class="gatepal-mapselect-btn" id="gatepalMapSelectBtn" type="button">
               <span id="gatepalMapSelectIcon">🗺️</span>
@@ -3238,9 +3244,6 @@
             </button>
             <div class="gatepal-mapselect-list" id="gatepalMapSelectList"></div>
           </div>
-
-          <!-- Filtros de categoria — ícones clicáveis, liga/desliga na hora -->
-          <div class="gatepal-cat-icons" id="gatepalCatIcons"></div>
         </div>
 
         <div class="gatepal-zoom-controls">
@@ -3952,6 +3955,8 @@ const C = {
   silverLt:"#90c0a0", redLt:"#f08080",
   text:"#b0e0b0", textDim:"#7fbf95", textMuted:"#7fbf95",
   bgCard:"#040c08", border:"#0a1e10", borderGn:"#143020",
+  black:"#141414", blue:"#2f8fdb", blueDark:"#173a5e", wine:"#722f37",
+  brown:"#7a5230", violet:"#7b2fe0", mustard:"#c9a227", white:"#f0f4f0",
 };
 
 const typeS = {
@@ -6960,6 +6965,39 @@ const gatepalMaps = [
       tileSize: 256,
     },
   },
+  {
+    id: 'fargarden', name: 'Far Garden', icon: '🌿', img: 'Images/MUNDO/Far Garden/Far Garden.webp',
+    desc: 'Mapa do Far Garden (Anteverse 2-A) — o jardim alienígena acessado via portal no Setor Escritório.',
+    tiles: {
+      url: 'Images/MUNDO/Far Garden/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'flathill', name: 'Flathill', icon: '🏔️', img: 'Images/MUNDO/Flathill/Flathill.webp',
+    desc: 'Mapa de Flathill — colinas nevadas acessadas via portal no Silo 3 do Setor Escritório.',
+    tiles: {
+      url: 'Images/MUNDO/Flathill/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'manufacturingwest', name: 'Manufacturing West', icon: '🏭', img: 'Images/MUNDO/Manufacturing West/Manufacturing West.webp',
+    desc: 'Mapa do Manufacturing West — complexo industrial com Upper Shipping, minas e Train World.',
+    tiles: {
+      url: 'Images/MUNDO/Manufacturing West/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
 ];
 let gatepalCurrentMapId = 'geral';
 
@@ -6967,12 +7005,17 @@ let gatepalCurrentMapId = 'geral';
 // sozinho já diz "isso é comida", "isso é arma", etc. Pins pessoais também
 // podem usar uma dessas categorias (escolhida no formulário de novo pin). ──
 const gatepalCategories = {
-  setor:      { label: 'Setores',    icon: '<img src="Images/Icons/SVG/sector.svg">', color: C.green },
+  setor:      { label: 'Setores',    icon: '<img src="Images/Icons/SVG/sector.svg">', color: C.black },
   portal:     { label: 'Portais',    icon: '<img src="Images/Icons/SVG/world.svg">', color: C.purple },
-  comida:     { label: 'Comida',     icon: '🍖', color: C.green },
-  arma:       { label: 'Armas',      icon: '⚔️', color: C.red },
-  npc:        { label: 'NPCs',       icon: '🧑', color: C.amber },
-  reciclagem: { label: 'Reciclagem', icon: '♻️', color: C.steel },
+  comida:     { label: 'Comida',     icon: '<img src="Images/Icons/SVG/food.svg">', color: C.blue },
+  arma:       { label: 'Armas',      icon: '<img src="Images/Icons/SVG/weapon.svg">', color: C.wine },
+  npc:        { label: 'NPCs',       icon: '<img src="Images/Icons/SVG/npc.svg">', color: C.brown },
+  reciclagem: { label: 'Reciclagem', icon: '<img src="Images/Icons/SVG/reciclagem.svg">', color: C.greenLt },
+  informação: { label: 'Informações',icon: '<img src="Images/Icons/SVG/information.svg">', color: C.amber},
+  colecionáveis: { label: 'Colecionáveis',icon: '<img src="Images/Icons/SVG/collectible.svg">', color: C.mustard},
+  atenção: { label: 'Ponto de atenção',icon: '<img src="Images/Icons/SVG/attencion.svg">', color: C.red},
+  banheiro: { label: 'Banheiro',icon: '<img src="Images/Icons/SVG/bathroom.svg">', color: C.blueDark},
+  porta: { label: 'Porta pra hackeamento',icon: '<img src="Images/Icons/SVG/door.svg">', color: C.violet},
 };
 
 // ── Conteúdo independente dos pins do Mapa Geral (popup) ──
@@ -6993,29 +7036,29 @@ const gatepalPoiContent = {
   "setor-4": { name: "SETOR SEGURANÇA", img: "Images/MUNDO/GIFeIMAGENS/Setordesegurança.webp", desc: "Setor de controle com múltiplos postos de segurança e câmeras. Contém o portal de acesso ao RISE (orbe azul grande atrás do elevador gigante, perto da entrada). Oportunidade de grind de kills da Ordem." },
   "setor-5": { name: "HIDROPLANTA", img: "Images/MUNDO/GIFeIMAGENS/Hidroplanta.webp", desc: "Complexo aquático com seção Robótica, 4 reatores e elevador subaquático. Contém: Kylie Muir (Chip Neural!), uniforme no elevador subaquático. Área maior com rotas verticais e horizontais." },
   "setor-6": { name: "REATORES", img: "Images/MUNDO/GIFeIMAGENS/Reactors.webp", desc: "Zona de alta periculosidade com ambientes radioativos. Boss: Jotun (Troféu: Sjaund). Acesso a Mundos Portais avançados a partir daqui." },
-  "setor-7": { name: "MUNDOS PORTAIS", img: "Images/MUNDO/GIFeIMAGENS/", desc: "12+ mundos dimensionais acessíveis via portais espalhados pela Facility. Cada portal leva a um ambiente único: vila, floresta, piscina, espaço, esqui, etc. A maioria tem troféus automáticos ao sair." },
-  "setor-8": { name: "SETOR RESIDENCIAL", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar." },
+  "setor-7": { name: "MUNDOS PORTAIS", img: "Images/MUNDO/GIFeIMAGENS/Mundosportais.webp", desc: "12+ mundos dimensionais acessíveis via portais espalhados pela Facility. Cada portal leva a um ambiente único: vila, floresta, piscina, espaço, esqui, etc. A maioria tem troféus automáticos ao sair." },
+  "setor-8": { name: "SETOR RESIDENCIAL", img: "Images/MUNDO/GIFeIMAGENS/Setorresidencial.webp", desc: "Último setor principal antes do final do jogo. Contém: Containment Unit IS-0091 (Leyak), Rise Facility portal, encontro final com o Colega de trabalho. Prepare-se com café e itens antes de entrar." },
 
-  "portal-0": { name: "Far Garden (Anteverse 2-A)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Jardim alienígena acessado no Setor Escritório. Saia pelo portal no final para o troféu automático ‘Daqui em Diante Fica Tudo Mais Estranho’ — impossível perder na progressão principal." },
-  "portal-1": { name: "Flathill", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Colinas nevadas via Silo 3 do Escritório. Pegue a Célula de Energia (necessária pra progressão) e enfrente o Sinfonista pros troféus ‘Os Compositores’ e ‘Sorte Cega’." },
-  "portal-2": { name: "Train World", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ferrovia industrial do Manufacturing West. Siga os trilhos até o portal de saída para o troféu ‘Todos a Bordo’." },
-  "portal-3": { name: "Furniture Store (Helmholtz)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Loja de móveis dimensional surreal, cheia de móveis empilhados. Saia pelo portal no final para o troféu ‘Não Há Mais Espaço em Helmholtz’." },
-  "portal-4": { name: "Mycofields", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ambiente fúngico nos Laboratórios Cascade. CRÍTICO: mate o Mushroom Peccary e pegue o Skull aqui (só dropa aqui) antes de sair — necessário pro troféu Micélio Sobre o Concílio." },
-  "portal-5": { name: "Night Realm", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Ambiente noturno com Nightspheres, nos Laboratórios Cascade. Entre na sala da última Nightsphere para o troféu ‘Sonambulismo’." },
-  "portal-6": { name: "Vila Den da'ko Yeer", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Vila alienígena dos Mundos Portais avançados. Desbloqueie o Anti-Fungal Gelatin pra abrir o portal de saída e ganhar o troféu ‘A Vila’." },
-  "portal-7": { name: "Canaan", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo com temática de culto. Encontre e derrote Niketas, o Priest líder do culto, para o troféu ‘Uma Carga da Minha Mente’." },
-  "portal-8": { name: "Voussoir (Mundo de Esqui)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Estação de esqui. Navegue pelas pistas até o portal de saída para o troféu ‘Je Suis Perdu!’." },
-  "portal-9": { name: "Shadowgate", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo de progressão obrigatória dos Mundos Portais. Complete os objetivos para o troféu de Prata ‘Shadowgate’." },
-  "portal-10": { name: "Praetorium (The Inquisition)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo de progressão da Inquisição. Complete para o troféu de Prata ‘A Inquisição’." },
-  "portal-11": { name: "GATE Arch Defense Facility", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Portal secreto sem posição fixa, ligado a lore avançada. Instalação de defesa numa muralha colossal com as receitas do Motion Module e do Excursion Suit. Sem troféu — um dos locais mais raros do jogo." },
-  "portal-12": { name: "Albatross", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Portal final do jogo, liberado após o Setor Residencial. Fale com Cahn e ative a pedra ritual para a luta final contra IS-0117 — troféu de Ouro ‘Apocalíptico’. Não é opcional." },
-  "portal-13": { name: "Rise (Rise Facility)", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Um dos mundos mais perigosos — a Order infiltrou o prédio inteiro. Resolva o puzzle do Laser Lab na Adjustment Wing (Cascade) para abrir o portal; cuidado com snipers pro troféu ‘A Grande Maçã’." },
-  "portal-14": { name: "North Pole", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Cidadezinha natalina congelada, acessada por um globo de neve no Containment Dirac (Cascade). Derrote o Boneco de Neve pra desbloquear Winter Cabin como Home World — sem troféu específico." },
-  "portal-15": { name: "Dunkeltaler Forest", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Crossover com Voices of the Void: floresta suíça com observatório abandonado, na Hydroplant (exige o Neutrino Mapper). Cuidado com os wisps — vermelhos explodem, verdes teleportam você." },
-  "portal-16": { name: "Royal Range", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Nível retro 3D nevado via arcade ‘Space Queen’ (Containment Helmholtz, exige Keypad Hacker T5). Pule nos inimigos e colete Royal Crowns pro troféu ‘Conflito na Cordilheira Real’." },
-  "portal-17": { name: "The Pool Room", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Piscina infinita. Sente-se na Cadeira Vermelha do ambiente para ativar o portal de saída e o troféu ‘Não Corra’." },
-  "portal-18": { name: "The World in the Mirror", img: "Images/MUNDO/GIFeIMAGENS/", desc: "Mundo espelhado e plano. Só toque a grama para o troféu ‘Chato Igual Panqueca’ — nem precisa sair pelo portal." },
-  "portal-19": { name: "Some Distant Shore", img: "Images/MUNDO/GIFeIMAGENS/Images/Portais/Somedistantshore.webp", desc: "Mecânica especial, não é um portal fixo: sente-se no Privada-Portal (Data Farm do Escritório) com pouca continência pra ter chance de teletransporte. Chegar lá já garante o troféu ‘Não Se Fala Daquele Lugar’." },
+  "portal-0": { name: "Far Garden (Anteverse 2-A)", img: "Images/MUNDO/GIFeIMAGENS/Fargarden.webp", desc: "Jardim alienígena acessado no Setor Escritório. Saia pelo portal no final para o troféu automático ‘Daqui em Diante Fica Tudo Mais Estranho’ — impossível perder na progressão principal." },
+  "portal-1": { name: "Flathill", img: "Images/MUNDO/GIFeIMAGENS/Flathill.webp", desc: "Colinas nevadas via Silo 3 do Escritório. Pegue a Célula de Energia (necessária pra progressão) e enfrente o Sinfonista pros troféus ‘Os Compositores’ e ‘Sorte Cega’." },
+  "portal-2": { name: "Train World", img: "Images/MUNDO/GIFeIMAGENS/Trainworld.webp", desc: "Ferrovia industrial do Manufacturing West. Siga os trilhos até o portal de saída para o troféu ‘Todos a Bordo’." },
+  "portal-3": { name: "Furniture Store (Helmholtz)", img: "Images/MUNDO/GIFeIMAGENS/Furniturestore.webp", desc: "Loja de móveis dimensional surreal, cheia de móveis empilhados. Saia pelo portal no final para o troféu ‘Não Há Mais Espaço em Helmholtz’." },
+  "portal-4": { name: "Mycofields", img: "Images/MUNDO/GIFeIMAGENS/Mycofields.webp", desc: "Ambiente fúngico nos Laboratórios Cascade. CRÍTICO: mate o Mushroom Peccary e pegue o Skull aqui (só dropa aqui) antes de sair — necessário pro troféu Micélio Sobre o Concílio." },
+  "portal-5": { name: "Night Realm", img: "Images/MUNDO/GIFeIMAGENS/Nightrealm.webp", desc: "Ambiente noturno com Nightspheres, nos Laboratórios Cascade. Entre na sala da última Nightsphere para o troféu ‘Sonambulismo’." },
+  "portal-6": { name: "Vila Den da'ko Yeer", img: "Images/MUNDO/GIFeIMAGENS/Viladendakoyeer.webp", desc: "Vila alienígena dos Mundos Portais avançados. Desbloqueie o Anti-Fungal Gelatin pra abrir o portal de saída e ganhar o troféu ‘A Vila’." },
+  "portal-7": { name: "Canaan", img: "Images/MUNDO/GIFeIMAGENS/Canaan.webp", desc: "Mundo com temática de culto. Encontre e derrote Niketas, o Priest líder do culto, para o troféu ‘Uma Carga da Minha Mente’." },
+  "portal-8": { name: "Voussoir (Mundo de Esqui)", img: "Images/MUNDO/GIFeIMAGENS/Voussoir.webp", desc: "Estação de esqui. Navegue pelas pistas até o portal de saída para o troféu ‘Je Suis Perdu!’." },
+  "portal-9": { name: "Shadowgate", img: "Images/MUNDO/GIFeIMAGENS/Shadowgate.webp", desc: "Mundo de progressão obrigatória dos Mundos Portais. Complete os objetivos para o troféu de Prata ‘Shadowgate’." },
+  "portal-10": { name: "Praetorium (The Inquisition)", img: "Images/MUNDO/GIFeIMAGENS/Praetorium.webp", desc: "Mundo de progressão da Inquisição. Complete para o troféu de Prata ‘A Inquisição’." },
+  "portal-11": { name: "GATE Arch Defense Facility", img: "Images/MUNDO/GIFeIMAGENS/Gatearchdefensefacility.webp", desc: "Portal secreto sem posição fixa, ligado a lore avançada. Instalação de defesa numa muralha colossal com as receitas do Motion Module e do Excursion Suit. Sem troféu — um dos locais mais raros do jogo." },
+  "portal-12": { name: "Albatross", img: "Images/MUNDO/GIFeIMAGENS/Albatross.webp", desc: "Portal final do jogo, liberado após o Setor Residencial. Fale com Cahn e ative a pedra ritual para a luta final contra IS-0117 — troféu de Ouro ‘Apocalíptico’. Não é opcional." },
+  "portal-13": { name: "Rise (Rise Facility)", img: "Images/MUNDO/GIFeIMAGENS/Rise.webp", desc: "Um dos mundos mais perigosos — a Order infiltrou o prédio inteiro. Resolva o puzzle do Laser Lab na Adjustment Wing (Cascade) para abrir o portal; cuidado com snipers pro troféu ‘A Grande Maçã’." },
+  "portal-14": { name: "North Pole", img: "Images/MUNDO/GIFeIMAGENS/Northpole.webp", desc: "Cidadezinha natalina congelada, acessada por um globo de neve no Containment Dirac (Cascade). Derrote o Boneco de Neve pra desbloquear Winter Cabin como Home World — sem troféu específico." },
+  "portal-15": { name: "Dunkeltaler Forest", img: "Images/MUNDO/GIFeIMAGENS/Dunkeltalerforest.webp", desc: "Crossover com Voices of the Void: floresta suíça com observatório abandonado, na Hydroplant (exige o Neutrino Mapper). Cuidado com os wisps — vermelhos explodem, verdes teleportam você." },
+  "portal-16": { name: "Royal Range", img: "Images/MUNDO/GIFeIMAGENS/Royalrange.webp", desc: "Nível retro 3D nevado via arcade ‘Space Queen’ (Containment Helmholtz, exige Keypad Hacker T5). Pule nos inimigos e colete Royal Crowns pro troféu ‘Conflito na Cordilheira Real’." },
+  "portal-17": { name: "The Pool Room", img: "Images/MUNDO/GIFeIMAGENS/Thepoolroom.webp", desc: "Piscina infinita. Sente-se na Cadeira Vermelha do ambiente para ativar o portal de saída e o troféu ‘Não Corra’." },
+  "portal-18": { name: "The World in the Mirror", img: "Images/MUNDO/GIFeIMAGENS/Theworldinthemirror.webp", desc: "Mundo espelhado e plano. Só toque a grama para o troféu ‘Chato Igual Panqueca’ — nem precisa sair pelo portal." },
+  "portal-19": { name: "Some Distant Shore", img: "Images/MUNDO/GIFeIMAGENS/Somedistantshore.webp", desc: "Mecânica especial, não é um portal fixo: sente-se no Privada-Portal (Data Farm do Escritório) com pouca continência pra ter chance de teletransporte. Chegar lá já garante o troféu ‘Não Se Fala Daquele Lugar’." },
 };
 
 // Pins de Setores — a POSIÇÃO (pt), o ícone/cor do card e o link de "Saiba
@@ -7442,7 +7485,7 @@ function gatepalIconFor(poi) {
 function gatepalColorFor(poi) {
   if (poi.isPersonal) {
     if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].color;
-    return '#9fb0a8';
+    return C.white;
   }
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
@@ -7511,7 +7554,7 @@ function renderGatepalCatIcons() {
   gatepalCatIconsEl.innerHTML = '';
   const cats = [...Object.keys(gatepalCategories), 'pessoal'];
   cats.forEach(cat => {
-    const info = cat === 'pessoal' ? { label: 'Pins Pessoais', icon: '📌', color: '#9fb0a8' } : gatepalCategories[cat];
+    const info = cat === 'pessoal' ? { label: 'Pins Pessoais', icon: '📌', color: C.white } : gatepalCategories[cat];
     const isHidden = gatepalHiddenCats.has(cat);
     const btn = document.createElement('button');
     btn.type = 'button';
