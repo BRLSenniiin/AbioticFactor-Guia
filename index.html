@@ -7087,22 +7087,62 @@ const gatepalPortalPois = portaisData.map((p, i) => {
   };
 }).filter(p => p.pt);
 
-// Pins de Comida, Armas, NPCs e Reciclagem — AINDA VAZIOS DE PROPÓSITO.
-// Diferente dos Setores/Portais (que já tinham coordenadas do sistema
-// antigo), não existe nenhuma fonte confiável de ONDE ficam pontos fixos
-// de comida/armas/NPCs/salas de reciclagem no Mapa Geral — ele é uma visão
-// macro da Facility (setores + portais), não um mapa detalhado por sala.
-// Pra adicionar um pin real: use o "🎯 Modo Calibração" pra pegar x/y, e
-// copie o formato de gatepalSetorPois/gatepalPortalPois acima. Até lá, use
-// os Pins Pessoais (📌) pra marcar por conta própria enquanto explora.
-const gatepalComidaPois = [];
-const gatepalArmaPois = [];
-const gatepalNpcPois = [];
-const gatepalReciclagemPois = [];
+// ════════════════════════════════════════════════════════════════════
+// PINS MANUAIS — é AQUI que você adiciona pin novo pelo código.
+// Cobre as categorias que ainda não tinham lugar fixo: Comida, Armas,
+// NPCs, Reciclagem/Farm, Informação, Colecionáveis, Ponto de Atenção,
+// Banheiro e Porta de Hackeamento. (Setores/Portais continuam vindo de
+// gatepalSetorPois/gatepalPortalPois acima — mecânica própria, ligada
+// às abas Setores/Portais, não mexer aqui.)
+//
+// UM PIN = UM OBJETO, com os campos:
+//   id    → identificador único (string), ex: 'comida-1'
+//   cat   → categoria — define ícone e cor sozinho (ver gatepalCategories
+//           lá em cima). Use exatamente uma destas chaves:
+//           'comida' | 'arma' | 'npc' | 'reciclagem' | 'informação' |
+//           'colecionáveis' | 'atenção' | 'banheiro' | 'porta'
+//   mapId → em qual mapa o pin aparece. Use exatamente um destes ids
+//           (mesmo id usado em gatepalMaps, lá em cima):
+//           'geral' | 'office1' | 'office2' | 'office3' | 'fargarden' |
+//           'flathill' | 'manufacturingwest'
+//   pt    → posição em % da imagem do mapa: { x: 0-100, y: 0-100 }.
+//           Use o "🎯 Modo Calibração" no mapa certo pra clicar em cima
+//           do ponto real e pegar o x/y exato — depois é só colar aqui.
+//   name  → título mostrado no popup
+//   img   → (opcional) caminho da imagem do popup, ex: 'Images/MUNDO/...'
+//   desc  → texto do popup
+//
+// Organizado abaixo por mapa: cole o pin novo dentro do bloco do mapa
+// correspondente (facilita achar e não bagunça a ordem). Bloco vazio
+// só significa que aquele mapa ainda não tem nenhum pin manual.
+// ════════════════════════════════════════════════════════════════════
+const gatepalPinsManuais = [
+
+  // ── Mapa Geral (GATEPAL) ──────────────────────────────────────────
+
+  // ── Office Sector — Nível 1 ───────────────────────────────────────
+
+  // ── Office Sector — Nível 2 ───────────────────────────────────────
+  {
+    id: 'npc-gaz', cat: 'npc', mapId: 'office2',
+    pt: { x: 45.3, y: 41.8 },
+    name: 'Gaz (Recepcionista)',
+    desc: 'NPC escondido dentro de um armário neste andar do Office Sector. Reclamando sobre os monstros que invadiram sua recepção e com um medo extremo.',
+  },
+
+  // ── Office Sector — Nível 3 ───────────────────────────────────────
+
+  // ── Far Garden ────────────────────────────────────────────────────
+
+  // ── Flathill ──────────────────────────────────────────────────────
+
+  // ── Manufacturing West ────────────────────────────────────────────
+
+];
 
 const gatepalOficialPois = [
   ...gatepalSetorPois, ...gatepalPortalPois,
-  ...gatepalComidaPois, ...gatepalArmaPois, ...gatepalNpcPois, ...gatepalReciclagemPois,
+  ...gatepalPinsManuais,
 ];
 
 // ── Persistência local — progresso ("já encontrei") e pins pessoais.
