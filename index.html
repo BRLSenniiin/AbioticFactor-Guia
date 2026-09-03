@@ -1214,7 +1214,18 @@
   }
   #gatepalPoiPopover .deploy-hologram.is-photo .deploy-hologram-img,
   #gatepalPoiPopover .gatepal-popover-overlay.is-floating .deploy-hologram.is-photo .deploy-hologram-img {
-    width: 100% !important; height: 100% !important;
+    width: 100% !important; height: calc(100% + 20px) !important;
+    top: -10px !important; /* corta 10px de cima e 10px de baixo (a caixa tem overflow:hidden) */
+  }
+  /* Modo foto (screenshot real) — caixa fixada na proporção 860x427,
+     com cantos arredondados. O scanner (.deploy-scanline, elemento filho)
+     continua normal — só acompanha o novo formato arredondado porque o
+     container já tinha overflow:hidden. Vale igual em QUALQUER categoria
+     e mapa, atual ou futuro — antes só entrava pra Setor/Portal, por isso
+     os outros pins (ex: NPC) ficavam com a foto pequena e ruim comparado
+     ao resto. */
+  #gatepalPoiPopover .deploy-hologram.is-photo {
+    height: auto; aspect-ratio: 860 / 427; border-radius: 10px;
   }
   /* Ícone dentro do TÍTULO do popup (ex: categoria Portais usa <img>) — sem
      isso ele herda o width/height gravado no próprio arquivo .svg (ex: 512px)
@@ -7121,13 +7132,37 @@ const gatepalPinsManuais = [
   // ── Mapa Geral (GATEPAL) ──────────────────────────────────────────
 
   // ── Office Sector — Nível 1 ───────────────────────────────────────
-
+  {
+    id: 'npc-dr-thuler', cat: 'npc', mapId: 'office1',
+    pt: { x: 47.4, y: 23.5 },
+    name: 'Dr. Thuler',
+    desc: ' Cafeteria — Fica sentado reclamando da situação em que se encontra e lamenta a morte de seu amigo na porta da cafeteria.',
+  },
+  {
+    id: 'atenção-queda-de-luz', cat: 'atenção', mapId: 'office1',
+    pt: { x: 11.9, y: 8.1 },
+    name: 'Queda de Luz no Setor Oficial',
+    desc: 'No Setor Oficial, nos três setores é ocorrido uma queda de luz perto do horário de segurança dos setores, cai a luz as 21h da noite e volta as 6h da manhã.',
+  },
+  {
+    id: 'colecionáveis-bobblehead', cat: 'colecionáveis', mapId: 'office1',
+    pt: { x: 50.2, y: 77.0 },
+    name: ' GATE Defense Team Bobblehead',
+    desc: ' Dentro da cabine de segurança do Warren. Pode hackear para adentrar o local.',
+  },
   // ── Office Sector — Nível 2 ───────────────────────────────────────
   {
     id: 'npc-gaz', cat: 'npc', mapId: 'office2',
     pt: { x: 45.3, y: 41.8 },
+    img: "Images/MUNDO/GIFeIMAGENS/NPCs/Gaz.webp",
     name: 'Gaz (Recepcionista)',
     desc: 'NPC escondido dentro de um armário neste andar do Office Sector. Reclamando sobre os monstros que invadiram sua recepção e com um medo extremo.',
+  },
+  {
+    id: 'npc-dr-archie-roberts', cat: 'npc', mapId: 'office2',
+    pt: { x: 48.6, y: 6.2 },
+    name: 'Dr. Archie Roberts',
+    desc: 'Em cima, nas paredes de uma sala em curto-circuito com água. — Está esperando no teto em pedaços, verifique uma de duas salas de um corredor vermelho.',
   },
 
   // ── Office Sector — Nível 3 ───────────────────────────────────────
@@ -7696,7 +7731,7 @@ function openGatepalPoiPopover(poi, anchorEl) {
     holo.style.display = 'none';
   } else {
     holo.style.display = 'flex';
-    holo.classList.toggle('is-photo', poi.cat === 'setor' || poi.cat === 'portal');
+    holo.classList.toggle('is-photo', !!poi.img);
     fallback.style.display = 'none';
     img.style.display = 'block';
     img.src = poi.img || '';
