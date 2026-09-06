@@ -1145,7 +1145,24 @@
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
   .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
   .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
-  .gatepal-pin.is-done { opacity: 0.4; filter: grayscale(70%); }
+  /* Concluído: o pin em si quase some (miolo bem apagado + dessaturado),
+     mas um X neon pequeno fica por cima marcando "feito". O X não pode
+     herdar a mesma opacidade do miolo, senão ele também sumiria — por
+     isso a opacidade vai só no svg+ícone, e o X é um par de pseudo-
+     elementos do próprio .gatepal-pin, com opacidade cheia. */
+  .gatepal-pin.is-done .gatepal-pin-svg,
+  .gatepal-pin.is-done .gatepal-pin-icon {
+    opacity: 0.12; filter: grayscale(100%);
+  }
+  .gatepal-pin.is-done::before,
+  .gatepal-pin.is-done::after {
+    content: ''; position: absolute; top: 34%; left: 50%;
+    width: 60%; height: 2px; background: var(--green);
+    box-shadow: 0 0 4px var(--green), 0 0 8px var(--green);
+    z-index: 6; pointer-events: none;
+  }
+  .gatepal-pin.is-done::before { transform: translate(-50%, -50%) rotate(45deg); }
+  .gatepal-pin.is-done::after  { transform: translate(-50%, -50%) rotate(-45deg); }
 
   .gatepal-coord-readout {
     display: none; align-items: center; gap: 10px; flex-wrap: wrap;
