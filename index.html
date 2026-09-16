@@ -1009,10 +1009,23 @@
   .gatepal-mapselect.open .gatepal-mapselect-arrow { transform: rotate(180deg); }
   .gatepal-mapselect-list {
     display: none; position: absolute; top: calc(100% + 6px); left: 0; width: max-content; min-width: 240px; max-width: 88vw;
-    background: rgba(4,10,7,0.98); border: 1px solid var(--green); max-height: 55vh; overflow-y: auto;
+    background: rgba(4,10,7,0.98); border: 1px solid var(--green);
+    max-height: 222px; overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
   .gatepal-mapselect.open .gatepal-mapselect-list { display: block; }
+  /* Setas de "tem mais pra rolar" — ficam grudadas em cima/embaixo da
+     lista (sticky, sobem/descem junto com o scroll) e só aparecem quando
+     dá pra rolar naquela direção. Puramente visuais (pointer-events:none)
+     pra não atrapalhar clique nos itens perto da borda. */
+  .gatepal-mapselect-scrollarrow {
+    display: none; position: sticky; left: 0; right: 0; z-index: 2;
+    align-items: center; justify-content: center; height: 16px;
+    font-size: 9px; line-height: 1; color: var(--greenLt); pointer-events: none;
+  }
+  .gatepal-mapselect-scrollarrow.is-visible { display: flex; }
+  .gatepal-mapselect-scrollarrow.is-up { top: 0; background: linear-gradient(to bottom, rgba(4,10,7,0.98) 45%, rgba(4,10,7,0)); }
+  .gatepal-mapselect-scrollarrow.is-down { bottom: 0; background: linear-gradient(to top, rgba(4,10,7,0.98) 45%, rgba(4,10,7,0)); }
   .gatepal-mapselect-item { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.15s; }
   .gatepal-mapselect-item:last-child { border-bottom: none; }
   .gatepal-mapselect-item:hover { background: rgba(0,224,96,0.08); }
@@ -1145,14 +1158,15 @@
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
   .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
   .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
-  /* Concluído: o pin em si quase some (miolo bem apagado + dessaturado),
-     mas um X neon pequeno fica por cima marcando "feito". O X não pode
-     herdar a mesma opacidade do miolo, senão ele também sumiria — por
-     isso a opacidade vai só no svg+ícone, e o X é um par de pseudo-
-     elementos do próprio .gatepal-pin, com opacidade cheia. */
+  /* Concluído: o miolo do pin fica visivelmente apagado + dessaturado
+     (mas ainda visível, não quase invisível), e um X neon pequeno fica
+     por cima marcando "feito". O X não pode herdar a mesma opacidade do
+     miolo, senão ele também ficaria fraco — por isso a opacidade vai só
+     no svg+ícone, e o X é um par de pseudo-elementos do próprio
+     .gatepal-pin, com opacidade cheia. */
   .gatepal-pin.is-done .gatepal-pin-svg,
   .gatepal-pin.is-done .gatepal-pin-icon {
-    opacity: 0.12; filter: grayscale(100%);
+    opacity: 0.45; filter: grayscale(100%);
   }
   .gatepal-pin.is-done::before,
   .gatepal-pin.is-done::after {
@@ -3270,7 +3284,11 @@
               <span class="gatepal-mapselect-name" id="gatepalMapSelectName">Mapa Geral</span>
               <span class="gatepal-mapselect-arrow">▾</span>
             </button>
-            <div class="gatepal-mapselect-list" id="gatepalMapSelectList"></div>
+            <div class="gatepal-mapselect-list" id="gatepalMapSelectList">
+              <div class="gatepal-mapselect-scrollarrow is-up" id="gatepalMapSelectArrowUp">▲</div>
+              <div class="gatepal-mapselect-items" id="gatepalMapSelectItems"></div>
+              <div class="gatepal-mapselect-scrollarrow is-down" id="gatepalMapSelectArrowDown">▼</div>
+            </div>
           </div>
         </div>
 
@@ -7149,37 +7167,13 @@ const gatepalPinsManuais = [
   // ── Mapa Geral (GATEPAL) ──────────────────────────────────────────
 
   // ── Office Sector — Nível 1 ───────────────────────────────────────
-  {
-    id: 'npc-dr-thuler', cat: 'npc', mapId: 'office1',
-    pt: { x: 47.4, y: 23.5 },
-    name: 'Dr. Thuler',
-    desc: ' Cafeteria — Fica sentado reclamando da situação em que se encontra e lamenta a morte de seu amigo na porta da cafeteria.',
-  },
-  {
-    id: 'atenção-queda-de-luz', cat: 'atenção', mapId: 'office1',
-    pt: { x: 11.9, y: 8.1 },
-    name: 'Queda de Luz no Setor Oficial',
-    desc: 'No Setor Oficial, nos três setores é ocorrido uma queda de luz perto do horário de segurança dos setores, cai a luz as 21h da noite e volta as 6h da manhã.',
-  },
-  {
-    id: 'colecionáveis-bobblehead', cat: 'colecionáveis', mapId: 'office1',
-    pt: { x: 50.2, y: 77.0 },
-    name: ' GATE Defense Team Bobblehead',
-    desc: ' Dentro da cabine de segurança do Warren. Pode hackear para adentrar o local.',
-  },
+
   // ── Office Sector — Nível 2 ───────────────────────────────────────
   {
     id: 'npc-gaz', cat: 'npc', mapId: 'office2',
     pt: { x: 45.3, y: 41.8 },
-    img: "Images/MUNDO/GIFeIMAGENS/NPCs/Gaz.webp",
     name: 'Gaz (Recepcionista)',
-    desc: 'NPC escondido dentro de um armário neste andar do Office Sector. Reclamando sobre os monstros que invadiram sua recepção e com um medo extremo.',
-  },
-  {
-    id: 'npc-dr-archie-roberts', cat: 'npc', mapId: 'office2',
-    pt: { x: 48.6, y: 6.2 },
-    name: 'Dr. Archie Roberts',
-    desc: 'Em cima, nas paredes de uma sala em curto-circuito com água. — Está esperando no teto em pedaços, verifique uma de duas salas de um corredor vermelho.',
+    desc: 'NPC escondido dentro de um armário neste andar do Office Sector.',
   },
 
   // ── Office Sector — Nível 3 ───────────────────────────────────────
@@ -7251,6 +7245,9 @@ const gatepalMapSelectBtnEl = document.getElementById('gatepalMapSelectBtn');
 const gatepalMapSelectIconEl = document.getElementById('gatepalMapSelectIcon');
 const gatepalMapSelectNameEl = document.getElementById('gatepalMapSelectName');
 const gatepalMapSelectListEl = document.getElementById('gatepalMapSelectList');
+const gatepalMapSelectItemsEl = document.getElementById('gatepalMapSelectItems');
+const gatepalMapSelectArrowUpEl = document.getElementById('gatepalMapSelectArrowUp');
+const gatepalMapSelectArrowDownEl = document.getElementById('gatepalMapSelectArrowDown');
 const gatepalDrawerEl = document.getElementById('gatepalDrawer');
 const gatepalDrawerHandleBtn = document.getElementById('gatepalDrawerHandle');
 const gatepalDrawerHandleTextEl = document.getElementById('gatepalDrawerHandleText');
@@ -7307,7 +7304,7 @@ function gatepalLngLatToPercent(lngLat) {
 // abas full-width). Cada item mostra ícone + nome + descrição; clicar
 // troca de mapa e fecha o dropdown sozinho. ──
 function renderGatepalMapSelectList() {
-  gatepalMapSelectListEl.innerHTML = '';
+  gatepalMapSelectItemsEl.innerHTML = '';
   gatepalMaps.forEach((m) => {
     const item = document.createElement('div');
     item.className = 'gatepal-mapselect-item' + (m.id === gatepalCurrentMapId ? ' active' : '');
@@ -7322,13 +7319,25 @@ function renderGatepalMapSelectList() {
       gatepalMapSelectEl.classList.remove('open');
       if (m.id !== gatepalCurrentMapId) gatepalLoadMap(m.id);
     });
-    gatepalMapSelectListEl.appendChild(item);
+    gatepalMapSelectItemsEl.appendChild(item);
   });
+  gatepalUpdateMapSelectArrows();
 }
+// Liga/desliga as setas de "tem mais pra rolar" (cima e baixo) conforme a
+// posição do scroll — some sozinha quando não tem mais pra onde rolar.
+function gatepalUpdateMapSelectArrows() {
+  const el = gatepalMapSelectListEl;
+  const canScrollUp = el.scrollTop > 2;
+  const canScrollDown = el.scrollTop < el.scrollHeight - el.clientHeight - 2;
+  gatepalMapSelectArrowUpEl.classList.toggle('is-visible', canScrollUp);
+  gatepalMapSelectArrowDownEl.classList.toggle('is-visible', canScrollDown);
+}
+gatepalMapSelectListEl.addEventListener('scroll', gatepalUpdateMapSelectArrows);
 renderGatepalMapSelectList();
 gatepalMapSelectBtnEl.addEventListener('click', (e) => {
   e.stopPropagation();
   gatepalMapSelectEl.classList.toggle('open');
+  if (gatepalMapSelectEl.classList.contains('open')) gatepalUpdateMapSelectArrows();
 });
 document.addEventListener('click', (e) => {
   if (!gatepalMapSelectEl.contains(e.target)) gatepalMapSelectEl.classList.remove('open');
