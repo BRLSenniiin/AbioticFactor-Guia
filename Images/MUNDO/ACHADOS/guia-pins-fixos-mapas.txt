@@ -1,0 +1,124 @@
+GUIA — PINS FIXOS COM IMAGEM (ABA MAPAS)
+========================================
+Arquivo: index.html  |  Aba: Mapas  |  Pasta das imagens: Images/MUNDO/ACHADOS/
+
+Aproximadamente entre: 7140 e 7209
+
+0. RESUMO DO QUE JÁ ESTÁ PRONTO NO CÓDIGO
+-----------------------------------------
+- Pins pessoais são editáveis: toque no pin > "Editar este pin pessoal"
+  (título, categoria, localização e nota; a posição não muda).
+- Categoria nova "Monstros" (chave: 'monstro'), com filtro na barra de ícones
+  e também na lista de categorias do formulário de pin pessoal.
+- Pins fixos aceitam o campo  achado  = só o nome do arquivo da imagem.
+  A pasta (Images/MUNDO/ACHADOS/) e a extensão (.webp) entram sozinhas.
+
+
+1. O QUE VOCÊ PRECISA FAZER (ORDEM RECOMENDADA)
+-----------------------------------------------
+
+PASSO 1 — Colocar as imagens na pasta
+  - Copie todos os .webp para:  Images/MUNDO/ACHADOS/
+  - Use nomes simples, sem "#" e sem "?" (quebram o endereço da imagem).
+    Espaços e acentos funcionam, mas evite: se o site for para um servidor
+    (ex: GitHub Pages), maiúsculas e minúsculas fazem diferença.
+    "Lobo.webp" e "lobo.webp" são arquivos diferentes lá.
+  - Anote a lista de nomes (sem o .webp) que você vai usar.
+
+PASSO 2 — (Opcional) Colocar o ícone de Monstros
+  - Crie/coloque o arquivo:  Images/Icons/SVG/monster.svg
+  - Enquanto ele não existir, o filtro mostra o emoji 👹 no lugar.
+    Quando o arquivo existir, ele passa a ser usado sozinho.
+
+PASSO 3 — Pegar as coordenadas de cada pin
+  Você já tem pins pessoais? Então:
+  a) Abra a aba Mapas e escolha o mapa certo no seletor.
+  b) Abra a gaveta "FILTROS E FERRAMENTAS" > "Exportar Pins (JSON)" > Copiar.
+  c) Cada pin vem assim:
+       { "id": "...", "mapId": "geral", "x": 45.3, "y": 41.8,
+         "name": "...", "cat": "...", "location": "...", "note": "..." }
+  Ainda não criou o pin? Use o "Modo Calibração", clique no ponto exato e
+  copie o "x: NN.N, y: NN.N" que aparece embaixo do mapa.
+
+PASSO 4 — Escrever o pin fixo no código
+  Local: array  gatepalPinsManuais  (procure por "PINS MANUAIS" no index.html).
+  Ele já é dividido por mapa. Cole o pin dentro do bloco do mapa certo:
+    Mapa Geral | Office Sector Nível 1, 2, 3 | Far Garden | Flathill |
+    Manufacturing West
+
+  MODELO PRA COPIAR:
+    {
+      id: 'monstro-1', cat: 'monstro', mapId: 'geral',
+      pt: { x: 0, y: 0 },
+      name: 'Nome do pin', achado: 'nome-do-arquivo',
+      desc: 'Texto do popup.',
+    },
+
+  Como converter o JSON exportado para o pin fixo:
+    JSON exportado           Pin fixo
+    ----------------------   -----------------------------------------
+    id                       id  (troque por um único e definitivo)
+    mapId                    mapId  (igual)
+    x e y                    pt: { x: ..., y: ... }
+    name                     name
+    cat                      cat  (use 'monstro' para monstros)
+    location + note          desc  (junte os dois num texto só)
+    (não existe)             achado: 'nome-do-arquivo'  (sem .webp)
+
+  Valores aceitos:
+    cat:   'comida' | 'arma' | 'npc' | 'reciclagem' | 'informação' |
+           'colecionáveis' | 'atenção' | 'banheiro' | 'porta' | 'monstro'
+    mapId: 'geral' | 'office1' | 'office2' | 'office3' | 'fargarden' |
+           'flathill' | 'manufacturingwest'
+
+  Regras importantes:
+    - O id de cada pin deve ser ÚNICO em todo o array.
+    - Não troque o id depois de publicar: o "Já encontrei / concluí" de cada
+      pin é salvo pelo id, então mudar o id perde essa marcação.
+    - Vírgula no fim de cada pin { ... },  e não esqueça as aspas nos textos.
+    - Se o texto tiver apóstrofo ('), escreva  \'  ou use aspas duplas.
+    - Se o pin tiver "img" preenchido, o "img" ganha do "achado".
+    - Pin sem "achado" e sem "img" mostra só o ícone da categoria no popup.
+
+PASSO 5 — Apagar os pins pessoais que viraram fixos
+  Se você deixar os dois, o pin aparece duplicado no mapa (o pessoal fica
+  salvo no navegador e não some sozinho).
+  Toque no pin pessoal > "Remover este pin pessoal".
+  Faça isso só DEPOIS de conferir o passo 6.
+
+PASSO 6 — Conferir
+  - Abra a aba Mapas, escolha o mapa e ligue/desligue o filtro Monstros.
+  - Toque em cada pin novo: a imagem deve aparecer no popup.
+  - Imagem não apareceu? Aperte F12 > aba Console/Rede e veja qual caminho
+    deu erro. Normalmente é nome digitado diferente do arquivo, letra
+    maiúscula/minúscula, ou arquivo fora da pasta ACHADOS.
+  - Confira também se o pin ficou no lugar certo do mapa (x/y).
+
+
+2. DICAS PARA MUITOS PINS DE UMA VEZ
+------------------------------------
+- Faça em lotes por mapa: um bloco por vez, testando no navegador antes do
+  próximo. Se algo quebrar, é mais fácil achar.
+- Numere os ids de forma previsível: 'monstro-1', 'monstro-2', ...
+  (ou 'monstro-lobo', 'monstro-aranha').
+- Depois de colar, um erro de vírgula ou aspas deixa a aba inteira sem
+  funcionar. Se isso acontecer, o console (F12) mostra a linha do erro.
+
+
+3. ONDE O CÓDIGO FICA (PARA CONSULTA)
+-------------------------------------
+- Categorias (ícone e cor):          const gatepalCategories
+- Pins fixos manuais:                const gatepalPinsManuais
+- Pasta das imagens dos pins:        const GATEPAL_ACHADOS_DIR
+- Montagem da lista oficial de pins: const gatepalOficialPois
+- Setores e portais (não mexer):     gatepalSectorPoints / gatepalPortalPoints /
+                                     gatepalPoiContent
+
+
+4. LIMITAÇÕES CONHECIDAS
+------------------------
+- A edição de pin pessoal e o filtro Monstros foram testados por código, sem o
+  mapa real desenhado. Confirme visualmente no navegador.
+- Só pins PESSOAIS podem ser editados pela tela. Pins fixos são editados
+  direto no código.
+- A edição não move o pin de lugar (só título, categoria, localização e nota).
