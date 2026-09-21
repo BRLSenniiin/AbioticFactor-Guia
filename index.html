@@ -1336,6 +1336,29 @@
     .gatepal-cat-icon-btn { width: 30px; height: 30px; font-size: 13px; }
   }
 
+  /* ── Celular + tela cheia: respiro entre os círculos de categoria e o
+     bloco de escolha de mapa, e visual mais arredondado no bloco.
+     O contador (badge) de cada círculo sobra 4px pra fora dele, por isso
+     o espaço entre as linhas de ícones e até o seletor precisa ser maior
+     que o gap normal — senão parece tudo grudado. ── */
+  @media (max-width: 768px) {
+    .gatepal-frame.is-fullscreen .gatepal-map-toolbar { gap: 18px; }
+    .gatepal-frame.is-fullscreen .gatepal-cat-icons { gap: 12px 8px; }
+    .gatepal-frame.is-fullscreen .gatepal-mapselect-btn {
+      padding: 10px 14px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(4,14,9,0.95), rgba(8,32,18,0.95));
+      border-color: rgba(0,224,96,0.55);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(96,255,144,0.08);
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    }
+    .gatepal-frame.is-fullscreen .gatepal-mapselect.open .gatepal-mapselect-btn {
+      border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 4px 14px rgba(0,0,0,0.5);
+    }
+    .gatepal-frame.is-fullscreen .gatepal-mapselect-list {
+      top: calc(100% + 8px); border-radius: 12px; border-color: rgba(0,224,96,0.55);
+    }
+  }
+
 
   /* ── TRADERS PANEL — CARDS DE TERMINAL GATE COM MEDALHÃO GRANDE ──
      Grade de cards no estilo "janela de terminal": faixa de risco
@@ -3382,6 +3405,7 @@
           <input type="checkbox" id="gpPoiCheckbox"><span>Já encontrei / conclui isso</span>
         </label>
         <button class="gatepal-popover-jump-btn" id="gpPoiJumpBtn" style="display:none">→ SAIBA MAIS</button>
+        <button class="gatepal-popover-jump-btn" id="gpPoiEditBtn" style="display:none">✏️ Editar este pin pessoal</button>
         <button class="gatepal-poi-del-btn" id="gpPoiDelBtn" style="display:none">🗑 Remover este pin pessoal</button>
       </div>
     </div>
@@ -7062,6 +7086,9 @@ const gatepalCategories = {
   atenção: { label: 'Ponto de atenção',icon: '<img src="Images/Icons/SVG/attencion.svg">', color: C.red},
   banheiro: { label: 'Banheiro',icon: '<img src="Images/Icons/SVG/bathroom.svg">', color: C.blueDark},
   porta: { label: 'Porta pra hackeamento',icon: '<img src="Images/Icons/SVG/door.svg">', color: C.violet},
+  // Ícone: Images/Icons/SVG/monster.svg (mesmo padrão dos outros). Enquanto esse arquivo
+  // não existir na pasta, o onerror troca sozinho pelo emoji 👹 — não fica ícone quebrado.
+  monstro: { label: 'Monstros',icon: "<img src=\"Images/Icons/SVG/monster.svg\" onerror=\"this.outerHTML='👹'\">", color: C.cyan},
 };
 
 // ── Conteúdo independente dos pins do Mapa Geral (popup) ──
@@ -7137,7 +7164,7 @@ const gatepalPortalPois = portaisData.map((p, i) => {
 // PINS MANUAIS — é AQUI que você adiciona pin novo pelo código.
 // Cobre as categorias que ainda não tinham lugar fixo: Comida, Armas,
 // NPCs, Reciclagem/Farm, Informação, Colecionáveis, Ponto de Atenção,
-// Banheiro e Porta de Hackeamento. (Setores/Portais continuam vindo de
+// Banheiro, Porta de Hackeamento e Monstros. (Setores/Portais continuam vindo de
 // gatepalSetorPois/gatepalPortalPois acima — mecânica própria, ligada
 // às abas Setores/Portais, não mexer aqui.)
 //
@@ -7146,7 +7173,7 @@ const gatepalPortalPois = portaisData.map((p, i) => {
 //   cat   → categoria — define ícone e cor sozinho (ver gatepalCategories
 //           lá em cima). Use exatamente uma destas chaves:
 //           'comida' | 'arma' | 'npc' | 'reciclagem' | 'informação' |
-//           'colecionáveis' | 'atenção' | 'banheiro' | 'porta'
+//           'colecionáveis' | 'atenção' | 'banheiro' | 'porta' | 'monstro'
 //   mapId → em qual mapa o pin aparece. Use exatamente um destes ids
 //           (mesmo id usado em gatepalMaps, lá em cima):
 //           'geral' | 'office1' | 'office2' | 'office3' | 'fargarden' |
@@ -7155,8 +7182,21 @@ const gatepalPortalPois = portaisData.map((p, i) => {
 //           Use o "🎯 Modo Calibração" no mapa certo pra clicar em cima
 //           do ponto real e pegar o x/y exato — depois é só colar aqui.
 //   name  → título mostrado no popup
-//   img   → (opcional) caminho da imagem do popup, ex: 'Images/MUNDO/...'
+//   img   → (opcional) caminho COMPLETO da imagem do popup, ex: 'Images/MUNDO/...'
+//   achado → (opcional) SÓ o nome do arquivo da imagem que está na pasta
+//           Images/MUNDO/ACHADOS/ — sem pasta e sem ".webp" (os dois entram
+//           sozinhos, ver GATEPAL_ACHADOS_DIR logo abaixo do array).
+//           Ex: achado: 'lobo-cinzento' → Images/MUNDO/ACHADOS/lobo-cinzento.webp
+//           Se o pin tiver "img" preenchido, "img" ganha do "achado".
 //   desc  → texto do popup
+//
+// MODELO PRA COPIAR (cole dentro do bloco do mapa certo e preencha):
+//   {
+//     id: 'monstro-1', cat: 'monstro', mapId: 'geral',
+//     pt: { x: 0, y: 0 },
+//     name: 'Nome do pin', achado: 'nome-do-arquivo',
+//     desc: 'Texto do popup.',
+//   },
 //
 // Organizado abaixo por mapa: cole o pin novo dentro do bloco do mapa
 // correspondente (facilita achar e não bagunça a ordem). Bloco vazio
@@ -7173,6 +7213,7 @@ const gatepalPinsManuais = [
     id: 'npc-gaz', cat: 'npc', mapId: 'office2',
     pt: { x: 45.3, y: 41.8 },
     name: 'Gaz (Recepcionista)',
+    achado: 'NPC-Gaz.webp',
     desc: 'NPC escondido dentro de um armário neste andar do Office Sector.',
   },
 
@@ -7186,9 +7227,18 @@ const gatepalPinsManuais = [
 
 ];
 
+// ── Pasta das imagens dos pins manuais. É só aqui que o caminho existe: nos
+// pins você escreve apenas o nome do arquivo em "achado" (a extensão é sempre
+// .webp; se digitar ".webp" no fim, também funciona). ──
+const GATEPAL_ACHADOS_DIR = 'Images/MUNDO/ACHADOS/';
+function gatepalAchadoUrl(nome) {
+  if (!nome) return '';
+  return GATEPAL_ACHADOS_DIR + (/\.webp$/i.test(nome) ? nome : nome + '.webp');
+}
+
 const gatepalOficialPois = [
   ...gatepalSetorPois, ...gatepalPortalPois,
-  ...gatepalPinsManuais,
+  ...gatepalPinsManuais.map(p => (p.achado && !p.img) ? Object.assign({}, p, { img: gatepalAchadoUrl(p.achado) }) : p),
 ];
 
 // ── Persistência local — progresso ("já encontrei") e pins pessoais.
@@ -7802,6 +7852,17 @@ function openGatepalPoiPopover(poi, anchorEl) {
     delBtn.style.display = 'none';
   }
 
+  const editBtn = document.getElementById('gpPoiEditBtn');
+  if (isPersonal) {
+    editBtn.style.display = 'block';
+    editBtn.onclick = () => {
+      gatepalPoiPopoverEl.classList.remove('active');
+      gatepalOpenEditPinModal(poi.id);
+    };
+  } else {
+    editBtn.style.display = 'none';
+  }
+
   gatepalPositionPopover(anchorEl);
   gatepalPoiPopoverEl.classList.add('active');
 }
@@ -7883,6 +7944,7 @@ function gatepalShowCalibrationReadout(pt, lngLat) {
 // ── Novo pin pessoal — modo dedicado (botão) ou Shift+clique (atalho de PC) ──
 function gatepalOpenAddPinModal(pt) {
   gatepalTempPinCoords = pt;
+  gatepalSetPinModalMode(false);
   document.getElementById('gpNewPinTitle').value = '';
   document.getElementById('gpNewPinCategory').value = 'pessoal';
   document.getElementById('gpNewPinLocation').value = '';
@@ -7892,6 +7954,30 @@ function gatepalOpenAddPinModal(pt) {
 function gatepalCloseAddPinModal() {
   document.getElementById('gatepalAddPinModal').classList.remove('active');
   gatepalTempPinCoords = null;
+  gatepalSetPinModalMode(false);
+}
+
+// ── Editar pin pessoal já salvo — reaproveita o mesmo modal do "novo pin"
+// (mesmos campos e mesmo botão Salvar). Posição (x/y), mapa e id não mudam. ──
+let gatepalEditingPinId = null;
+function gatepalSetPinModalMode(editing) {
+  document.querySelector('#gatepalAddPinModal .gatepal-modal-title').textContent = editing ? '✏️ EDITAR PIN PESSOAL' : '📌 NOVO PIN PESSOAL';
+  document.getElementById('gpNewPinSave').textContent = editing ? 'Salvar Alterações' : 'Salvar Pin';
+  if (!editing) gatepalEditingPinId = null;
+}
+function gatepalOpenEditPinModal(pinId) {
+  const pin = gatepalPersonalPins.find(p => p.id === pinId);
+  if (!pin) return;
+  gatepalTempPinCoords = null;
+  gatepalSetPinModalMode(true);
+  gatepalEditingPinId = pinId;
+  const sel = document.getElementById('gpNewPinCategory');
+  const cat = pin.cat || 'pessoal'; // pins antigos não têm "cat" — caem no genérico, igual à renderização
+  sel.value = [...sel.options].some(o => o.value === cat) ? cat : 'pessoal';
+  document.getElementById('gpNewPinTitle').value = pin.name || '';
+  document.getElementById('gpNewPinLocation').value = pin.location || '';
+  document.getElementById('gpNewPinDesc').value = pin.note || '';
+  document.getElementById('gatepalAddPinModal').classList.add('active');
 }
 
 // ── Clique único no mapa — decide entre calibração, novo pin, ou nada ──
@@ -7930,6 +8016,20 @@ document.getElementById('gatepalAddPinModal').addEventListener('click', (e) => {
 document.getElementById('gpNewPinSave').addEventListener('click', () => {
   const title = document.getElementById('gpNewPinTitle').value.trim();
   if (!title) { alert('Digite um título pro pin.'); return; }
+  if (gatepalEditingPinId) {
+    const pinEdit = gatepalPersonalPins.find(p => p.id === gatepalEditingPinId);
+    if (pinEdit) {
+      pinEdit.name = title;
+      pinEdit.cat = document.getElementById('gpNewPinCategory').value;
+      pinEdit.location = document.getElementById('gpNewPinLocation').value.trim();
+      pinEdit.note = document.getElementById('gpNewPinDesc').value.trim();
+      gatepalSavePersonalPins(gatepalPersonalPins);
+    }
+    gatepalCloseAddPinModal();
+    renderGatepalPins();
+    renderGatepalCatIcons();
+    return;
+  }
   if (!gatepalTempPinCoords) return;
   const pin = {
     id: 'pessoal-' + Date.now(),
