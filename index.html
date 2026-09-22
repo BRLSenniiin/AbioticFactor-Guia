@@ -1158,25 +1158,28 @@
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
   .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
   .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
-  /* Concluído: o miolo do pin fica visivelmente apagado + dessaturado
-     (mas ainda visível, não quase invisível), e um X neon pequeno fica
-     por cima marcando "feito". O X não pode herdar a mesma opacidade do
-     miolo, senão ele também ficaria fraco — por isso a opacidade vai só
-     no svg+ícone, e o X é um par de pseudo-elementos do próprio
-     .gatepal-pin, com opacidade cheia. */
+  /* Concluído: o ícone só fica um pouco mais apagado (o local continua
+     bem visível/reconhecível) e um "X" pequeno vira um selo no canto do
+     pin, tipo o contador dos filtros — marca "feito" sem tampar o ícone. */
   .gatepal-pin.is-done .gatepal-pin-svg,
   .gatepal-pin.is-done .gatepal-pin-icon {
-    opacity: 0.45; filter: grayscale(100%);
+    opacity: 0.8; filter: grayscale(45%);
   }
-  .gatepal-pin.is-done::before,
   .gatepal-pin.is-done::after {
-    content: ''; position: absolute; top: 34%; left: 50%;
-    width: 60%; height: 2px; background: var(--green);
-    box-shadow: 0 0 4px var(--green), 0 0 8px var(--green);
-    z-index: 6; pointer-events: none;
+    content: 'X'; position: absolute; top: -3px; right: -3px; z-index: 6;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--bg, #050a06); border: 1.5px solid var(--green);
+    color: var(--green); font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700; line-height: 12px;
+    text-align: center; box-shadow: 0 0 4px var(--green);
+    pointer-events: none;
   }
-  .gatepal-pin.is-done::before { transform: translate(-50%, -50%) rotate(45deg); }
-  .gatepal-pin.is-done::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+  .gatepal-pin.is-portal.is-done::after {
+    top: -2px; right: -2px; width: 11px; height: 11px; font-size: 9px; line-height: 10px;
+  }
+  .gatepal-pin.is-personal.is-done::after {
+    top: -2px; right: -2px; width: 9px; height: 9px; font-size: 7px; line-height: 8px; border-width: 1px;
+  }
 
   .gatepal-coord-readout {
     display: none; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -7213,7 +7216,6 @@ const gatepalPinsManuais = [
     id: 'npc-gaz', cat: 'npc', mapId: 'office2',
     pt: { x: 45.3, y: 41.8 },
     name: 'Gaz (Recepcionista)',
-    achado: 'NPC-Gaz.webp',
     desc: 'NPC escondido dentro de um armário neste andar do Office Sector.',
   },
 
