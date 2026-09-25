@@ -1043,7 +1043,7 @@
     display: flex; align-items: center; justify-content: center; font-size: 15px;
     transition: all 0.15s; flex-shrink: 0;
   }
-  .gatepal-cat-icon-btn img { width: 16px; height: 16px; }
+  .gatepal-cat-icon-btn img { width: 16px; height: 16px; filter: brightness(0) invert(1); }
   .gatepal-cat-icon-btn.is-active { box-shadow: 0 0 0 1px currentColor, 0 0 10px currentColor; }
   .gatepal-cat-icon-btn.is-hidden { opacity: 0.32; filter: grayscale(85%); }
   .gatepal-cat-icon-count {
@@ -1134,6 +1134,27 @@
      posiciona sozinho em cima da câmera WebGL. Mesmo visual/CSS de
      sempre, só a peça que reposiciona ele mudou de motor. ── */
   .gatepal-pin-wrap { background: transparent; border: none; }
+  /* ── Tooltip customizado (legenda em cima + pins do mapa) — mostra o nome
+     da categoria (e o nome do POI, no caso do pin) acima do elemento ao
+     passar o mouse, pra deixar claro o que cada ícone/cor representa,
+     em vez de depender só do title nativo do navegador (pequeno, sem
+     estilo, e que não aparece bem no celular). Usa a classe .gatepal-tip
+     + atributo data-tip, escopado só a esses dois lugares. ── */
+  .gatepal-tip { position: relative; }
+  .gatepal-tip::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+    background: rgba(4,12,8,0.96); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--font-base); font-size: var(--fs-2xs); line-height: 1.3;
+    padding: 5px 8px; border-radius: 4px; white-space: nowrap; max-width: 220px;
+    white-space: normal; text-align: center;
+    opacity: 0; pointer-events: none; z-index: 850;
+    transition: opacity 0.15s, transform 0.15s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  }
+  .gatepal-tip:hover::after, .gatepal-tip:focus-visible::after {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
   .gatepal-pin {
     position: relative;
     width: 32px; height: 39px;
@@ -1150,10 +1171,15 @@
   .gatepal-pin-svg path { fill: currentColor; stroke: #fff; stroke-width: 2.2; stroke-linejoin: round; }
   .gatepal-pin-icon {
     position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
-    width: 70%; text-align: center;
+    width: 70%; height: 70%; text-align: center;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
     font-size: 14px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
   }
-  .gatepal-pin-icon svg, .gatepal-pin-icon img { width: 100%; height: auto; display: block; margin: 0 auto; }
+  .gatepal-pin-icon svg, .gatepal-pin-icon img { width: 100%; height: 100%; object-fit: contain; display: block; margin: 0 auto; }
+  /* Ícone sempre branco dentro do pin, seja qual for a cor original do SVG —
+     brightness(0) achata tudo pra preto e invert(1) vira branco sólido.
+     Escopado só ao ícone do pin do mapa, não mexe no resto do site. */
+  .gatepal-pin-icon img { filter: brightness(0) invert(1); }
   .gatepal-pin.is-portal { width: 25px; height: 31px; }
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
   .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
@@ -7077,21 +7103,24 @@ let gatepalCurrentMapId = 'geral';
 // ── Categorias de pin — ícone e cor definem a identidade visual: o ícone
 // sozinho já diz "isso é comida", "isso é arma", etc. Pins pessoais também
 // podem usar uma dessas categorias (escolhida no formulário de novo pin). ──
+// ── Paleta dos pins do Mapa (versão escurecida, pedida separadamente da
+// paleta global "C" usada no resto do site — por isso são hex literais
+// aqui, e não C.xxx: mudar C.xxx afetaria setores/troféus/etc. também. ──
 const gatepalCategories = {
-  setor:      { label: 'Setores',    icon: '<img src="Images/Icons/SVG/sector.svg">', color: C.black },
-  portal:     { label: 'Portais',    icon: '<img src="Images/Icons/SVG/world.svg">', color: C.purple },
-  comida:     { label: 'Comida',     icon: '<img src="Images/Icons/SVG/food.svg">', color: C.blue },
-  arma:       { label: 'Armas',      icon: '<img src="Images/Icons/SVG/weapon.svg">', color: C.wine },
-  npc:        { label: 'NPCs',       icon: '<img src="Images/Icons/SVG/npc.svg">', color: C.brown },
-  reciclagem: { label: 'Reciclagem', icon: '<img src="Images/Icons/SVG/reciclagem.svg">', color: C.greenLt },
-  informação: { label: 'Informações',icon: '<img src="Images/Icons/SVG/information.svg">', color: C.amber},
-  colecionáveis: { label: 'Colecionáveis',icon: '<img src="Images/Icons/SVG/collectible.svg">', color: C.mustard},
-  atenção: { label: 'Ponto de atenção',icon: '<img src="Images/Icons/SVG/attencion.svg">', color: C.red},
-  banheiro: { label: 'Banheiro',icon: '<img src="Images/Icons/SVG/bathroom.svg">', color: C.blueDark},
-  porta: { label: 'Porta pra hackeamento',icon: '<img src="Images/Icons/SVG/door.svg">', color: C.violet},
+  setor:      { label: 'Setores',    icon: '<img src="Images/Icons/SVG/sector.svg">', color: "#0f0f0f" },
+  portal:     { label: 'Portais',    icon: '<img src="Images/Icons/SVG/world.svg">', color: "#40136d" },
+  comida:     { label: 'Comida',     icon: '<img src="Images/Icons/SVG/food.svg">', color: "#0e3a5d" },
+  arma:       { label: 'Armas',      icon: '<img src="Images/Icons/SVG/weapon.svg">', color: "#2e1215" },
+  npc:        { label: 'NPCs',       icon: '<img src="Images/Icons/SVG/npc.svg">', color: "#322112" },
+  reciclagem: { label: 'Reciclagem', icon: '<img src="Images/Icons/SVG/reciclagem.svg">', color: "#008c2a" },
+  informação: { label: 'Informações',icon: '<img src="Images/Icons/SVG/information.svg">', color: "#5c410b"},
+  colecionáveis: { label: 'Colecionáveis',icon: '<img src="Images/Icons/SVG/collectible.svg">', color: "#52420e"},
+  atenção: { label: 'Ponto de atenção',icon: '<img src="Images/Icons/SVG/attencion.svg">', color: "#5c110b"},
+  banheiro: { label: 'Banheiro',icon: '<img src="Images/Icons/SVG/bathroom.svg">', color: "#081726"},
+  porta: { label: 'Porta pra hackeamento',icon: '<img src="Images/Icons/SVG/door.svg">', color: "#300c60"},
   // Ícone: Images/Icons/SVG/monster.svg (mesmo padrão dos outros). Enquanto esse arquivo
   // não existir na pasta, o onerror troca sozinho pelo emoji 👹 — não fica ícone quebrado.
-  monstro: { label: 'Monstros',icon: "<img src=\"Images/Icons/SVG/monster.svg\" onerror=\"this.outerHTML='👹'\">", color: C.cyan},
+  monstro: { label: 'Monstros',icon: "<img src=\"Images/Icons/SVG/monster.svg\" onerror=\"this.outerHTML='👹'\">", color: "#0b554e"},
 };
 
 // ── Conteúdo independente dos pins do Mapa Geral (popup) ──
@@ -7653,9 +7682,11 @@ function gatepalBuildPinEl(poi) {
   const color = gatepalColorFor(poi);
   const isDone = !!gatepalProgress[poi.id];
   const pinClass = 'gatepal-pin' + (poi.cat === 'portal' ? ' is-portal' : '') + (poi.isPersonal ? ' is-personal' : '') + (isDone ? ' is-done' : '');
+  const catLabel = gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].label : (poi.isPersonal ? 'Pins Pessoais' : '');
   const wrap = document.createElement('div');
-  wrap.className = 'gatepal-pin-wrap';
+  wrap.className = 'gatepal-pin-wrap gatepal-tip';
   wrap.title = poi.name;
+  wrap.dataset.tip = catLabel ? `${catLabel} — ${poi.name}` : poi.name;
   wrap.innerHTML = `<div class="${pinClass}" style="color:${color}">${GATEPAL_PIN_SVG}<span class="gatepal-pin-icon">${gatepalIconFor(poi)}</span></div>`;
   return wrap;
 }
@@ -7711,9 +7742,10 @@ function renderGatepalCatIcons() {
     const isHidden = gatepalHiddenCats.has(cat);
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'gatepal-cat-icon-btn' + (isHidden ? ' is-hidden' : ' is-active');
+    btn.className = 'gatepal-cat-icon-btn gatepal-tip' + (isHidden ? ' is-hidden' : ' is-active');
     btn.style.color = info.color;
     btn.title = `${info.label} (${gatepalCatCount(cat)}) — clique pra ${isHidden ? 'mostrar' : 'ocultar'}`;
+    btn.dataset.tip = info.label;
     btn.dataset.cat = cat;
     btn.innerHTML = `${info.icon}<span class="gatepal-cat-icon-count">${gatepalCatCount(cat)}</span>`;
     btn.addEventListener('click', () => {
