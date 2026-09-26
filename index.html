@@ -7675,7 +7675,7 @@ function gatepalIconFor(poi) {
 function gatepalColorFor(poi) {
   if (poi.isPersonal) {
     const base = (poi.cat && gatepalCategories[poi.cat]) ? gatepalCategories[poi.cat].color : C.white;
-    return gatepalLightenColor(base, 0.5);
+    return base;
   }
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
