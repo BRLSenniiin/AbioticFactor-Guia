@@ -1181,8 +1181,8 @@
   .gatepal-pin-icon img { filter: brightness(0) invert(1); }
   .gatepal-pin.is-portal { width: 25px; height: 31px; }
   .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 11px; }
-  .gatepal-pin.is-personal { width: 21px; height: 25px; opacity: 0.9; }
-  .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
+  .gatepal-pin.is-personal { width: 25px; height: 30px; opacity: 0.9; }
+  .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 10px; }
   /* Concluído: o ícone só fica um pouco mais apagado (o local continua
      bem visível/reconhecível) e um "X" pequeno vira um selo no canto do
      pin, tipo o contador dos filtros — marca "feito" sem tampar o ícone. */
@@ -1356,8 +1356,8 @@
     .gatepal-pin-icon { font-size: 13px; }
     .gatepal-pin.is-portal { width: 22px; height: 26px; }
     .gatepal-pin.is-portal .gatepal-pin-icon { font-size: 10px; }
-    .gatepal-pin.is-personal { width: 17px; height: 21px; }
-    .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 8px; }
+    .gatepal-pin.is-personal { width: 20px; height: 24px; }
+    .gatepal-pin.is-personal .gatepal-pin-icon { font-size: 9px; }
     .gatepal-mapengine { height: 58vh; height: 58dvh; }
     .gatepal-zoom-controls button { width: 34px; height: 34px; }
     .gatepal-mapselect-name { max-width: 34vw; }
@@ -7656,6 +7656,15 @@ gatepalAddPinBtn.addEventListener('click', () => {
 });
 
 // ── Ícone/cor de cada pin ──
+// Clareia uma cor em direção ao branco (0 = cor original, 1 = branco puro).
+// Usado só nos pins pessoais, que ficam mais legíveis com a cor clara da
+// categoria em vez da mesma versão escura usada nos pins normais do mapa.
+function gatepalLightenColor(hex, amount) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+  const mix = (c) => Math.round(c + (255 - c) * amount);
+  return '#' + [mix(r), mix(g), mix(b)].map(v => v.toString(16).padStart(2, '0')).join('');
+}
 function gatepalIconFor(poi) {
   if (poi.isPersonal) {
     if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].icon;
@@ -7665,8 +7674,8 @@ function gatepalIconFor(poi) {
 }
 function gatepalColorFor(poi) {
   if (poi.isPersonal) {
-    if (poi.cat && gatepalCategories[poi.cat]) return gatepalCategories[poi.cat].color;
-    return C.white;
+    const base = (poi.cat && gatepalCategories[poi.cat]) ? gatepalCategories[poi.cat].color : C.white;
+    return gatepalLightenColor(base, 0.5);
   }
   return gatepalCategories[poi.cat] ? gatepalCategories[poi.cat].color : C.green;
 }
