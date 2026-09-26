@@ -1140,7 +1140,6 @@
      em vez de depender só do title nativo do navegador (pequeno, sem
      estilo, e que não aparece bem no celular). Usa a classe .gatepal-tip
      + atributo data-tip, escopado só a esses dois lugares. ── */
-  .gatepal-tip { position: relative; }
   .gatepal-tip::after {
     content: attr(data-tip);
     position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
