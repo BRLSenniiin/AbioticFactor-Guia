@@ -7743,6 +7743,7 @@ function renderGatepalCatIcons() {
     btn.type = 'button';
     btn.className = 'gatepal-cat-icon-btn gatepal-tip' + (isHidden ? ' is-hidden' : ' is-active');
     btn.style.color = info.color;
+    btn.style.background = info.color;
     btn.title = `${info.label} (${gatepalCatCount(cat)}) — clique pra ${isHidden ? 'mostrar' : 'ocultar'}`;
     btn.dataset.tip = info.label;
     btn.dataset.cat = cat;
