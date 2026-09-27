@@ -7096,6 +7096,39 @@ const gatepalMaps = [
       tileSize: 256,
     },
   },
+  {
+    id: 'cascadewildlifepens', name: 'Cascade Laboratories Wild Life Pens', icon: '🔭', img: 'Images/MUNDO/Cascade Laboratories Wild Life Pens/Cascade Laboratories Wild Life Pens.webp',
+    desc: 'Os Wildlife Pens (Cercados de Vida Selvagem) nos Laboratórios Cascade são o setor de contenção e observação biológica da instalação GATE. O local funciona como um zoológico científico projetado para manter e estudar a fauna alienígena capturada nos mundos de portal (como os Peccaries e outras entidades do Anteverso).',
+    tiles: {
+      url: 'Images/MUNDO/Cascade Laboratories Wild Life Pens/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'canaan', name: 'Canaan', icon: '🙏', img: 'Images/MUNDO/CANAAN/CANAAN.webp',
+    desc: 'Canaan é um mundo de portal (Anteverso) que assume a forma de um pântano sombrio, noturno e alagado, fortemente patrulhado por uma facção militar extremista chamada The Order. O cenário é marcado por passarelas de madeira, torres de vigia e franco-atiradores letais, funcionando como uma zona de combate de alto risco. No entanto, é um ponto logístico crucial para a progressão, pois abriga o acampamento seguro da NPC aliada Lenora e serve como a principal fonte de minérios avançados do jogo, como as Lodestones (Magnetitas).',
+    tiles: {
+      url: 'Images/MUNDO/CANAAN/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
+  {
+    id: 'rise', name: 'RISE', icon: '🏙️', img: 'Images/MUNDO/RISE/RISE.webp',
+    desc: 'RISE é um mundo de portal que transporta o jogador para os andares superiores e o terraço de um gigantesco arranha-céu, revelando-se como uma instalação da própria GATE (possivelmente em uma linha do tempo ou Terra alternativa).',
+    tiles: {
+      url: 'Images/MUNDO/RISE/{z}/{x}/{y}.webp',
+      bounds: [0.00000000, -0.17403730, 0.30940011, 0.00000000], // [west, south, east, north]
+      minzoom: 10,
+      maxzoom: 14,
+      tileSize: 256,
+    },
+  },
 ];
 let gatepalCurrentMapId = 'geral';
 
@@ -7111,7 +7144,7 @@ const gatepalCategories = {
   comida:     { label: 'Comida',     icon: '<img src="Images/Icons/SVG/food.svg">', color: "#0e3a5d" },
   arma:       { label: 'Armas',      icon: '<img src="Images/Icons/SVG/weapon.svg">', color: "#2e1215" },
   npc:        { label: 'NPCs',       icon: '<img src="Images/Icons/SVG/npc.svg">', color: "#322112" },
-  reciclagem: { label: 'Reciclagem', icon: '<img src="Images/Icons/SVG/reciclagem.svg">', color: "#008c2a" },
+  reciclagem: { label: 'Farm', icon: '<img src="Images/Icons/SVG/reciclagem.svg">', color: "#008c2a" },
   informação: { label: 'Informações',icon: '<img src="Images/Icons/SVG/information.svg">', color: "#5c410b"},
   colecionáveis: { label: 'Colecionáveis',icon: '<img src="Images/Icons/SVG/collectible.svg">', color: "#52420e"},
   atenção: { label: 'Ponto de atenção',icon: '<img src="Images/Icons/SVG/attencion.svg">', color: "#5c110b"},
