@@ -2567,6 +2567,53 @@
     .armor-imgbox { height: 140px; }
   }
 
+  /* ── INIMIGOS × ARMAS & ARMADURAS (Dicas) ──
+     Sistema novo, todas as classes começam com "ctr-" pra não colidir com nada existente.
+     Usa só as variáveis de cor/fonte que o site já tem (:root) — mesma linguagem visual
+     de Armaduras/Armas/Entidades. Cards fechados por padrão (bom no celular); toque no
+     cabeçalho pra abrir. */
+  .ctr-section { margin-bottom: 22px; }
+  .ctr-title { font-size: var(--fs-xs); color: var(--red); letter-spacing: 3px; margin-bottom: 12px; }
+  .ctr-filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ctr-filter-label { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 2px; width: 100%; margin-top: 2px; }
+  .ctr-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .ctr-empty { font-size: var(--fs-sm); color: var(--textMuted); padding: 12px; border: 1px dashed var(--border); }
+  .ctr-card { background: var(--bgCard); border: 1px solid var(--border); border-left: 3px solid var(--amber); }
+  .ctr-head { display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; user-select: none; }
+  .ctr-thumb { width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--border); font-size: var(--fs-xl); overflow: hidden; }
+  .ctr-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .ctr-head-main { flex: 1; min-width: 0; }
+  .ctr-name { font-size: var(--fs-md); font-weight: bold; line-height: 1.25; }
+  .ctr-meta { font-size: var(--fs-2xs); color: var(--textMuted); letter-spacing: 1px; margin-top: 1px; }
+  .ctr-quick { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .ctr-quick-chip { font-size: var(--fs-2xs); padding: 0 6px; border: 1px solid rgba(0,224,96,0.4); background: rgba(0,224,96,0.1); color: var(--greenLt); white-space: nowrap; }
+  .ctr-toggle { font-size: var(--fs-xl); color: var(--amber); flex-shrink: 0; width: 20px; text-align: center; }
+  .ctr-body { display: none; padding: 4px 12px 12px; border-top: 1px solid var(--border); }
+  .ctr-card.open .ctr-body { display: block; }
+  .ctr-sub-title { font-size: var(--fs-sm); color: var(--amberLt); letter-spacing: 2px; margin: 10px 0 2px; padding: 3px 8px; background: rgba(224,160,32,0.08); border-left: 2px solid var(--amber); }
+  .ctr-block { margin-top: 10px; }
+  .ctr-block-title { font-size: var(--fs-2xs); letter-spacing: 2px; color: var(--textMuted); margin-bottom: 5px; }
+  .ctr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 6px; font-size: var(--fs-xs); line-height: 1.5; }
+  .ctr-tag { font-size: var(--fs-2xs); letter-spacing: 1px; padding: 1px 7px; border: 1px solid; white-space: nowrap; }
+  .ctr-tag.weak { color: var(--greenLt); border-color: rgba(0,224,96,0.45); background: rgba(0,224,96,0.1); }
+  .ctr-tag.resist { color: var(--amberLt); border-color: rgba(224,160,32,0.5); background: rgba(224,160,32,0.1); }
+  .ctr-tag.immune { color: var(--redLt); border-color: rgba(224,48,32,0.5); background: rgba(224,48,32,0.1); }
+  .ctr-tag.src { color: var(--textMuted); border-color: var(--border); }
+  .ctr-chip { font-size: var(--fs-xs); padding: 1px 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--text); }
+  .ctr-en { font-size: var(--fs-2xs); color: var(--textMuted); margin-left: 3px; }
+  .ctr-chip-note { font-size: var(--fs-2xs); color: var(--textMuted); font-style: italic; }
+  .ctr-armor-chip { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-xs); padding: 1px 8px 1px 3px; border: 1px solid var(--borderGn); background: rgba(255,255,255,0.02); color: var(--text); }
+  .ctr-armor-chip img { width: 24px; height: 24px; object-fit: contain; }
+  .ctr-armor-chip.noimg { padding-left: 8px; }
+  .ctr-why { font-size: var(--fs-xs); color: var(--textDim); line-height: 1.5; flex-basis: 100%; }
+  .ctr-atk { font-size: var(--fs-xs); line-height: 1.6; padding: 3px 8px; border-left: 2px solid var(--borderGn); background: rgba(255,255,255,0.02); margin-bottom: 4px; color: var(--textDim); }
+  .ctr-atk b { color: var(--text); }
+  .ctr-note { font-size: var(--fs-xs); color: var(--textDim); font-style: italic; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 7px; margin-top: 10px; }
+  .ctr-nodata { font-size: var(--fs-xs); color: var(--textMuted); line-height: 1.6; margin-top: 10px; }
+  @media (max-width: 480px) {
+    .ctr-thumb { width: 38px; height: 38px; }
+  }
+
   /* ── WEAPONS SECTION (inside tips) ── */
   .weapons-section { margin-bottom: 20px; }
   .weapons-title { font-size: var(--fs-xs); color: var(--amber); letter-spacing: 3px; margin-bottom: 12px; }
@@ -3782,6 +3829,28 @@
       <div id="weapons-grid"></div>
       <div style="font-size:var(--fs-xs);color:var(--textMuted);margin-top:8px">
         &gt; Ranking completo: <a href="https://dotesports.com/abiotic-factor/news/best-weapons-in-abiotic-factor-ranked" target="_blank" class="tips-source-link" style="display:inline">Dot Esports · Best Weapons Ranked (EN)</a>
+      </div>
+    </div>
+
+    <!-- INIMIGOS × ARMAS & ARMADURAS
+         Container vazio: o JS (ctrRender, perto de renderEntities) preenche tudo.
+         Dados e regras do sistema estão no bloco "INIMIGOS × ARMAS & ARMADURAS" do <script>. -->
+    <div class="ctr-section" id="ctr-section">
+      <div class="ctr-title">// MELHORES ARMAS E ARMADURAS POR INIMIGO</div>
+      <div style="font-size:var(--fs-sm);color:var(--textDim);line-height:1.7;margin-bottom:10px">
+        Escolha o inimigo (ou filtre pelo tipo de dano que você tem em mãos) e veja o que causa mais dano, o que evitar, qual armadura combina e qual escudo aguenta o ataque dele.
+      </div>
+      <div class="deploy-search-box" style="margin-bottom:8px">
+        <span class="deploy-search-icon">🔍</span>
+        <input type="text" id="ctr-search" class="deploy-search-input" placeholder="Buscar inimigo ou arma (ex: Jotun, Lodehammer)...">
+      </div>
+      <div class="ctr-filter-row" id="ctr-filter-type"></div>
+      <div class="ctr-filter-row" id="ctr-filter-dmg"></div>
+      <div class="ctr-list" id="ctr-list"></div>
+      <div id="ctr-nodata" class="ctr-nodata"></div>
+      <div style="font-size:var(--fs-xs);color:var(--textMuted);margin-top:8px">
+        &gt; Fonte dos dados: <a href="https://abioticfactor.wiki.gg/wiki/Damage_Types" target="_blank" class="tips-source-link" style="display:inline">Wiki Oficial · Damage Types (EN)</a>
+        · <a href="https://abioticfactor.wiki.gg/wiki/Armor_Sets" target="_blank" class="tips-source-link" style="display:inline">Wiki Oficial · Armor Sets (EN)</a>
       </div>
     </div>
 
@@ -10112,6 +10181,408 @@ function renderEntities(){
   });
 }
 renderEntities();
+
+// ══════════════════════════════════════════════════════════════════
+// INIMIGOS × ARMAS & ARMADURAS  (aba Dicas → "Melhores armas e armaduras por inimigo")
+//
+// COMO O SISTEMA FUNCIONA (resumo — a explicação completa está no .txt entregue junto):
+//  1) ctrDmgTypes  = tabela dos TIPOS DE DANO. Cada tipo guarda as armas que causam esse dano.
+//  2) ctrData      = tabela dos INIMIGOS. Cada inimigo só diz: fraco a quais tipos (weak),
+//                    resiste a quais (resist), imune a quais (immune), quais ataques usa (atk),
+//                    armas extras (use) e armaduras (armor).
+//  3) A tela é MONTADA POR REGRA: "armas recomendadas" = armas dos tipos em que o inimigo é fraco.
+//     Pra corrigir uma arma, edita-se UM lugar (ctrDmgTypes) e todos os inimigos se atualizam.
+//  4) Nome, imagem, setor e perigo do inimigo vêm de entitiesData (a mesma aba Entidades) —
+//     o campo "k" de cada inimigo tem que ser IGUAL ao "name" de entitiesData.
+//  5) Imagem/nome PT das armaduras vêm de armorTierData (a mesma tier list de Armaduras).
+//
+// REGRAS DO JOGO usadas (Wiki Oficial — Damage Types):
+//   fraqueza = ~5–10% de chance de crítico (+15% dano e atordoa) · resistência = −65% dano · imunidade = 0 dano
+//   Classes de dano × escudo: Leve < Médio < Pesado < Super. Escudo Leve bloqueia só Leve; Médio bloqueia
+//   Leve+Médio; Pesado (Riot Shield) bloqueia até Pesado; Super nenhum bloqueia.
+//   Dano Sagrado ignora armadura E escudo; Psíquico ignora escudo.
+//
+// Etiqueta de fonte em cada recomendação:  wiki = dado direto da wiki oficial ·
+//   ded = dedução feita a partir de dados da wiki · com = relato da comunidade (Steam/guias)
+// ══════════════════════════════════════════════════════════════════
+const ctrDmgTypes = {
+  blunt:     { l:"Contundente", i:"🔨", w:["Pipe Wrench","Hammer","Pipe Club","Baton","Hexwood Hammer","Thermal Mallet","Sledgehammer (pesada)","Impact Hammer (pesada)"] },
+  sharp:     { l:"Cortante",    i:"🗡️", w:["Sword","Makeshift Spear","Combat Knife","Exor Spear","Lightning Spear","Harpoon Spear","Crowbar (pesada)","Carbon Pickaxe (pesada)"] },
+  shotgun:   { l:"Escopeta",    i:"💢", w:["Scrapshot","Antique Shotgun","Romag Shotgun","Shredshot"] },
+  bullet:    { l:"Bala",        i:"🔫", w:["Security Pistol","Montese SMG","Pipe Pistol","Talagi Magnum","Patois Rifle","Wessex Rifle (sniper)"] },
+  fire:      { l:"Fogo",        i:"🔥", w:["Thermite Molotov","Thermal Mallet","Welding Spear","Thermal Coating","Toaster SMG","Magma Skink","Flamethrower"] },
+  plasma:    { l:"Plasma",      i:"🟣", w:["Plasmois Rifle","Verenkov's SMG","Hardlight Saber","Hardlight Spear","Hardlight Sledge","Plasmatic Shield"], nt:"2,5× de dano em escudo pessoal" },
+  cold:      { l:"Gelo",        i:"❄️", w:["Slushie Bomb","Throwing Shard","Endothermic Hammer","Ice X Rifle","Snowfall Shotgun"] },
+  explosive: { l:"Explosivo",   i:"💥", w:["Mugnade","Frag Grenade","Cluster Grenade","Megaton Flask","Rocket Launcher","Tripwire Mine","Laser Tripmine"] },
+  electric:  { l:"Elétrico",    i:"⚡", w:["Lightning Spear","Arcbolt Spear","Tech Sceptre","Electron Grenade","Electro-Thrower","Shock Bolt (Crossbow)","Tesla Coil","Shock Trap"] },
+  acid:      { l:"Ácido",       i:"🧪", w:["Thumper Shotgun (12g Buckshot)","Acid Bolt (Crossbow)","Acid Coating","Acid Mace","Skink (arma)","Quill Rifle (Seeker Quill)"] },
+  laser:     { l:"Laser",       i:"🔦", w:["Deatomizer","Laser Katana","Laser Pistol","Energy Pistol","Laser Grenade","Hardlight Saber","Hardlight Spear","Laser Turret"] },
+  holy:      { l:"Sagrado",     i:"✨", w:["Lodehammer","Lodespear","Lodestone Bolt (Crossbow)","Lode Disc (Grinder)"], nt:"ignora armadura e escudo" },
+  xray:      { l:"Raio-X",      i:"☢️", w:["X-Ray Tower","OX Tower","X-Ray Lamp","OX Lamp"], nt:"não causa dano — aplica efeito" }
+};
+
+// Classe do ataque → escudo necessário (regra da wiki). "IG" = ataque que ignora escudo.
+const ctrClass = {
+  L:  { l:"Leve",   need:"qualquer escudo" },
+  M:  { l:"Médio",  need:"escudo Médio (Charge, Kite, Hardlight, Clamp) ou o Riot" },
+  H:  { l:"Pesado", need:"somente o Riot Shield" },
+  S:  { l:"Super",  need:"nenhum escudo bloqueia" },
+  IG: { l:"Ignora escudo", need:"escudo não ajuda" }
+};
+const ctrSrc = { wiki:"WIKI", ded:"DEDUÇÃO", com:"COMUNIDADE" };
+// Tradução PT-BR dos nomes de armas/itens (chave = nome em inglês exatamente como aparece nos dados).
+// Nomes que o guia já usa em outras abas foram mantidos iguais (ex.: Lança Relâmpago, Desatomizador).
+// Se um nome não estiver aqui, a tela mostra o nome em inglês (nada quebra). Pra ajustar um nome, edite só aqui.
+const ctrPT = {
+  "Pipe Wrench":"Chave Inglesa", "Hammer":"Martelo", "Pipe Club":"Clava de Cano", "Baton":"Cassetete",
+  "Hexwood Hammer":"Martelo Hexwood", "Thermal Mallet":"Martelo Térmico", "Sledgehammer (pesada)":"Marreta (pesada)",
+  "Impact Hammer (pesada)":"Martelo de Impacto (pesada)",
+  "Sword":"Espada", "Makeshift Spear":"Lança Improvisada", "Combat Knife":"Faca de Combate", "Exor Spear":"Lança Exor",
+  "Lightning Spear":"Lança Relâmpago", "Harpoon Spear":"Lança de Arpão", "Crowbar (pesada)":"Pé de Cabra (pesada)",
+  "Carbon Pickaxe (pesada)":"Picareta de Carbono (pesada)",
+  "Scrapshot":"Scrapshot", "Antique Shotgun":"Espingarda Antiga", "Romag Shotgun":"Espingarda Romag", "Shredshot":"Shredshot",
+  "Security Pistol":"Pistola de Segurança", "Montese SMG":"SMG Montese", "Pipe Pistol":"Pistola de Cano",
+  "Talagi Magnum":"Magnum Talagi", "Patois Rifle":"Rifle Patois", "Wessex Rifle (sniper)":"Rifle Wessex (sniper)",
+  "Thermite Molotov":"Molotov de Termite", "Welding Spear":"Lança de Solda", "Thermal Coating":"Revestimento Térmico",
+  "Toaster SMG":"SMG Torradeira", "Magma Skink":"Lagarto de Magma", "Flamethrower":"Lança-chamas",
+  "Plasmois Rifle":"Rifle Plasmois", "Verenkov's SMG":"SMG do Verenkov", "Hardlight Saber":"Sabre de Luz Sólida",
+  "Hardlight Spear":"Lança de Luz Sólida", "Hardlight Sledge":"Marreta de Luz Sólida", "Plasmatic Shield":"Escudo Plasmático",
+  "Slushie Bomb":"Bomba Slushie", "Throwing Shard":"Estilhaço de Arremesso", "Endothermic Hammer":"Martelo Endotérmico",
+  "Ice X Rifle":"Rifle Ice X", "Snowfall Shotgun":"Escopeta Snowfall",
+  "Mugnade":"Mugnade", "Frag Grenade":"Granada de Fragmentação", "Cluster Grenade":"Granada Cluster",
+  "Megaton Flask":"Frasco Megaton", "Rocket Launcher":"Lança-foguetes", "Tripwire Mine":"Mina de Fio-Guia",
+  "Laser Tripmine":"Mina a Laser",
+  "Arcbolt Spear":"Lança Arcbolt", "Tech Sceptre":"Cetro Tecnológico", "Electron Grenade":"Granada de Elétron",
+  "Electro-Thrower":"Eletrolançador", "Shock Bolt (Crossbow)":"Virote de Choque (Besta)", "Tesla Coil":"Bobina de Tesla",
+  "Shock Trap":"Armadilha de Choque",
+  "Thumper Shotgun (12g Buckshot)":"Escopeta Thumper (Chumbo 12g)", "Acid Bolt (Crossbow)":"Virote Ácido (Besta)",
+  "Acid Coating":"Revestimento Ácido", "Acid Mace":"Maça Ácida", "Skink (arma)":"Lagarto (arma)",
+  "Quill Rifle (Seeker Quill)":"Rifle de Espinhos (Espinho Teleguiado)",
+  "Deatomizer":"Desatomizador", "Laser Katana":"Katana a Laser", "Laser Pistol":"Pistola a Laser",
+  "Energy Pistol":"Pistola de Energia", "Laser Grenade":"Granada a Laser", "Laser Turret":"Torreta a Laser",
+  "Lodehammer":"Lodehammer", "Lodespear":"Lodespear", "Lodestone Bolt (Crossbow)":"Virote de Magnetita (Besta)",
+  "Lode Disc (Grinder)":"Disco Lode (Triturador)",
+  "X-Ray Tower":"Torre de Raio-X", "OX Tower":"Torre OX", "X-Ray Lamp":"Lâmpada de Raio-X", "OX Lamp":"Lâmpada OX",
+  "Null Grenade":"Granada Nula", "Volt Staff (ataque secundário)":"Cajado Volt (ataque secundário)",
+  "Makeshift Crossbow":"Besta Improvisada", "Mugnade (2 unidades)":"Mugnade (2 unidades)",
+  "Chopinator + Tesla Coil":"Chopinator + Bobina de Tesla",
+  "Rocket Launcher / Laser Tripmine / granadas":"Lança-foguetes / Mina a Laser / granadas",
+  "Electro-Thrower + Lightning Spear":"Eletrolançador + Lança Relâmpago",
+  "Sapper Suit":"Traje de Sapador"
+};
+// Mostra "Nome PT" + nome em inglês pequeno ao lado (ajuda a achar o item no jogo). Sem tradução = só o inglês.
+function ctrN(en){
+  const pt = ctrPT[en];
+  return (pt && pt !== en) ? `${pt} <span class="ctr-en">${en}</span>` : en;
+}
+const ctrThreat = ['PASSIVO','FÁCIL','MODERADO','PERIGOSO','MUITO PERIGOSO','BOSS'];
+
+// Atalhos de armadura reutilizados em vários inimigos (nomes = campo "eng" de armorTierData)
+const ctrBounce = { sets:["F.O.R.G.E. Armor Set","A.E.G.I.S. Armor Set","A.T.O.M.S. Armor Set"], f:"wiki",
+  y:"Balas ricocheteiam (2 peças: às vezes · 4 peças: com frequência). A wiki destaca esses sets contra soldados da Ordem, que usam armas de fogo." };
+const ctrSapper = { sets:["Sapper Suit"], f:"wiki",
+  y:"Dá 75% de proteção contra dano Explosivo — cobre granadas, morteiros e explosões." };
+const ctrHexBleed = { sets:["Hex Armor Set"], f:"ded",
+  y:"O ataque desse inimigo causa sangramento, e o set Hex (4 peças) cura sangramento leve e grave sozinho." };
+
+const ctrData = [
+  // ── HUMANOS — A ORDEM ─────────────────────────────────────────────
+  { k:"Recruta / Invasor", sub:[
+    { n:"Recruta (Grunt)", weak:["sharp"], resist:["blunt"], immune:[],
+      atk:[ {n:"Pancada",t:"Contundente",c:"L"}, {n:"SMG",t:"Bala",c:"M"}, {n:"Granada",t:"Explosivo",c:"H"} ],
+      use:[], armor:[ctrBounce, ctrSapper],
+      note:"Soldados comuns da Ordem são fracos a Cortante e resistem a Contundente." },
+    { n:"Invasor (Breacher)", weak:["electric","acid"], resist:["blunt","sharp","bullet"], immune:[],
+      atk:[ {n:"Escopeta",t:"Bala (chumbo)",c:"M"}, {n:"Pancada",t:"Contundente",c:"L"} ],
+      use:[ {n:"Lightning Spear", w:"Cortante + Elétrico: serve contra Recruta e Invasor", f:"com"} ],
+      armor:[ctrBounce],
+      note:"Resiste a bala, cortante e contundente — insistir em arma de fogo desperdiça munição." }
+  ]},
+  { k:"Capitão", weak:["sharp"], resist:["blunt"], immune:[],
+    atk:[ {n:"Magnum",t:"Bala",c:"M"}, {n:"Pancada",t:"Contundente",c:"L"}, {n:"Granada",t:"Explosivo",c:"H"} ],
+    use:[], armor:[ctrBounce, ctrSapper], note:"Mesmo perfil de dano do Recruta e do Médico." },
+  { k:"Médico", weak:["sharp"], resist:["blunt"], immune:[],
+    atk:[ {n:"SMG",t:"Bala",c:"M"}, {n:"Pancada",t:"Contundente",c:"L"}, {n:"Granada",t:"Explosivo",c:"H"} ],
+    use:[], armor:[ctrBounce, ctrSapper], note:"Mesmo perfil de dano do Recruta e do Capitão." },
+  { k:"Torre (Escudo)", weak:[], resist:[], immune:["cold"],
+    atk:[ {n:"Faca de combate",t:"Genérico (sangramento)",c:""} ],
+    use:[ {n:"Lodestone Bolt (Crossbow)", w:"Sagrado ignora o Riot Shield", f:"wiki"},
+          {n:"Lodehammer", w:"Sagrado ignora o Riot Shield", f:"wiki"},
+          {n:"Volt Staff (ataque secundário)", w:"Psíquico também ignora escudo", f:"wiki"} ],
+    armor:[ctrHexBleed], note:"O Riot Shield cobre a frente: flanqueie ou use dano que ignora escudo. Não use Gelo." },
+  { k:"Atirador de Elite", weak:[], resist:[], immune:[],
+    atk:[ {n:"Rifle de precisão",t:"Bala (grande)",c:"H"} ],
+    use:[], armor:[ctrBounce, ctrHexBleed],
+    note:"Sem fraqueza documentada. O tiro é Pesado e causa sangramento grave — só o Riot Shield bloqueia." },
+
+  // ── HUMANOS — GATEKEEPERS ────────────────────────────────────────
+  { k:"Neófito", weak:["sharp","acid"], resist:[], immune:[],
+    atk:[ {n:"Fuzil de assalto",t:"Bala",c:"M"} ],
+    use:[ {n:"Null Grenade", w:"desliga o escudo hardlight", f:"wiki"},
+          {n:"Plasmois Rifle", w:"Plasma causa 2,5× em escudo pessoal", f:"wiki"} ],
+    armor:[ctrBounce], note:"Derrube o escudo pessoal antes de gastar dano de verdade." },
+  { k:"Chefe (Chieftain)", weak:["acid"], resist:[], immune:[],
+    atk:[ {n:"Desert Eagle",t:"Bala (grande)",c:"H"} ],
+    use:[ {n:"Null Grenade", w:"desliga o escudo hardlight", f:"wiki"},
+          {n:"Plasmois Rifle", w:"Plasma causa 2,5× em escudo pessoal", f:"wiki"} ],
+    armor:[ctrBounce], note:"O tiro é Pesado: só o Riot Shield bloqueia." },
+  { k:"Bruxa (Witch)", weak:["fire"], resist:["laser"], immune:["holy"],
+    atk:[ {n:"Escopeta",t:"Bala (chumbo)",c:"M"} ],
+    use:[ {n:"Null Grenade", w:"desliga o escudo pessoal de Gatekeeper", f:"wiki"} ],
+    armor:[ctrBounce], note:"Imune a Sagrado: não use armas Lode contra ela." },
+  { k:"Jotun", weak:["holy","acid"], resist:["blunt","sharp","bullet","laser"], immune:[],
+    atk:[ {n:"Metralhadora (LMG)",t:"Bala pesada",c:"H"} ],
+    use:[ {n:"Null Grenade", w:"derruba o escudo hardlight", f:"wiki"},
+          {n:"Rocket Launcher / Laser Tripmine / granadas", w:"destroem rápido, mas só com o escudo desligado", f:"wiki"},
+          {n:"Slushie Bomb", w:"congela; ataque pelas costas", f:"com"} ],
+    armor:[ {sets:["Reactor Armor Set"], f:"com",
+             y:"Nenhuma armadura deixa tankar o Jotun: use o maior valor de armadura que tiver (Reator tem 104) e lute de trás de cobertura, atirando quando ele recarrega."} ],
+    note:"Resiste a quase tudo físico. O tiro é Pesado: só o Riot Shield bloqueia." },
+  { k:"Mystagogue", weak:["electric"], resist:["laser"], immune:["fire","plasma"],
+    atk:[ {n:"Bola de plasma",t:"Fogo/Plasma",c:""}, {n:"Estrangulamento",t:"Afogamento",c:""} ],
+    use:[], armor:[ {sets:["Exor Armor Set"], f:"com", y:"A velocidade do set ajuda a desviar das bolas de fogo — mantenha-se em movimento."} ],
+    note:"Destrua os Mystagogue Eyes primeiro (também fracos a Elétrico). Não use Fogo nem Plasma." },
+
+  // ── HUMANOS — CANAÃ ──────────────────────────────────────────────
+  { k:"Niketas", weak:["acid"], resist:[], immune:["holy"],
+    atk:[ {n:"Corpo a corpo e bola de fogo",t:"Sagrado",c:"IG"} ],
+    use:[], armor:[ {sets:["Hex Armor Set"], f:"wiki", y:"Dano Sagrado ignora o valor de armadura — só o Hex ajuda (10% de resistência a Sagrado por peça, 40% no set)."} ],
+    note:"Imune a Sagrado: não use armas Lode." },
+
+  // ── CRIATURAS ────────────────────────────────────────────────────
+  { k:"Praga", weak:["blunt"], resist:[], immune:[],
+    atk:[ {n:"Mordida",t:"Cortante",c:"L"} ], use:[], armor:[], note:"" },
+  { k:"Pecari", weak:["blunt"], resist:[], immune:[],
+    atk:[ {n:"Investida",t:"Cortante",c:"M"}, {n:"Cabeçada",t:"Psíquico",c:"IG"} ],
+    use:[], armor:[], note:"A cabeçada ignora escudo." },
+  { k:"Pecari-Cogumelo", weak:[], resist:["blunt","bullet"], immune:[],
+    atk:[ {n:"Investida",t:"Cortante",c:"M"} ],
+    use:[], armor:[], note:"Resiste a Contundente e a bala. Cortante, Elétrico e Fogo não aparecem como resistência na wiki." },
+  { k:"Praga Elétrica", weak:[], resist:["bullet"], immune:["electric"],
+    atk:[ {n:"Choque",t:"Atordoamento",c:""} ],
+    use:[ {n:"Pipe Wrench", w:"arma Contundente/física — a resposta mais citada pelos guias", f:"com"} ],
+    armor:[], note:"Imune a Elétrico: não use armadilhas elétricas contra ela." },
+  { k:"Sinfonista", weak:[], resist:[], immune:["electric"],
+    atk:[ {n:"Corte",t:"Cortante",c:"L"} ],
+    use:[], armor:[], note:"Imune a Elétrico. Jogadores citam imunidade a Gelo também, mas isso não está confirmado na wiki." },
+  { k:"Zumbi", weak:["electric","shotgun","holy"], resist:[], immune:[],
+    atk:[ {n:"Pancada",t:"Contundente",c:"L"} ], use:[], armor:[], note:"" },
+  { k:"Carbúnculo Contaminado", weak:[], resist:["fire"], immune:[],
+    atk:[ {n:"Língua",t:"Ácido",c:""} ], use:[], armor:[], note:"Resiste a Fogo." },
+  { k:"Exor", weak:["electric"], resist:[], immune:[],
+    atk:[ {n:"Corte",t:"Cortante",c:"L"}, {n:"Rajada de espinhos",t:"Cortante",c:"L"} ],
+    use:[],
+    armor:[ ctrHexBleed,
+            {sets:["Exor Armor Set"], f:"com", y:"Velocidade pra desviar dos espinhos; com as 4 peças um espírito Exor entra na luta e puxa a atenção dele."} ],
+    note:"Cortante e armas à distância também funcionam bem." },
+  { k:"Monge Exor", weak:["blunt"], resist:[], immune:[],
+    atk:[ {n:"Corte",t:"Cortante",c:"L"}, {n:"Feixe",t:"Psíquico",c:"IG"} ],
+    use:[], armor:[ {sets:["Exor Armor Set"], f:"com", y:"Velocidade pra fugir do feixe, que ignora escudo."} ],
+    note:"O feixe psíquico ignora escudo." },
+  { k:"Exor Blindado", weak:["acid","electric"], resist:["bullet"], immune:[],
+    atk:[ {n:"Quill Rifle",t:"Cortante",c:"L"}, {n:"Granada biológica",t:"Ácido",c:""} ],
+    use:[], armor:[ ctrHexBleed,
+                    {sets:["Exor Armor Set"], f:"com", y:"Velocidade pra acompanhar o teleporte e os espinhos."} ],
+    note:"Muito resistente a armas de fogo. Ele recarrega o Quill Rifle de tempos em tempos: é a sua brecha." },
+  { k:"Tarasque", weak:["fire","electric","plasma"], resist:["bullet","explosive"], immune:[],
+    atk:[ {n:"Esmagar (Smash)",t:"Explosivo",c:"H"}, {n:"Pancada de monstro grande",t:"Físico",c:""} ],
+    use:[ {n:"Electro-Thrower + Lightning Spear", w:"o Eletrolançador derruba o chefe; a lança acerta o ponto fraco", f:"com"} ],
+    armor:[ ctrSapper,
+            {sets:["Carapace Armor Set"], f:"com", y:"Relatos dizem que protege melhor que o F.O.R.G.E. nesta luta."} ],
+    note:"Alvos: cabeça, tentáculos do peito (ele ajoelha) e as costas expostas. Se você sair da área, a vida dele reseta." },
+  { k:"Behemoth", weak:["fire","electric"], resist:["bullet","explosive"], immune:[],
+    atk:[ {n:"Esmagar (Smash)",t:"Explosivo",c:"H"}, {n:"Pancada de monstro grande",t:"Físico",c:""} ],
+    use:[], armor:[ ctrSapper,
+                    {sets:["Carapace Armor Set"], f:"com", y:"Relatos dizem que protege melhor que o F.O.R.G.E. contra a versão Tarasque."} ],
+    note:"Mesmas fraquezas e mesmos pontos fracos do Tarasque." },
+  { k:"Yeti", weak:["fire"], resist:["electric","bullet"], immune:["cold"],
+    atk:[ {n:"Pancada",t:"Cortante",c:"H"} ],
+    use:[], armor:[], note:"Resiste a bala pequena (pistola/SMG) e a Elétrico." },
+
+  // ── ROBÔS ────────────────────────────────────────────────────────
+  { k:"Robô de Segurança", weak:[], resist:[], immune:[],
+    atk:[ {n:"Soco elétrico / investida",t:"Atordoamento",c:""} ],
+    use:[ {n:"Makeshift Spear", w:"alcança mais longe que o ataque dele", f:"wiki"},
+          {n:"Makeshift Crossbow", w:"à distância", f:"wiki"},
+          {n:"Electro-Thrower", w:"dano baixo, mas constante e fora do alcance dele", f:"wiki"},
+          {n:"Mugnade (2 unidades)", w:"destroem o robô se você ficar longe da explosão", f:"wiki"},
+          {n:"Chopinator + Tesla Coil", w:"armadilha perto da cápsula dele, sem risco", f:"wiki"} ],
+    armor:[], note:"Torso zerado não mata: acerte o 'olho' (cabeça) ou conte com 360 de vida efetiva." },
+  { k:"Robô Corrompido", weak:["holy"], resist:[], immune:["electric"],
+    atk:[ {n:"Spray",t:"Ácido",c:""} ],
+    use:[ {n:"Null Grenade", w:"desliga o escudo pessoal", f:"wiki"} ],
+    armor:[], note:"Imune a Elétrico." },
+  { k:"Robô de Defesa", weak:["laser","acid"], resist:[], immune:[],
+    atk:[ {n:"Granada / morteiro / autodestruição",t:"Explosivo",c:"H"}, {n:"Molotov",t:"Fogo",c:""} ],
+    use:[], armor:[ctrSapper], note:"" },
+
+  // ── ENTIDADES ────────────────────────────────────────────────────
+  { k:"Ceifador (Reaper)", weak:["laser","holy","xray"], resist:[], immune:[],
+    atk:[ {n:"Golpe",t:"Cortante pesado",c:"H"} ],
+    use:[], armor:[], note:"O Raio-X só o atordoa e rende Night Essence (e ele fica furioso)." },
+  { k:"Leyak (IS-0091)", weak:["xray"], resist:[], immune:[],
+    atk:[ {n:"Ataque do Leyak",t:"Cortante",c:"S"} ],
+    use:[], armor:[], note:"O Raio-X o congela no lugar e ele some, deixando Essência." },
+  { k:"Krasue", weak:["xray"], resist:[], immune:[],
+    atk:[ {n:"Ataque da Krasue",t:"Cortante",c:"S"} ],
+    use:[], armor:[], note:"Só a OX Lamp funciona: congela no lugar e ela some, deixando Essência Congelada." }
+];
+
+// Estado da tela: filtro de categoria, filtro de tipo de dano, texto da busca e cards abertos
+const ctrState = { type:'TODOS', dmg:'', q:'', open:new Set() };
+
+function ctrEnt(k){ return entitiesData.find(e => e.name === k); }
+function ctrProfiles(d){ return d.sub ? d.sub : [d]; }
+function ctrWeakAny(d, id){ return ctrProfiles(d).some(p => p.weak.indexOf(id) !== -1); }
+function ctrNorm(s){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+// Texto onde a busca procura: nome do inimigo + armas dos tipos fracos + armas extras
+function ctrSearchText(d, e){
+  const parts = [e.name, e.eng];
+  ctrProfiles(d).forEach(p => {
+    if (p.n) parts.push(p.n);
+    p.weak.forEach(id => { parts.push(ctrDmgTypes[id].l); ctrDmgTypes[id].w.forEach(w => parts.push(w, ctrPT[w] || '')); });
+    p.use.forEach(u => parts.push(u.n, ctrPT[u.n] || ''));
+  });
+  return ctrNorm(parts.join(' '));
+}
+
+// Chip de armadura: acha imagem e nome PT em armorTierData; se não existir, mostra o nome como veio
+function ctrArmorChip(name){
+  const a = armorTierData.find(x => x.eng === name);
+  if (!a) return `<span class="ctr-armor-chip noimg">${ctrN(name)}</span>`;
+  return `<span class="ctr-armor-chip"><img src="${a.img}" alt="" onerror="this.style.display='none'">${a.name}</span>`;
+}
+
+function ctrProfileHtml(p){
+  let h = '';
+  if (p.n) h += `<div class="ctr-sub-title">${p.n}</div>`;
+
+  // ARMAS: uma linha por tipo em que o inimigo é fraco + armas extras (use)
+  let w = '';
+  p.weak.forEach(id => {
+    const t = ctrDmgTypes[id];
+    w += `<div class="ctr-row"><span class="ctr-tag weak">${t.i} FRAQUEZA · ${t.l.toUpperCase()}</span>`
+       + t.w.map(x => `<span class="ctr-chip">${ctrN(x)}</span>`).join('')
+       + (t.nt ? `<span class="ctr-chip-note">${t.nt}</span>` : '') + `<span class="ctr-tag src">${ctrSrc.wiki}</span></div>`;
+  });
+  p.use.forEach(u => {
+    w += `<div class="ctr-row"><span class="ctr-chip">${ctrN(u.n)}</span><span class="ctr-chip-note">${u.w}</span><span class="ctr-tag src">${ctrSrc[u.f]}</span></div>`;
+  });
+  if (!w) w = `<div class="ctr-chip-note">Sem fraqueza documentada — use a arma que você já domina e evite os tipos abaixo.</div>`;
+  h += `<div class="ctr-block"><div class="ctr-block-title">⚔️ ARMAS RECOMENDADAS</div>${w}</div>`;
+
+  // EVITE: resistência (−65%) e imunidade (0%)
+  if (p.resist.length || p.immune.length){
+    let v = '';
+    p.resist.forEach(id => { v += `<span class="ctr-tag resist">${ctrDmgTypes[id] ? ctrDmgTypes[id].i : ''} ${ctrDmgTypes[id] ? ctrDmgTypes[id].l.toUpperCase() : id.toUpperCase()} · RESISTE</span>`; });
+    p.immune.forEach(id => { v += `<span class="ctr-tag immune">${ctrDmgTypes[id] ? ctrDmgTypes[id].i : ''} ${ctrDmgTypes[id] ? ctrDmgTypes[id].l.toUpperCase() : id.toUpperCase()} · IMUNE</span>`; });
+    h += `<div class="ctr-block"><div class="ctr-block-title">🚫 EVITE</div><div class="ctr-row">${v}</div></div>`;
+  }
+
+  // ARMADURA
+  if (p.armor.length){
+    const a = p.armor.map(x => `<div class="ctr-row">${x.sets.map(ctrArmorChip).join('')}<span class="ctr-tag src">${ctrSrc[x.f]}</span><div class="ctr-why">${x.y}</div></div>`).join('');
+    h += `<div class="ctr-block"><div class="ctr-block-title">🛡️ ARMADURA RECOMENDADA</div>${a}</div>`;
+  }
+
+  // ATAQUES × ESCUDO
+  if (p.atk.length){
+    const a = p.atk.map(x => {
+      const c = ctrClass[x.c];
+      const tail = c ? ` · ${c.l} → <b>${c.need}</b>` : '';
+      return `<div class="ctr-atk"><b>${x.n}</b> · ${x.t}${tail}</div>`;
+    }).join('');
+    h += `<div class="ctr-block"><div class="ctr-block-title">🧱 ATAQUES E ESCUDO</div>${a}</div>`;
+  }
+  if (p.note) h += `<div class="ctr-note">▸ ${p.note}</div>`;
+  return h;
+}
+
+function ctrRender(){
+  const listEl = document.getElementById('ctr-list');
+  const typeEl = document.getElementById('ctr-filter-type');
+  const dmgEl  = document.getElementById('ctr-filter-dmg');
+  const noEl   = document.getElementById('ctr-nodata');
+  if (!listEl || !typeEl || !dmgEl) return;
+
+  // Só entram inimigos que existem em entitiesData (o campo "k" precisa bater com "name")
+  const rows = ctrData.map(d => ({ d:d, e:ctrEnt(d.k) })).filter(r => r.e);
+
+  // Filtro 1: categoria (mesmas da aba Entidades)
+  const types = ['TODOS','HUMANO','CRIATURA','ROBÔ','ENTIDADE'];
+  typeEl.innerHTML = '';
+  types.forEach(tp => {
+    const n = tp === 'TODOS' ? rows.length : rows.filter(r => r.e.type === tp).length;
+    const col = tp==='HUMANO'?C.red:tp==='CRIATURA'?C.amber:tp==='ROBÔ'?C.cyan:tp==='ENTIDADE'?C.purple:C.green;
+    const b = document.createElement('button');
+    b.className = 'filter-btn' + (ctrState.type === tp ? ' active' : '');
+    if (ctrState.type === tp){ b.style.borderColor = col; b.style.color = col; b.style.background = col + '22'; }
+    b.textContent = `${tp} (${n})`;
+    b.onclick = () => { ctrState.type = tp; ctrRender(); };
+    typeEl.appendChild(b);
+  });
+
+  // Filtro 2: "tenho esse tipo de dano" → mostra só inimigos fracos a ele
+  dmgEl.innerHTML = '<div class="ctr-filter-label">FRACOS A…</div>';
+  Object.keys(ctrDmgTypes).forEach(id => {
+    const n = rows.filter(r => ctrWeakAny(r.d, id)).length;
+    if (!n) return;
+    const b = document.createElement('button');
+    b.className = 'filter-btn' + (ctrState.dmg === id ? ' active' : '');
+    b.textContent = `${ctrDmgTypes[id].i} ${ctrDmgTypes[id].l} (${n})`;
+    b.onclick = () => { ctrState.dmg = (ctrState.dmg === id ? '' : id); ctrRender(); };
+    dmgEl.appendChild(b);
+  });
+
+  const q = ctrNorm(ctrState.q.trim());
+  const shown = rows.filter(r =>
+    (ctrState.type === 'TODOS' || r.e.type === ctrState.type) &&
+    (!ctrState.dmg || ctrWeakAny(r.d, ctrState.dmg)) &&
+    (!q || ctrSearchText(r.d, r.e).indexOf(q) !== -1));
+
+  listEl.innerHTML = '';
+  if (!shown.length){
+    listEl.innerHTML = '<div class="ctr-empty">Nenhum inimigo com esse filtro.</div>';
+  }
+  shown.forEach(r => {
+    const e = r.e, d = r.d;
+    const open = ctrState.open.has(d.k);
+    const quick = [];
+    ctrProfiles(d).forEach(p => p.weak.forEach(id => { if (quick.indexOf(id) === -1) quick.push(id); }));
+    const card = document.createElement('div');
+    card.className = 'ctr-card' + (open ? ' open' : '');
+    card.style.borderLeftColor = e.typeColor;
+    card.innerHTML = `
+      <div class="ctr-head">
+        <div class="ctr-thumb"><img src="${e.img}" alt="${e.name}" onerror="this.style.display='none';this.parentNode.textContent='${e.icon}'"></div>
+        <div class="ctr-head-main">
+          <div class="ctr-name" style="color:${e.typeColor}">${e.name}</div>
+          <div class="ctr-meta">${e.type} · ${ctrThreat[e.threat]}</div>
+          <div class="ctr-quick">${quick.map(id => `<span class="ctr-quick-chip">${ctrDmgTypes[id].i} ${ctrDmgTypes[id].l}</span>`).join('')}</div>
+        </div>
+        <span class="ctr-toggle">${open ? '−' : '+'}</span>
+      </div>
+      <div class="ctr-body">${ctrProfiles(d).map(ctrProfileHtml).join('')}</div>`;
+    card.querySelector('.ctr-head').onclick = () => {
+      const isOpen = card.classList.toggle('open');
+      if (isOpen) ctrState.open.add(d.k); else ctrState.open.delete(d.k);
+      card.querySelector('.ctr-toggle').textContent = isOpen ? '−' : '+';
+    };
+    listEl.appendChild(card);
+  });
+
+  // Inimigos da aba Entidades que ainda não têm dados de arma/armadura documentados (lista automática)
+  const covered = rows.map(r => r.d.k);
+  const missing = entitiesData.filter(e => covered.indexOf(e.name) === -1 && e.threat > 0).map(e => e.name);
+  noEl.textContent = missing.length ? `Sem dados documentados ainda: ${missing.join(', ')}.` : '';
+}
+
+(function ctrInit(){
+  const s = document.getElementById('ctr-search');
+  if (s) s.addEventListener('input', () => { ctrState.q = s.value; ctrRender(); });
+  ctrRender();
+})();
 
 // ══════════════════════════════════════════════════════════════════
 // PETS — Sistema de Domesticação (Cosmic Companions)
